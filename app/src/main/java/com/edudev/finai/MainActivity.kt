@@ -1,4 +1,5 @@
 package com.edudev.finai
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -6,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,11 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkTheme by mainViewModel.isDarkTheme.collectAsStateWithLifecycle()
             FinAITheme(darkTheme = isDarkTheme) {
-                RootNavigationGraph(
-                    authRepository = authRepository,
-                    isDarkTheme = isDarkTheme,
-                    setDarkTheme = mainViewModel::setDarkTheme
-                )
+                RootNavigationGraph(authRepository = authRepository)
             }
         }
     }
@@ -47,12 +45,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun RootNavigationGraph(
     authRepository: AuthRepository,
-    isDarkTheme: Boolean,
-    setDarkTheme: (Boolean) -> Unit
 ) {
     val navController = rememberNavController()
-    val currentUser = authRepository.getCurrentUser()
-    val startDestination = if (currentUser != null) Screen.Dashboard.route else Screen.Login.route
+    val startDestination = if (authRepository.getCurrentUser() != null) Screen.Dashboard.route else Screen.Login.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Screen.Login.route) {
@@ -86,9 +81,7 @@ fun RootNavigationGraph(
                         popUpTo(Screen.Dashboard.route) { inclusive = true }
                         launchSingleTop = true
                     }
-                },
-                isDarkTheme = isDarkTheme,
-                setDarkTheme = setDarkTheme
+                }
             )
         }
         composable("add_transaction") {

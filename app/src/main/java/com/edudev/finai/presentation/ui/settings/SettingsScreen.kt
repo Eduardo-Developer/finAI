@@ -13,17 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.edudev.finai.presentation.viewmodel.MainViewModel
 import com.edudev.finai.presentation.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onLogout: () -> Unit,
-    isDarkTheme: Boolean,
-    onSetDarkTheme: (Boolean) -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val isAIEnabled by viewModel.isAIEnabled.collectAsState()
+    val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
+    val isDarkTheme by mainViewModel.isDarkTheme.collectAsState()
 
     Scaffold(
         topBar = {
@@ -42,7 +43,7 @@ fun SettingsScreen(
                     title = "Sugestões da IA",
                     description = "Ativar análises inteligentes de gastos",
                     checked = isAIEnabled,
-                    onCheckedChange = { viewModel.setAIEnabled(it) }
+                    onCheckedChange = { settingsViewModel.setAIEnabled(it) }
                 )
             }
 
@@ -51,7 +52,7 @@ fun SettingsScreen(
                     title = "Tema Escuro",
                     description = "Usar tema escuro",
                     checked = isDarkTheme,
-                    onCheckedChange = onSetDarkTheme
+                    onCheckedChange = { mainViewModel.setDarkTheme(it) }
                 )
             }
 
@@ -60,7 +61,7 @@ fun SettingsScreen(
                     title = "Sair",
                     description = "Desconectar sua conta do aplicativo",
                     onClick = {
-                        viewModel.logout()
+                        settingsViewModel.logout()
                         onLogout()
                     }
                 )

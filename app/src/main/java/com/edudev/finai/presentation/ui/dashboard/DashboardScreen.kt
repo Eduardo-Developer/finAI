@@ -45,9 +45,7 @@ import java.util.Locale
 @Composable
 fun DashboardScreen(
     onLogout: () -> Unit,
-    onAddTransactionClick: () -> Unit,
-    isDarkTheme: Boolean,
-    setDarkTheme: (Boolean) -> Unit
+    onAddTransactionClick: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -68,9 +66,7 @@ fun DashboardScreen(
         BottomNavGraph(
             navController = navController,
             modifier = Modifier.padding(innerPadding),
-            onLogout = onLogout,
-            isDarkTheme = isDarkTheme,
-            setDarkTheme = setDarkTheme
+            onLogout = onLogout
         )
     }
 }
@@ -79,9 +75,7 @@ fun DashboardScreen(
 fun BottomNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onLogout: () -> Unit,
-    isDarkTheme: Boolean,
-    setDarkTheme: (Boolean) -> Unit
+    onLogout: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -96,9 +90,7 @@ fun BottomNavGraph(
         }
         composable(Screen.Settings.route) {
             SettingsScreen(
-                onLogout = onLogout,
-                onSetDarkTheme = setDarkTheme,
-                isDarkTheme = isDarkTheme
+                onLogout = onLogout
             )
         }
     }
