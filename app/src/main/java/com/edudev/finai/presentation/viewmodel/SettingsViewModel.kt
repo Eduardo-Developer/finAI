@@ -12,9 +12,11 @@ class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    // Mocked state for UI toggles. In a real app, this would come from a repository/DataStore.
     private val _isAIEnabled = MutableStateFlow(true)
     val isAIEnabled = _isAIEnabled.asStateFlow()
+
+    private val _showLogoffConfirmDialog = MutableStateFlow(false)
+    val showLogoffConfirmDialog = _showLogoffConfirmDialog.asStateFlow()
 
     fun setAIEnabled(isEnabled: Boolean) {
         _isAIEnabled.value = isEnabled
@@ -22,5 +24,13 @@ class SettingsViewModel @Inject constructor(
 
     fun logout() {
         authRepository.logout()
+    }
+
+    fun onLogoffIntent() {
+        _showLogoffConfirmDialog.value = true
+    }
+
+    fun onDismissLogofftDialog() {
+        _showLogoffConfirmDialog.value = false
     }
 }

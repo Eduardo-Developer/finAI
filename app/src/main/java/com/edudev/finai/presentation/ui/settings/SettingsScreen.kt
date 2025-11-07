@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.edudev.finai.presentation.components.FinAiTopAppBar
 import com.edudev.finai.presentation.viewmodel.MainViewModel
 import com.edudev.finai.presentation.viewmodel.SettingsViewModel
 
@@ -26,9 +27,11 @@ fun SettingsScreen(
     val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
     val isDarkTheme by mainViewModel.isDarkTheme.collectAsState()
 
+    val showLogoffDialog by settingsViewModel.showLogoffConfirmDialog.collectAsState()
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Configurações") })
+            FinAiTopAppBar(title = { Text("Configurações") })
         }
     ) { paddingValues ->
         Column(
@@ -61,8 +64,7 @@ fun SettingsScreen(
                     title = "Sair",
                     description = "Desconectar sua conta do aplicativo",
                     onClick = {
-                        settingsViewModel.logout()
-                        onLogout()
+                        settingsViewModel.onLogoffIntent()
                     }
                 )
             }
@@ -74,6 +76,28 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
+
+        //Dialog de confirmação de Logoff
+        if (showLogoffDialog) {
+            AlertDialog(
+                onDismissRequest = { settingsViewModel.onDismissLogofftDialog() },
+                title = { Text("Confirmação") },
+                text = { Text("Deseja realmente deslogar sua conta?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        settingsViewModel.onLogoffIntent()
+                        onLogout()
+                    }) {
+                        Text("Sim")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { settingsViewModel.onDismissLogofftDialog() }) {
+                        Text("Não")
+                    }
+                }
             )
         }
     }

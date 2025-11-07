@@ -10,6 +10,8 @@ import java.util.Date
 interface TransactionRepository {
     fun getAllTransactions(): Flow<List<Transaction>>
     suspend fun getTransactionById(id: Long): Transaction?
+
+    suspend fun getAllTransactionsForExport(): Result<String>
     fun getTransactionsByType(type: TransactionType): Flow<List<Transaction>>
     fun getTransactionsByCategory(category: String): Flow<List<Transaction>>
     fun getTransactionsByDateRange(startDate: Date, endDate: Date): Flow<List<Transaction>>

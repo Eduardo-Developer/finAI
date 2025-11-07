@@ -24,9 +24,20 @@ import com.edudev.finai.presentation.viewmodel.TransactionFilter
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import com.edudev.finai.R
 import java.util.Locale
-import android.content.res.Configuration
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import com.edudev.finai.presentation.components.FinAiTopAppBar
+import com.edudev.finai.presentation.viewmodel.ExportState
 import com.edudev.finai.ui.theme.FinAITheme
+import java.io.IOException
+import javax.xml.validation.ValidatorHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +47,75 @@ fun HistoryScreen(
     val filteredTransactions by viewModel.filteredTransactions.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
+    val showDialog by viewModel.showExportConfirmDialog.collectAsState()
+
+    val context = LocalContext.current
+    val exportState by viewModel.exportState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val fileSaverLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv"),
+        onResult = { uri: Uri? ->
+            uri?.let {
+                // Se o usuário escolheu um local, escrevemos os dados no arquivo
+                val csvData = (viewModel.exportState.value as? ExportState.Success)?.csvData
+                if (csvData != null) {
+                    try {
+                        context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                            outputStream.write(csvData.toByteArray())
+                        }
+                    } catch (e: IOException) {
+                    }
+                }
+            }
+            viewModel.onExportStateConsumed()
+        }
+    )
+
+    // 2. Use `LaunchedEffect` para reagir às mudanças de estado do ViewModel
+    LaunchedEffect(exportState) {
+        when (val state = exportState) {
+            is ExportState.Success -> {
+                // Estado de sucesso! Lança o seletor de arquivos do sistema
+                fileSaverLauncher.launch("historico_finai.csv") // Nome padrão do arquivo
+            }
+
+            is ExportState.Error -> {
+                // Estado de erro. Mostra uma mensagem para o usuário.
+                snackbarHostState.showSnackbar("Erro ao exportar: ${state.message}")
+                viewModel.onExportStateConsumed() // Reseta o estado
+            }
+
+            else -> {
+            }
+        }
+    }
+
+    //Dialog de confirmação de exportação csv
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.onDismissExportDialog() },
+            title = { Text("Confirmar Exportação") },
+            text = { Text("Deseja realmente exportar o histórico de transações para um arquivo CSV?") },
+            confirmButton = {
+                TextButton(onClick = { viewModel.onExportClicked() }) {
+                    Text("Sim")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onDismissExportDialog() }) {
+                    Text("Não")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Histórico") })
+            FinAiTopAppBar(
+                title = { Text("Histórico") },
+
+                )
         }
     ) { paddingValues ->
         Column(
@@ -59,11 +135,34 @@ fun HistoryScreen(
                 singleLine = true
             )
 
-            // Filters
-            FilterChips(
-                selectedFilter = selectedFilter,
-                onFilterSelected = { viewModel.setFilter(it) }
-            )
+            Row(
+                modifier = Modifier.padding(end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Filters
+                FilterChips(
+                    modifier = Modifier.weight(1f),
+                    selectedFilter = selectedFilter,
+                    onFilterSelected = { viewModel.setFilter(it) }
+                )
+
+                IconButton(
+                    onClick = {
+                        if (exportState !is ExportState.Loading) {
+                            viewModel.onExportIntent()
+                        }
+                    }) {
+                    if (exportState is ExportState.Loading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    } else {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(R.drawable.csv_icon),
+                            contentDescription = "Exportar Histórico"
+                        )
+                    }
+                }
+            }
 
             // Transactions list
             AnimatedContent(
@@ -101,12 +200,12 @@ fun HistoryScreen(
 
 @Composable
 fun FilterChips(
+    modifier: Modifier = Modifier,
     selectedFilter: TransactionFilter,
     onFilterSelected: (TransactionFilter) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -177,7 +276,11 @@ fun TransactionItem(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "${if (transaction.type == TransactionType.INCOME) "+" else "-"}${currencyFormat.format(transaction.amount)}",
+                    text = "${if (transaction.type == TransactionType.INCOME) "+" else "-"}${
+                        currencyFormat.format(
+                            transaction.amount
+                        )
+                    }",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = if (transaction.type == TransactionType.INCOME)

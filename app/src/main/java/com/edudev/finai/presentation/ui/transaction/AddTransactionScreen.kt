@@ -44,6 +44,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.domain.model.TransactionType
+import com.edudev.finai.presentation.components.CategorySelector
+import com.edudev.finai.presentation.components.DateSelector
+import com.edudev.finai.presentation.components.TransactionTypeSelector
 import com.edudev.finai.presentation.viewmodel.TransactionViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -57,7 +60,6 @@ fun AddTransactionScreen(
     viewModel: TransactionViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -141,176 +143,6 @@ fun AddTransactionScreen(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun TransactionTypeSelector(
-    selectedType: TransactionType,
-    onTypeSelected: (TransactionType) -> Unit
-) {
-    Column {
-        Text(
-            text = "Tipo",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            TransactionType.values().forEach { type ->
-                FilterChip(
-                    selected = selectedType == type,
-                    onClick = { onTypeSelected(type) },
-                    label = { Text(if (type == TransactionType.INCOME) "Receita" else "Despesa") },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CategorySelector(
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit,
-    error: String?
-) {
-    val categories = listOf(
-        "Alimentação", "Transporte", "Moradia", "Saúde",
-        "Educação", "Lazer", "Compras", "Outros"
-    )
-    
-    var expanded by remember { mutableStateOf(false) }
-
-    Column {
-        Text(
-            text = "Categoria",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = selectedCategory.ifBlank { "Selecione uma categoria" },
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                isError = error != null,
-                supportingText = error?.let { { Text(it) } },
-                placeholder = { Text("Selecione uma categoria") }
-            )
-            
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                categories.forEach { category ->
-                    DropdownMenuItem(
-                        text = { Text(category) },
-                        onClick = {
-                            onCategorySelected(category)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-        
-        error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DateSelector(
-    selectedDate: Date,
-    onDateSelected: (Date) -> Unit
-) {
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val showDatePicker = remember { mutableStateOf(false) }
-    
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = selectedDate.time
-    )
-
-    Column {
-        Text(
-            text = "Data",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        OutlinedTextField(
-            value = dateFormat.format(selectedDate),
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = {
-                    showDatePicker.value = true
-                }) {
-                    Text(
-                        text = "📅",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        )
-    }
-    
-    if (showDatePicker.value) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker.value = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        datePickerState.selectedDateMillis?.let { millis ->
-                            val calendar = Calendar.getInstance().apply {
-                                timeInMillis = millis
-                                set(Calendar.HOUR_OF_DAY, 0)
-                                set(Calendar.MINUTE, 0)
-                                set(Calendar.SECOND, 0)
-                                set(Calendar.MILLISECOND, 0)
-                            }
-                            onDateSelected(calendar.time)
-                            showDatePicker.value = false
-                        } ?: run {
-                            showDatePicker.value = false
-                        }
-                    }
-                ) {
-                    Text("OK")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker.value = false }) {
-                    Text("Cancelar")
-                }
-            }
-        ) {
-            DatePicker(
-                state = datePickerState
-            )
         }
     }
 }
