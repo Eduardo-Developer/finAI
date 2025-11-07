@@ -12,8 +12,11 @@ import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
@@ -28,6 +31,34 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun getTransactionById(id: Long): Transaction? {
         return transactionDao.getTransactionById(id)?.toDomain()
+    }
+
+    override suspend fun getAllTransactionsForExport(): Result<String> {
+        return try {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+
+            val transactions = transactionDao.getAllTransactionsOnce()
+            if (transactions.isEmpty()) {
+                return Result.failure(IOException("Nenhuma transação para exportar."))
+            }
+
+            val csvBuilder = StringBuilder()
+            csvBuilder.append("Data,Valor,Tipo,Descrição\n")
+
+            // 2. Linhas de dados
+            transactions.forEach { transaction ->
+                val type = if (transaction.type == TransactionType.INCOME) "Receita" else "Despesa"
+                // Formata a data e o valor para o padrão local
+                val date = dateFormat.format(transaction.date)
+                val amount = String.format(Locale.getDefault(), "%.2f", transaction.amount)
+
+                csvBuilder.append("$date,$amount,$type,\"${transaction.description}\"\n")
+            }
+
+            Result.success(csvBuilder.toString())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override fun getTransactionsByType(type: TransactionType): Flow<List<Transaction>> {
@@ -78,7 +109,7 @@ class TransactionRepositoryImpl @Inject constructor(
     ): List<CategorySpending> {
         val results = transactionDao.getCategorySpendings(type, startDate, endDate)
         val total = results.sumOf { it.total }
-        
+
         return results.map { result ->
             CategorySpending(
                 category = result.category,
@@ -91,23 +122,23 @@ class TransactionRepositoryImpl @Inject constructor(
     override suspend fun getDashboardData(): DashboardData {
         val calendar = Calendar.getInstance()
         val endDate = calendar.time
-        
+
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         val startDate = calendar.time
-        
+
         val monthlyIncome = getTotalByTypeAndDateRange(TransactionType.INCOME, startDate, endDate)
         val monthlyExpense = getTotalByTypeAndDateRange(TransactionType.EXPENSE, startDate, endDate)
         val totalBalance = monthlyIncome - monthlyExpense
-        
+
         val categorySpendings = getCategorySpendings(TransactionType.EXPENSE, startDate, endDate)
-        
+
         // Generate monthly chart data (last 6 months)
         val monthlyChartData = generateMonthlyChartData()
-        
+
         return DashboardData(
             totalBalance = totalBalance,
             monthlyIncome = monthlyIncome,
@@ -117,31 +148,44 @@ class TransactionRepositoryImpl @Inject constructor(
             monthlyChartData = monthlyChartData
         )
     }
-    
+
     private suspend fun generateMonthlyChartData(): List<MonthlyChartData> {
         val calendar = Calendar.getInstance()
         val months = mutableListOf<MonthlyChartData>()
-        val monthNames = arrayOf("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez")
-        
+        val monthNames = arrayOf(
+            "Jan",
+            "Fev",
+            "Mar",
+            "Abr",
+            "Mai",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Set",
+            "Out",
+            "Nov",
+            "Dez"
+        )
+
         for (i in 5 downTo 0) {
             calendar.add(Calendar.MONTH, -i)
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
-            
+
             calendar.set(Calendar.DAY_OF_MONTH, 1)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
             val monthStart = calendar.time
-            
+
             calendar.add(Calendar.MONTH, 1)
             calendar.add(Calendar.MILLISECOND, -1)
             val monthEnd = calendar.time
-            
+
             val income = getTotalByTypeAndDateRange(TransactionType.INCOME, monthStart, monthEnd)
             val expense = getTotalByTypeAndDateRange(TransactionType.EXPENSE, monthStart, monthEnd)
-            
+
             months.add(
                 MonthlyChartData(
                     month = "${monthNames[month]}\n$year",
@@ -149,11 +193,11 @@ class TransactionRepositoryImpl @Inject constructor(
                     expense = expense
                 )
             )
-            
+
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.YEAR, year)
         }
-        
+
         return months.reversed()
     }
 }

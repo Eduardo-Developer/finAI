@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.DashboardData
 import com.edudev.finai.domain.model.InsightType
+import com.edudev.finai.presentation.components.FinAiTopAppBar
 import com.edudev.finai.presentation.navigation.Screen
 import com.edudev.finai.presentation.ui.history.HistoryScreen
 import com.edudev.finai.presentation.ui.settings.SettingsScreen
@@ -105,7 +106,7 @@ fun DashboardRouteContent(
     val isAIEnabled by viewModel.isAIEnabled.collectAsState(initial = true)
 
     Column {
-        TopAppBar(
+        FinAiTopAppBar(
             title = { Text("FinAI") },
             actions = {
                 IconButton(onClick = { viewModel.refresh() }) {
