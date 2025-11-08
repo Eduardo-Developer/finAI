@@ -9,8 +9,8 @@ import com.edudev.finai.data.local.entity.Converters
 
 @Database(
     entities = [TransactionEntity::class],
-    version = 1,
-    exportSchema = false
+    version = 2,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class FinAIDatabase : RoomDatabase() {

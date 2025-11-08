@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ExportTransactionsToCsvUseCase @Inject constructor(
     private val transactionRepository: TransactionRepository
 ) {
-    suspend operator fun invoke(): Result<String> {
-        return transactionRepository.getAllTransactionsForExport()
+    suspend operator fun invoke(userId: String): Result<String> {
+        return transactionRepository.getAllTransactionsForExport(userId)
     }
 }

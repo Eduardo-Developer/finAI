@@ -1,7 +1,6 @@
 package com.edudev.finai.data.repository
 
 import com.edudev.finai.data.local.dao.TransactionDao
-import com.edudev.finai.data.local.entity.TransactionEntity
 import com.edudev.finai.data.mapper.toDomain
 import com.edudev.finai.data.mapper.toEntity
 import com.edudev.finai.domain.model.CategorySpending
@@ -23,21 +22,21 @@ class TransactionRepositoryImpl @Inject constructor(
     private val transactionDao: TransactionDao
 ) : TransactionRepository {
 
-    override fun getAllTransactions(): Flow<List<Transaction>> {
-        return transactionDao.getAllTransactions().map { entities ->
+    override fun getAllTransactions(userId: String): Flow<List<Transaction>> {
+        return transactionDao.getAllTransactions(userId = userId).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    override suspend fun getTransactionById(id: Long): Transaction? {
-        return transactionDao.getTransactionById(id)?.toDomain()
+    override suspend fun getTransactionById(userId: String, id: Long): Transaction? {
+        return transactionDao.getTransactionById(userId, id)?.toDomain()
     }
 
-    override suspend fun getAllTransactionsForExport(): Result<String> {
+    override suspend fun getAllTransactionsForExport(userId: String): Result<String> {
         return try {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
-            val transactions = transactionDao.getAllTransactionsOnce()
+            val transactions = transactionDao.getAllTransactionsOnce(userId)
             if (transactions.isEmpty()) {
                 return Result.failure(IOException("Nenhuma transação para exportar."))
             }
@@ -61,23 +60,24 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getTransactionsByType(type: TransactionType): Flow<List<Transaction>> {
-        return transactionDao.getTransactionsByType(type).map { entities ->
+    override fun getTransactionsByType(userId: String, type: TransactionType): Flow<List<Transaction>> {
+        return transactionDao.getTransactionsByType(userId, type).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    override fun getTransactionsByCategory(category: String): Flow<List<Transaction>> {
-        return transactionDao.getTransactionsByCategory(category).map { entities ->
+    override fun getTransactionsByCategory(userId: String, category: String): Flow<List<Transaction>> {
+        return transactionDao.getTransactionsByCategory(userId, category).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
     override fun getTransactionsByDateRange(
+        userId: String,
         startDate: Date,
         endDate: Date
     ): Flow<List<Transaction>> {
-        return transactionDao.getTransactionsByDateRange(startDate, endDate).map { entities ->
+        return transactionDao.getTransactionsByDateRange(userId,startDate, endDate).map { entities ->
             entities.map { it.toDomain() }
         }
     }
@@ -90,24 +90,26 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionDao.updateTransaction(transaction.toEntity())
     }
 
-    override suspend fun deleteTransaction(id: Long) {
-        transactionDao.deleteTransaction(id)
+    override suspend fun deleteTransaction(userId: String, id: Long) {
+        transactionDao.deleteTransaction(userId, id)
     }
 
     override suspend fun getTotalByTypeAndDateRange(
+        userId: String,
         type: TransactionType,
         startDate: Date,
         endDate: Date
     ): Double {
-        return transactionDao.getTotalByTypeAndDateRange(type, startDate, endDate) ?: 0.0
+        return transactionDao.getTotalByTypeAndDateRange(userId, type, startDate, endDate) ?: 0.0
     }
 
     override suspend fun getCategorySpendings(
+        userId: String,
         type: TransactionType,
         startDate: Date,
         endDate: Date
     ): List<CategorySpending> {
-        val results = transactionDao.getCategorySpendings(type, startDate, endDate)
+        val results = transactionDao.getCategorySpendings(userId,type, startDate, endDate)
         val total = results.sumOf { it.total }
 
         return results.map { result ->
@@ -119,7 +121,7 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDashboardData(): DashboardData {
+    override suspend fun getDashboardData(userId: String): DashboardData {
         val calendar = Calendar.getInstance()
         val endDate = calendar.time
 
@@ -130,14 +132,14 @@ class TransactionRepositoryImpl @Inject constructor(
         calendar.set(Calendar.MILLISECOND, 0)
         val startDate = calendar.time
 
-        val monthlyIncome = getTotalByTypeAndDateRange(TransactionType.INCOME, startDate, endDate)
-        val monthlyExpense = getTotalByTypeAndDateRange(TransactionType.EXPENSE, startDate, endDate)
+        val monthlyIncome = getTotalByTypeAndDateRange(userId,TransactionType.INCOME, startDate, endDate)
+        val monthlyExpense = getTotalByTypeAndDateRange(userId,TransactionType.EXPENSE, startDate, endDate)
         val totalBalance = monthlyIncome - monthlyExpense
 
-        val categorySpendings = getCategorySpendings(TransactionType.EXPENSE, startDate, endDate)
+        val categorySpendings = getCategorySpendings(userId,TransactionType.EXPENSE, startDate, endDate)
 
         // Generate monthly chart data (last 6 months)
-        val monthlyChartData = generateMonthlyChartData()
+        val monthlyChartData = generateMonthlyChartData(userId = userId)
 
         return DashboardData(
             totalBalance = totalBalance,
@@ -149,7 +151,7 @@ class TransactionRepositoryImpl @Inject constructor(
         )
     }
 
-    private suspend fun generateMonthlyChartData(): List<MonthlyChartData> {
+    private suspend fun generateMonthlyChartData(userId: String): List<MonthlyChartData> {
         val calendar = Calendar.getInstance()
         val months = mutableListOf<MonthlyChartData>()
         val monthNames = arrayOf(
@@ -183,8 +185,8 @@ class TransactionRepositoryImpl @Inject constructor(
             calendar.add(Calendar.MILLISECOND, -1)
             val monthEnd = calendar.time
 
-            val income = getTotalByTypeAndDateRange(TransactionType.INCOME, monthStart, monthEnd)
-            val expense = getTotalByTypeAndDateRange(TransactionType.EXPENSE, monthStart, monthEnd)
+            val income = getTotalByTypeAndDateRange(userId,TransactionType.INCOME, monthStart, monthEnd)
+            val expense = getTotalByTypeAndDateRange(userId,TransactionType.EXPENSE, monthStart, monthEnd)
 
             months.add(
                 MonthlyChartData(

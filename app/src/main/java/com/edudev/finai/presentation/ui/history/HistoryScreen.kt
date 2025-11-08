@@ -315,6 +315,7 @@ private fun FilterChipsPreview() {
 @Composable
 private fun TransactionItemIncomePreview() {
     val transaction = Transaction(
+        userId = "123456",
         id = 1,
         description = "Salário",
         amount = 5000.0,
@@ -331,6 +332,7 @@ private fun TransactionItemIncomePreview() {
 @Composable
 private fun TransactionItemExpensePreview() {
     val transaction = Transaction(
+        userId = "123456",
         id = 2,
         description = "Aluguel",
         amount = 1500.0,

@@ -6,7 +6,7 @@ import javax.inject.Inject
 class DeleteTransactionUseCase @Inject constructor(
     private val repository: TransactionRepository
 ) {
-    suspend operator fun invoke(id: Long) {
-        repository.deleteTransaction(id)
+    suspend operator fun invoke(userId: String, id: Long) {
+        repository.deleteTransaction(userId,id)
     }
 }

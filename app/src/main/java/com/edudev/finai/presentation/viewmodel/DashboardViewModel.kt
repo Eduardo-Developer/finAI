@@ -2,6 +2,7 @@ package com.edudev.finai.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edudev.finai.data.repository.AuthRepository
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.DashboardData
 import com.edudev.finai.domain.model.Transaction
@@ -24,11 +25,13 @@ class DashboardViewModel @Inject constructor(
     private val getDashboardDataUseCase: GetDashboardDataUseCase,
     private val getFinancialInsightsUseCase: GetFinancialInsightsUseCase,
     private val getAllTransactionsUseCase: GetAllTransactionsUseCase,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
+    val currentUserId = authRepository.getCurrentUser()?.uid ?: ""
 
     val isAIEnabled = preferencesRepository.isAIEnabled
 
@@ -41,7 +44,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val dashboardData = getDashboardDataUseCase()
+                val dashboardData = getDashboardDataUseCase(currentUserId)
                 _uiState.value = _uiState.value.copy(
                     dashboardData = dashboardData,
                     isLoading = false
@@ -59,12 +62,12 @@ class DashboardViewModel @Inject constructor(
     private fun observeTransactions() {
         viewModelScope.launch {
             combine(
-                getAllTransactionsUseCase(),
+                getAllTransactionsUseCase(currentUserId),
                 isAIEnabled
             ) { transactions, aiEnabled ->
                 // Atualiza os dados do dashboard quando há mudanças nas transações
                 try {
-                    val dashboardData = getDashboardDataUseCase()
+                    val dashboardData = getDashboardDataUseCase(currentUserId)
                     var insights = emptyList<AIInsight>()
                     
                     if (aiEnabled) {
@@ -91,7 +94,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             if (isAIEnabled.first()) {
                 try {
-                    val transactions = getAllTransactionsUseCase().first()
+                    val transactions = getAllTransactionsUseCase(currentUserId).first()
                     val insights = getFinancialInsightsUseCase(transactions)
                     _uiState.value = _uiState.value.copy(
                         aiInsights = insights,
