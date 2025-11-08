@@ -12,40 +12,58 @@ import java.util.Date
 
 @Dao
 interface TransactionDao {
-    @Query("SELECT * FROM transactions ORDER BY date DESC")
-    fun getAllTransactions(): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY date DESC")
+    fun getAllTransactions(
+        userId: String
+    ): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC")
-    suspend fun getAllTransactionsOnce(): List<TransactionEntity>
+    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY date DESC")
+    suspend fun getAllTransactionsOnce(
+        userId: String
+    ): List<TransactionEntity>
 
-    @Query("SELECT * FROM transactions WHERE id = :id")
-    suspend fun getTransactionById(id: Long): TransactionEntity?
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND id = :id")
+    suspend fun getTransactionById(
+        userId: String,
+        id: Long
+    ): TransactionEntity?
 
-    @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC")
-    fun getTransactionsByType(type: TransactionType): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND type = :type ORDER BY date DESC")
+    fun getTransactionsByType(
+        userId: String,
+        type: TransactionType
+    ): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE category = :category ORDER BY date DESC")
-    fun getTransactionsByCategory(category: String): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND category = :category ORDER BY date DESC")
+    fun getTransactionsByCategory(
+        userId: String,category: String
+    ): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
-    fun getTransactionsByDateRange(startDate: Date, endDate: Date): Flow<List<TransactionEntity>>
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    fun getTransactionsByDateRange(
+        userId: String,
+        startDate: Date, endDate: Date
+    ): Flow<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE type = :type AND date BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM transactions WHERE userId = :userId AND type = :type AND date BETWEEN :startDate AND :endDate")
     suspend fun getTransactionsByTypeAndDateRange(
+        userId: String,
         type: TransactionType,
         startDate: Date,
         endDate: Date
     ): List<TransactionEntity>
 
-    @Query("SELECT SUM(amount) FROM transactions WHERE type = :type AND date BETWEEN :startDate AND :endDate")
+    @Query("SELECT SUM(amount) FROM transactions WHERE userId = :userId AND type = :type AND date BETWEEN :startDate AND :endDate")
     suspend fun getTotalByTypeAndDateRange(
+        userId: String,
         type: TransactionType,
         startDate: Date,
         endDate: Date
     ): Double?
 
-    @Query("SELECT category, SUM(amount) as total FROM transactions WHERE type = :type AND date BETWEEN :startDate AND :endDate GROUP BY category")
+    @Query("SELECT category, SUM(amount) as total FROM transactions WHERE userId = :userId AND type = :type AND date BETWEEN :startDate AND :endDate GROUP BY category")
     suspend fun getCategorySpendings(
+        userId: String,
         type: TransactionType,
         startDate: Date,
         endDate: Date
@@ -57,8 +75,10 @@ interface TransactionDao {
     @Update
     suspend fun updateTransaction(transaction: TransactionEntity)
 
-    @Query("DELETE FROM transactions WHERE id = :id")
-    suspend fun deleteTransaction(id: Long)
+    @Query("DELETE FROM transactions WHERE userId = :userId AND id = :id")
+    suspend fun deleteTransaction(
+        userId: String,
+        id: Long)
 
     @Query("DELETE FROM transactions")
     suspend fun deleteAllTransactions()

@@ -12,6 +12,7 @@ import java.util.Locale
 fun TransactionEntity.toDomain(): Transaction {
     return Transaction(
         id = id,
+        userId = userId,
         amount = amount,
         category = category,
         description = description,
@@ -23,6 +24,7 @@ fun TransactionEntity.toDomain(): Transaction {
 fun Transaction.toEntity(): TransactionEntity {
     return TransactionEntity(
         id = id ?: 0,
+        userId = userId,
         amount = amount,
         category = category,
         description = description,

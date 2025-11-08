@@ -4,6 +4,7 @@ import java.util.Date
 
 data class Transaction(
     val id: Long? = null,
+    val userId: String,
     val amount: Double,
     val category: String,
     val description: String,

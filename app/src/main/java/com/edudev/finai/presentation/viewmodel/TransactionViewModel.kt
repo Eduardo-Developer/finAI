@@ -2,6 +2,7 @@ package com.edudev.finai.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edudev.finai.data.repository.AuthRepository
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.usecase.AddTransactionUseCase
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
-    private val addTransactionUseCase: AddTransactionUseCase
+    private val addTransactionUseCase: AddTransactionUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionUiState())
@@ -56,6 +58,14 @@ class TransactionViewModel @Inject constructor(
     fun saveTransaction(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val state = _uiState.value
+
+            val currentUserId = authRepository.getCurrentUser()?.uid
+            if (currentUserId == null) {
+                _uiState.value = state.copy(
+                    error = "Usuário não autenticado"
+                )
+                return@launch
+            }
             
             if (validateInput(state)) {
                 _uiState.value = state.copy(isSaving = true)
@@ -63,6 +73,7 @@ class TransactionViewModel @Inject constructor(
                 try {
                     val transaction = Transaction(
                         amount = state.amount.toDoubleOrNull() ?: 0.0,
+                        userId = currentUserId,
                         category = state.category,
                         description = state.description,
                         type = state.type,

@@ -7,5 +7,5 @@ import javax.inject.Inject
 class GetDashboardDataUseCase @Inject constructor(
     private val repository: TransactionRepository
 ) {
-    suspend operator fun invoke(): DashboardData = repository.getDashboardData()
+    suspend operator fun invoke(userId: String): DashboardData = repository.getDashboardData(userId)
 }

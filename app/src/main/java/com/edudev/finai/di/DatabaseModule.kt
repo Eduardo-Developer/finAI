@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.edudev.finai.data.local.dao.TransactionDao
 import com.edudev.finai.data.local.database.FinAIDatabase
+import com.edudev.finai.data.local.database.MIGRATION_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,9 @@ object DatabaseModule {
             context,
             FinAIDatabase::class.java,
             "finai_database"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     @Provides

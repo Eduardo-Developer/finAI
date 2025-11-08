@@ -4,6 +4,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edudev.finai.data.repository.AuthRepository
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.usecase.DeleteTransactionUseCase
@@ -23,13 +24,17 @@ import javax.inject.Inject
 class HistoryViewModel @Inject constructor(
     private val getAllTransactionsUseCase: GetAllTransactionsUseCase,
     private val deleteTransactionUseCase: DeleteTransactionUseCase,
-    private val exportTransactionsToCsvUseCase: ExportTransactionsToCsvUseCase
+    private val exportTransactionsToCsvUseCase: ExportTransactionsToCsvUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
     val transactions: StateFlow<List<Transaction>> = _transactions.asStateFlow()
     private val _exportState = MutableStateFlow<ExportState>(ExportState.Idle)
     val exportState = _exportState.asStateFlow()
+
+    private val currentUserId = authRepository.getCurrentUser()?.uid ?: ""
+
     private val _selectedFilter = MutableStateFlow<TransactionFilter>(TransactionFilter.All)
     val selectedFilter: StateFlow<TransactionFilter> = _selectedFilter.asStateFlow()
 
@@ -74,7 +79,7 @@ class HistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllTransactionsUseCase().collect { trans ->
+            getAllTransactionsUseCase(currentUserId).collect { trans ->
                 _transactions.value = trans
             }
         }
@@ -91,7 +96,7 @@ class HistoryViewModel @Inject constructor(
     fun deleteTransaction(id: Long) {
         viewModelScope.launch {
             try {
-                deleteTransactionUseCase(id)
+                deleteTransactionUseCase(currentUserId, id)
             } catch (e: Exception) {
                 // Handle error
             }
@@ -113,7 +118,7 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             _exportState.value = ExportState.Loading
 
-            exportTransactionsToCsvUseCase()
+            exportTransactionsToCsvUseCase(currentUserId)
                 .onSuccess { csvData ->
                     // Sucesso! Envia os dados CSV para a UI.
                     _exportState.value = ExportState.Success(csvData)
