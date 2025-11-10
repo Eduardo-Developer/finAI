@@ -73,10 +73,12 @@ fun SignUpScreen(
             }
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         OutlinedTextField(
             value = fullName,
             onValueChange = { fullName = it },
-            label = { Text("Full Name") },
+            label = { Text("Nome Completo") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -92,7 +94,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Senha") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
         )
@@ -101,7 +103,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") },
+            label = { Text("Confirmar Senha") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
             isError = signUpState.signUpError != null
@@ -120,12 +122,12 @@ fun SignUpScreen(
                 onClick = { viewModel.signUp(fullName, email, password, confirmPassword, imageUri = selectedImageUri) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Create Account")
+                Text("Criar Conta")
             }
         }
 
         TextButton(onClick = onNavigateToLogin) {
-            Text("Already have an account? Log in")
+            Text("Já possui uma conta? Logar")
         }
     }
 

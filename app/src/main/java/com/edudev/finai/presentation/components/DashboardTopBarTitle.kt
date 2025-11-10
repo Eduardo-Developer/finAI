@@ -48,7 +48,7 @@ fun DashboardTopBarTitle(
                 bitmap = bitmap.asImageBitmap(),
                 contentDescription = "Foto de Perfil",
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(60.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )

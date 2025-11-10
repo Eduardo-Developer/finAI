@@ -83,16 +83,12 @@ fun LoginContent(
                 .fillMaxSize()
                 .padding(it)
                 .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.finaisvg),
                 contentDescription = "Logo",
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = email,
