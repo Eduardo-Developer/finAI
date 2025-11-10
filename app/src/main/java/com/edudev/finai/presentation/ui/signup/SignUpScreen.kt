@@ -1,5 +1,10 @@
 package com.edudev.finai.presentation.ui.signup
 
+import ProfileImagePicker
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,10 +39,20 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val signUpState by viewModel.signUpState.collectAsState()
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            // Notifique o ViewModel que uma nova imagem foi selecionada
+            viewModel.onPhotoUriChanged(uri)
+        }
+    )
 
     Column(
         modifier = Modifier
@@ -46,8 +61,17 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Create Account", style = MaterialTheme.typography.headlineMedium)
+        Text("Crie uma conta", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(24.dp))
+
+        ProfileImagePicker(
+            imageUri = selectedImageUri,
+            onClick = {
+                singlePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        )
 
         OutlinedTextField(
             value = fullName,
@@ -93,7 +117,7 @@ fun SignUpScreen(
             CircularProgressIndicator()
         } else {
             Button(
-                onClick = { viewModel.signUp(fullName, email, password, confirmPassword) },
+                onClick = { viewModel.signUp(fullName, email, password, confirmPassword, imageUri = selectedImageUri) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Create Account")

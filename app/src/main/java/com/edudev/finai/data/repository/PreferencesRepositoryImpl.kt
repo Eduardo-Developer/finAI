@@ -13,13 +13,10 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
 class PreferencesRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : PreferencesRepository {
-
     private val dataStore = context.dataStore
-
     companion object {
         private val AI_ENABLED_KEY = booleanPreferencesKey("ai_enabled")
         private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")

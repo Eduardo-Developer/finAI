@@ -1,7 +1,7 @@
 package com.edudev.finai.di
 
 import com.edudev.finai.data.repository.AIRepositoryImpl
-import com.edudev.finai.data.repository.AuthRepository
+import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.data.repository.AuthRepositoryImpl
 import com.edudev.finai.data.repository.PreferencesRepositoryImpl
 import com.edudev.finai.data.repository.ThemeRepository

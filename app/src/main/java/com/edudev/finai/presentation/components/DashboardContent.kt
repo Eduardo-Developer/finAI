@@ -1,0 +1,71 @@
+package com.edudev.finai.presentation.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.edudev.finai.domain.model.AIInsight
+import com.edudev.finai.domain.model.DashboardData
+import java.text.NumberFormat
+import java.util.Locale
+
+@Composable
+fun DashboardContent(
+    dashboardData: DashboardData?,
+    aiInsights: List<AIInsight>,
+    modifier: Modifier = Modifier
+) {
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            BalanceCard(
+                balance = dashboardData?.totalBalance ?: 0.0,
+                income = dashboardData?.monthlyIncome ?: 0.0,
+                expense = dashboardData?.monthlyExpense ?: 0.0,
+                currencyFormat = currencyFormat
+            )
+        }
+
+        if (aiInsights.isNotEmpty()) {
+            item {
+                Text(
+                    text = "Insights da IA",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            items(aiInsights) { insight ->
+                InsightCard(insight = insight)
+            }
+        }
+
+        if (dashboardData?.categorySpendings?.isNotEmpty() == true) {
+            item {
+                Text(
+                    text = "Gastos por Categoria",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            items(dashboardData.categorySpendings) { category ->
+                CategorySpendingCard(
+                    category = category.category,
+                    total = category.total,
+                    percentage = category.percentage,
+                    currencyFormat = currencyFormat
+                )
+            }
+        }
+    }
+}

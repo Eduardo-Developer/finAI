@@ -2,14 +2,14 @@ package com.edudev.finai.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.edudev.finai.data.repository.AuthRepository
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.DashboardData
-import com.edudev.finai.domain.model.Transaction
+import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
+import com.edudev.finai.domain.usecase.GetAllTransactionsUseCase
 import com.edudev.finai.domain.usecase.GetDashboardDataUseCase
 import com.edudev.finai.domain.usecase.GetFinancialInsightsUseCase
-import com.edudev.finai.domain.usecase.GetAllTransactionsUseCase
+import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +25,7 @@ class DashboardViewModel @Inject constructor(
     private val getDashboardDataUseCase: GetDashboardDataUseCase,
     private val getFinancialInsightsUseCase: GetFinancialInsightsUseCase,
     private val getAllTransactionsUseCase: GetAllTransactionsUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
     private val preferencesRepository: PreferencesRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
@@ -36,8 +37,25 @@ class DashboardViewModel @Inject constructor(
     val isAIEnabled = preferencesRepository.isAIEnabled
 
     init {
-        loadDashboardData()
+        loadInitialData()
         observeTransactions()
+    }
+
+    private fun loadInitialData(){
+        loadUserData()
+        loadDashboardData()
+    }
+
+    private fun loadUserData(){
+        viewModelScope.launch {
+            getUserDataUseCase(currentUserId).collect{
+                user ->
+                _uiState.value = _uiState.value.copy(
+                    userName = user?.fullName?.split(" ")?.firstOrNull() ?: "",
+                    userImage = user?.imageUrl
+                )
+            }
+        }
     }
 
     private fun loadDashboardData() {
@@ -65,11 +83,10 @@ class DashboardViewModel @Inject constructor(
                 getAllTransactionsUseCase(currentUserId),
                 isAIEnabled
             ) { transactions, aiEnabled ->
-                // Atualiza os dados do dashboard quando há mudanças nas transações
                 try {
                     val dashboardData = getDashboardDataUseCase(currentUserId)
                     var insights = emptyList<AIInsight>()
-                    
+
                     if (aiEnabled) {
                         try {
                             insights = getFinancialInsightsUseCase(transactions)
@@ -77,7 +94,7 @@ class DashboardViewModel @Inject constructor(
                             // Ignore AI errors
                         }
                     }
-                    
+
                     _uiState.value = _uiState.value.copy(
                         dashboardData = dashboardData.copy(aiInsights = insights),
                         aiInsights = insights,
@@ -108,7 +125,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun refresh() {
-        loadDashboardData()
+        loadInitialData()
     }
 }
 
@@ -116,5 +133,7 @@ data class DashboardUiState(
     val dashboardData: DashboardData? = null,
     val aiInsights: List<AIInsight> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val userName: String = "",
+    val userImage: String? = null
 )

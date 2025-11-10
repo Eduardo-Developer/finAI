@@ -12,7 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.edudev.finai.data.repository.AuthRepository
+import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.presentation.navigation.Screen
 import com.edudev.finai.presentation.ui.dashboard.DashboardScreen
 import com.edudev.finai.presentation.ui.login.LoginScreen

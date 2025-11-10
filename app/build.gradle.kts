@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    //coil
+    implementation(libs.coil.compose)
     
     // Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -63,6 +66,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.firebase.database.ktx)
     ksp(libs.hilt.compiler)
     
     // Room
@@ -88,8 +92,8 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    
+    implementation(libs.firebase.database.ktx)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
