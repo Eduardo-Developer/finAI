@@ -2,7 +2,7 @@ package com.edudev.finai.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.edudev.finai.data.repository.AuthRepository
+import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.usecase.AddTransactionUseCase
