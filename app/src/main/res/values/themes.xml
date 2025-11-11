@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.FinAI" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.FinAI" parent="Theme.AppCompat.DayNight.NoActionBar" />
     
     <style name="Theme.FinAI.Splash" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>

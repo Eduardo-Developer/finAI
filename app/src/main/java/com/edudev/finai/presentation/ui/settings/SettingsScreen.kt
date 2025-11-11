@@ -26,6 +26,7 @@ fun SettingsScreen(
 ) {
     val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
     val isDarkTheme by mainViewModel.isDarkTheme.collectAsState()
+    val isBiometricAuthEnabled by settingsViewModel.isBiometricAuthEnabled.collectAsState()
 
     val showLogoffDialog by settingsViewModel.showLogoffConfirmDialog.collectAsState()
 
@@ -56,6 +57,15 @@ fun SettingsScreen(
                     description = "Usar tema escuro",
                     checked = isDarkTheme,
                     onCheckedChange = { mainViewModel.setDarkTheme(it) }
+                )
+            }
+
+            SettingsSection(title = "Segurança") {
+                SettingsItemSwitch(
+                    title = "Login com Biometria",
+                    description = "Acessar sua conta com impressão digital ou rosto",
+                    checked = isBiometricAuthEnabled,
+                    onCheckedChange = { settingsViewModel.setBiometricAuthEnabled(it) }
                 )
             }
 

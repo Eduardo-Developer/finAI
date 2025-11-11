@@ -21,7 +21,7 @@ import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: com.google.firebase.auth.FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val database: FirebaseDatabase,
     private val contentResolver: ContentResolver
 ) : AuthRepository {

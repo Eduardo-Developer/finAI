@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.androidx.appcompat)
     ksp(libs.hilt.compiler)
     
     // Room
@@ -93,6 +94,10 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database.ktx)
+
+    // Biometric & Security
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.security.crypto)
 
     // Testing
     testImplementation(libs.junit)
