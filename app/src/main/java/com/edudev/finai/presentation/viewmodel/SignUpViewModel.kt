@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.viewmodel.signup
+package com.edudev.finai.presentation.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel

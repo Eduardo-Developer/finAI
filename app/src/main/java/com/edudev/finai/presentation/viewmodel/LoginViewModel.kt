@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.viewmodel.login
+package com.edudev.finai.presentation.viewmodel
 
 import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
@@ -139,8 +139,23 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(navigateToHome = false) }
     }
 
+    fun togglePasswordVisibility() {
+        _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+    }
+
     companion object {
         private const val KEY_USER_EMAIL = "biometric_user_email"
         private const val KEY_USER_PASS = "biometric_user_pass"
     }
 }
+
+data class LoginUiState(
+    val email: String = "",
+    val pass: String = "",
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val promptBiometric: Boolean = false,
+    val showBiometricOnboardingDialog: Boolean = false,
+    val navigateToHome: Boolean = false,
+    val isPasswordVisible: Boolean = false
+)
