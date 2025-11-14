@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.ui.login
 
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,14 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.R
 import com.edudev.finai.presentation.biometric.BiometricAuthenticator
 import com.edudev.finai.presentation.biometric.BiometricResult
 import com.edudev.finai.presentation.components.FinAiTextField
-import com.edudev.finai.presentation.viewmodel.login.LoginViewModel
-
+import com.edudev.finai.presentation.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
@@ -70,7 +73,7 @@ fun LoginScreen(
             biometricAuthenticator.prompt { result ->
                 when (result) {
                     is BiometricResult.Success -> viewModel.loginWithBiometrics()
-                    else -> { }
+                    else -> {}
                 }
                 viewModel.onBiometricPromptShown()
             }
@@ -143,7 +146,23 @@ fun LoginScreen(
                 value = uiState.pass,
                 onValueChange = viewModel::onPasswordChange,
                 label = "Senha",
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation =
+                    if (uiState.isPasswordVisible) {
+                        VisualTransformation.None
+                    } else {
+                        PasswordVisualTransformation()
+                    },
+                trailingIcon = {
+                    val imageResId = if (uiState.isPasswordVisible) {
+                        R.drawable.visibility_off
+                    } else {
+                        R.drawable.visibility_on
+
+                    }
+                    IconButton(onClick = viewModel::togglePasswordVisibility) {
+                        Icon(painter = painterResource(id = imageResId), contentDescription = "Visibilidade da senha")
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(32.dp))

@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.edudev.finai.presentation.viewmodel.signup.SignUpViewModel
+import com.edudev.finai.presentation.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
