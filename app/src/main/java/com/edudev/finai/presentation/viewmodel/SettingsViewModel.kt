@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.edudev.finai.data.repository.ThemeRepository
 import com.edudev.finai.di.PreferencesKeys
 import com.edudev.finai.domain.repository.AuthRepository
+import com.edudev.finai.domain.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,11 +23,16 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val dataStore: DataStore<Preferences>,
-    private val themeRepository: ThemeRepository
+    private val themeRepository: ThemeRepository,
+    private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
-    private val _isAIEnabled = MutableStateFlow(true)
-    val isAIEnabled = _isAIEnabled.asStateFlow()
+    val isAIEnabled: StateFlow<Boolean> = preferencesRepository.isAIEnabled
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
+        )
 
     private val _showLogoffConfirmDialog = MutableStateFlow(false)
     val showLogoffConfirmDialog = _showLogoffConfirmDialog.asStateFlow()
@@ -53,7 +59,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun setAIEnabled(isEnabled: Boolean) {
-        _isAIEnabled.value = isEnabled
+        viewModelScope.launch {
+            preferencesRepository.setAIEnabled(isEnabled)
+        }
     }
 
     fun setBiometricAuthEnabled(isEnabled: Boolean) {
