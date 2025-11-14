@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.edudev.finai.data.repository.ThemeRepository
 import com.edudev.finai.di.PreferencesKeys
 import com.edudev.finai.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
     private val _isAIEnabled = MutableStateFlow(true)
@@ -36,6 +38,19 @@ class SettingsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = false
     )
+
+    val isDarkTheme: StateFlow<Boolean> = themeRepository.isDarkTheme
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
+        )
+
+    fun setDarkTheme(isDark: Boolean) {
+        viewModelScope.launch {
+            themeRepository.setDarkTheme(isDark)
+        }
+    }
 
     fun setAIEnabled(isEnabled: Boolean) {
         _isAIEnabled.value = isEnabled

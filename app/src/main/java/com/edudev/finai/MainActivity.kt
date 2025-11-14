@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +17,7 @@ import com.edudev.finai.presentation.ui.dashboard.DashboardScreen
 import com.edudev.finai.presentation.ui.login.LoginScreen
 import com.edudev.finai.presentation.ui.signup.SignUpScreen
 import com.edudev.finai.presentation.ui.transaction.AddTransactionScreen
-import com.edudev.finai.presentation.viewmodel.MainViewModel
+import com.edudev.finai.presentation.viewmodel.SettingsViewModel
 import com.edudev.finai.ui.theme.FinAITheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,13 +27,13 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var authRepository: AuthRepository
-    private val mainViewModel: MainViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val isDarkTheme by mainViewModel.isDarkTheme.collectAsStateWithLifecycle()
+            val isDarkTheme by settingsViewModel.isDarkTheme.collectAsStateWithLifecycle()
             FinAITheme(darkTheme = isDarkTheme) {
                 RootNavigationGraph(authRepository = authRepository)
             }
