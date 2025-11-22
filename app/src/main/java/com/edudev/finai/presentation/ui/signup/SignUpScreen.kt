@@ -42,12 +42,8 @@ fun SignUpScreen(
     onNavigateToLogin: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    val signUpState by viewModel.signUpState.collectAsState()
+    val signUpUiState by viewModel.signUpState.collectAsState()
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var fullName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
 
     val imageCropper = rememberLauncherForActivityResult(CropImageContract()) {
         if (it.isSuccessful) {
@@ -95,24 +91,24 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = fullName,
-            onValueChange = { fullName = it },
+            value = signUpUiState.fullName,
+            onValueChange = { viewModel.onFullNameChanged(it) },
             label = { Text("Nome Completo") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = signUpUiState.email,
+            onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = signUpUiState.password,
+            onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Senha") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
@@ -120,25 +116,25 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = signUpUiState.confirmPassword,
+            onValueChange = { viewModel.onConfirmPasswordChanged(it) },
             label = { Text("Confirmar Senha") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            isError = signUpState.signUpError != null
+            isError = signUpUiState.signUpError != null
         )
 
-        signUpState.signUpError?.let {
+        signUpUiState.signUpError?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (signUpState.isLoading) {
+        if (signUpUiState.isLoading) {
             CircularProgressIndicator()
         } else {
             Button(
-                onClick = { viewModel.signUp(fullName, email, password, confirmPassword, imageUri = selectedImageUri) },
+                onClick = { viewModel.signUp(signUpUiState.fullName, signUpUiState.email, signUpUiState.password, signUpUiState.confirmPassword, imageUri = selectedImageUri) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Criar Conta")
@@ -150,8 +146,8 @@ fun SignUpScreen(
         }
     }
 
-    LaunchedEffect(signUpState) {
-        if (signUpState.signUpSuccess) {
+    LaunchedEffect(signUpUiState) {
+        if (signUpUiState.signUpSuccess) {
             onSignUpSuccess()
         }
     }
