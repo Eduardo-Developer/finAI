@@ -30,6 +30,11 @@
             android:theme="@style/Theme.FinAI"
             android:configChanges="orientation|screenSize|uiMode"/>
 
+        <activity
+            android:name="com.canhub.cropper.CropImageActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            tools:replace="android:theme" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

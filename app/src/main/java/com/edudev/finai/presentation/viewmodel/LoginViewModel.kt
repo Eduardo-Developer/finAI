@@ -113,7 +113,7 @@ class LoginViewModel @Inject constructor(
                     .commit()
             }
 
-            _uiState.update { it.copy(showBiometricOnboardingDialog = false, navigateToHome = true) }
+            _uiState.update { it.copy(showBiometricOnboardingDialog = false, navigateToHome = true, promptBiometric = true) }
         }
     }
 

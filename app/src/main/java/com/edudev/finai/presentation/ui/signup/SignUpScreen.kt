@@ -30,6 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.edudev.finai.presentation.viewmodel.SignUpViewModel
 
 @Composable
@@ -45,12 +49,27 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
+    val imageCropper = rememberLauncherForActivityResult(CropImageContract()) {
+        if (it.isSuccessful) {
+            selectedImageUri = it.uriContent
+            viewModel.onPhotoUriChanged(it.uriContent)
+        }
+    }
+
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            selectedImageUri = uri
-            // Notifique o ViewModel que uma nova imagem foi selecionada
-            viewModel.onPhotoUriChanged(uri)
+            uri?.let {
+                val cropOptions = CropImageOptions().apply {
+                    guidelines = CropImageView.Guidelines.ON
+                    cropShape = CropImageView.CropShape.RECTANGLE
+                    fixAspectRatio = true
+                    aspectRatioX = 1
+                    aspectRatioY = 1
+                }
+                val contractOptions = CropImageContractOptions(uri, cropOptions)
+                imageCropper.launch(contractOptions)
+            }
         }
     )
 

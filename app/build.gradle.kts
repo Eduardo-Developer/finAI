@@ -64,6 +64,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
+
+    // Material Components
+    implementation("com.google.android.material:material:1.12.0")
     
     // Navigation
     implementation(libs.navigation.compose)
@@ -103,6 +106,9 @@ dependencies {
     // Biometric & Security
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.security.crypto)
+
+    // Image Cropper
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
