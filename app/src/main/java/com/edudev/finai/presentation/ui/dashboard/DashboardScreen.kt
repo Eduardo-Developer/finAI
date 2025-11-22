@@ -26,10 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.edudev.finai.R
 import com.edudev.finai.core.shimmerEffect
 import com.edudev.finai.presentation.components.BottomNavGraph
 import com.edudev.finai.presentation.components.BottomNavigationBar
@@ -56,7 +58,7 @@ fun DashboardScreen(
         floatingActionButton = {
             if (currentRoute == Screen.Dashboard.route) {
                 FloatingActionButton(onClick = onAddTransactionClick) {
-                    Icon(Icons.Default.Add, contentDescription = "Adicionar transação")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.add_transaction))
                 }
             }
         }
@@ -91,7 +93,7 @@ fun DashboardRouteContent(
             },
             actions = {
                 IconButton(onClick = { viewModel.refresh() }) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Atualizar")
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(id = R.string.refresh))
                 }
             }
         )
@@ -108,7 +110,7 @@ fun DashboardRouteContent(
                     }
                 }
                 uiState.error != null -> {
-                    ErrorView(message = uiState.error ?: "Erro desconhecido")
+                    ErrorView(message = uiState.error ?: stringResource(id = R.string.unknown_error))
                 }
                 else -> {
                     DashboardContent(

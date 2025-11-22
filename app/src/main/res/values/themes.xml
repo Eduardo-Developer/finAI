@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.FinAI" parent="Theme.AppCompat.DayNight.NoActionBar" />
-    
+
     <style name="Theme.FinAI.Splash" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:windowNoTitle">true</item>
@@ -11,4 +11,7 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
     </style>
+
+    <!-- Use a MaterialComponents theme with an ActionBar for the Crop Activity -->
+    <style name="Theme.FinAI.Crop" parent="Theme.MaterialComponents.Light.DarkActionBar" />
 </resources>
