@@ -8,29 +8,37 @@ import androidx.navigation.compose.composable
 import com.edudev.finai.presentation.navigation.Screen
 import com.edudev.finai.presentation.ui.dashboard.DashboardRouteContent
 import com.edudev.finai.presentation.ui.history.HistoryScreen
+import com.edudev.finai.presentation.ui.settings.ProfileEditScreen
 import com.edudev.finai.presentation.ui.settings.SettingsScreen
 
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    modifier: Modifier
 ) {
     NavHost(
         navController = navController,
         startDestination = Screen.Dashboard.route,
         modifier = modifier
     ) {
-        composable(Screen.Dashboard.route) {
+        composable(route = Screen.Dashboard.route) {
             DashboardRouteContent()
         }
-        composable(Screen.History.route) {
+
+        composable(route = Screen.History.route) {
             HistoryScreen()
         }
-        composable(Screen.Settings.route) {
+
+        composable(route = Screen.Settings.route) {
             SettingsScreen(
-                onLogout = onLogout
+                onLogout = onLogout,
+                onNavigateToProfile = { navController.navigate(Screen.ProfileEdit.route) }
             )
+        }
+
+        composable(route = Screen.ProfileEdit.route) {
+            ProfileEditScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
 }

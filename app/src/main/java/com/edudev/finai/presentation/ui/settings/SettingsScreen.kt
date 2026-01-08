@@ -1,5 +1,7 @@
 package com.edudev.finai.presentation.ui.settings
 
+import android.util.Base64
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.AlertDialog
@@ -25,102 +29,165 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.edudev.finai.presentation.components.FinAiTopAppBar
+import coil.compose.rememberAsyncImagePainter
 import com.edudev.finai.presentation.viewmodel.SettingsViewModel
+import android.graphics.BitmapFactory
+import com.edudev.finai.ui.theme.FinAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onLogout: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+
+    val uiState by settingsViewModel.uiState.collectAsState()
     val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
     val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
     val isBiometricAuthEnabled by settingsViewModel.isBiometricAuthEnabled.collectAsState()
 
-    val showLogoffDialog by settingsViewModel.showLogoffConfirmDialog.collectAsState()
+    Scaffold {
+        SettingsScreenContent(
+            userName = uiState.userName,
+            userImage = uiState.userImage,
+            isAIEnabled = isAIEnabled,
+            isDarkTheme = isDarkTheme,
+            isBiometricEnabled = isBiometricAuthEnabled,
+            onLogout = {
+                settingsViewModel.onLogoffIntent()
+                onLogout()
+            },
+            onNavigateToProfile = onNavigateToProfile,
+            onToggleAI = { settingsViewModel.setAIEnabled(it) },
+            onToggleTheme = { settingsViewModel.setDarkTheme(it) },
+            onToggleBiometric = { settingsViewModel.setBiometricAuthEnabled(it) }
+        )
+    }
+}
 
-    Scaffold(
-        topBar = {
-            FinAiTopAppBar(title = { Text("Configurações") })
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SettingsSection(title = "IA e Análise") {
-                SettingsItemSwitch(
-                    title = "Sugestões da IA",
-                    description = "Ativar análises inteligentes de gastos",
-                    checked = isAIEnabled,
-                    onCheckedChange = { settingsViewModel.setAIEnabled(it) }
-                )
-            }
+@Composable
+fun SettingsScreenContent(
+    userName: String,
+    userImage: String,
+    isAIEnabled: Boolean,
+    isDarkTheme: Boolean,
+    isBiometricEnabled: Boolean,
+    onLogout: () -> Unit,
+    onNavigateToProfile: () -> Unit,
+    onToggleAI: (Boolean) -> Unit,
+    onToggleTheme: (Boolean) -> Unit,
+    onToggleBiometric: (Boolean) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        ProfileHeader(
+            userName = userName,
+            userImage = userImage,
+            onProfileClick = onNavigateToProfile
+        )
 
-            SettingsSection(title = "Aparência") {
-                SettingsItemSwitch(
-                    title = "Tema Escuro",
-                    description = "Usar tema escuro",
-                    checked = isDarkTheme,
-                    onCheckedChange = { settingsViewModel.setDarkTheme(it) }
-                )
-            }
-
-            SettingsSection(title = "Segurança") {
-                SettingsItemSwitch(
-                    title = "Login com Biometria",
-                    description = "Acessar sua conta com impressão digital ou rosto",
-                    checked = isBiometricAuthEnabled,
-                    onCheckedChange = { settingsViewModel.setBiometricAuthEnabled(it) }
-                )
-            }
-
-            SettingsSection(title = "Conta") {
-                SettingsItemButton(
-                    title = "Sair",
-                    description = "Desconectar sua conta do aplicativo",
-                    onClick = {
-                        settingsViewModel.onLogoffIntent()
-                    }
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Text(
-                text = "FinAI v1.0",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+        SettingsSection(title = "IA e Análise") {
+            SettingsItemSwitch(
+                title = "Sugestões da IA",
+                description = "Ativar análises inteligentes de gastos",
+                checked = isAIEnabled,
+                onCheckedChange = onToggleAI
             )
         }
 
-        //Dialog de confirmação de Logoff
-        if (showLogoffDialog) {
-            AlertDialog(
-                onDismissRequest = { settingsViewModel.onDismissLogofftDialog() },
-                title = { Text("Confirmação") },
-                text = { Text("Deseja realmente deslogar sua conta?") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        settingsViewModel.onLogoffIntent()
-                        onLogout()
-                    }) {
-                        Text("Sim")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { settingsViewModel.onDismissLogofftDialog() }) {
-                        Text("Não")
-                    }
-                }
+        SettingsSection(title = "Aparência") {
+            SettingsItemSwitch(
+                title = "Tema Escuro",
+                description = "Usar tema escuro",
+                checked = isDarkTheme,
+                onCheckedChange = onToggleTheme
+            )
+        }
+
+        SettingsSection(title = "Segurança") {
+            SettingsItemSwitch(
+                title = "Login com Biometria",
+                description = "Acessar sua conta com impressão digital ou rosto",
+                checked = isBiometricEnabled,
+                onCheckedChange = onToggleBiometric
+            )
+        }
+
+        SettingsSection(title = "Conta") {
+            SettingsItemButton(
+                title = "Sair",
+                description = "Desconectar sua conta do aplicativo",
+                onClick = onLogout
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = "FinAI v1.0",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+    }
+}
+
+@Composable
+fun ProfileHeader(
+    userName: String,
+    userImage: String,
+    onProfileClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        val imageBitmap = try {
+            val decodedString = Base64.decode(userImage, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size).asImageBitmap()
+        } catch (e: Exception) {
+            null
+        }
+
+        if (imageBitmap != null) {
+            Image(
+                bitmap = imageBitmap,
+                contentDescription = "Foto de perfil",
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Spacer(modifier = Modifier.size(60.dp))
+        }
+
+        Column {
+            Text(
+                text = userName.split(" ").firstOrNull() ?: "",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Meu Perfil",
+                modifier = Modifier.clickable(onClick = onProfileClick),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -208,6 +275,25 @@ fun SettingsItemButton(
             imageVector = Icons.AutoMirrored.Filled.ExitToApp,
             contentDescription = title,
             tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    FinAITheme {
+        SettingsScreenContent(
+            userName = "Eduardo Oliveira",
+            userImage = "",
+            isAIEnabled = true,
+            isDarkTheme = false,
+            isBiometricEnabled = true,
+            onLogout = {},
+            onNavigateToProfile = {},
+            onToggleAI = {},
+            onToggleTheme = {},
+            onToggleBiometric = {}
         )
     }
 }

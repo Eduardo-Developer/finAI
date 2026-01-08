@@ -13,15 +13,18 @@ import com.edudev.finai.ui.theme.FinAITheme
 @Composable
 fun FinAiTopAppBar(
     title: @Composable () -> Unit,
-    actions: @Composable (RowScope.() -> Unit) = {}
+    actions: @Composable (RowScope.() -> Unit) = {},
+    navigationIcon: @Composable () -> Unit = {}
 ) {
     TopAppBar(
         title = title,
-        actions = actions, // Agora a assinatura corresponde perfeitamente
+        actions = actions,
+        navigationIcon = navigationIcon,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.onBackground,
-            actionIconContentColor = MaterialTheme.colorScheme.onBackground
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }

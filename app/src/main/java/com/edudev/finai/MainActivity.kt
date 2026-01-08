@@ -46,7 +46,8 @@ fun RootNavigationGraph(
     authRepository: AuthRepository,
 ) {
     val navController = rememberNavController()
-    val startDestination = if (authRepository.getCurrentUser() != null) Screen.Dashboard.route else Screen.Login.route
+    val startDestination =
+        if (authRepository.getCurrentUser() != null) Screen.Dashboard.route else Screen.Login.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Screen.Login.route) {
@@ -83,7 +84,7 @@ fun RootNavigationGraph(
                 }
             )
         }
-        composable("add_transaction") {
+        composable(Screen.AddTransaction.route) {
             AddTransactionScreen(
                 onBackClick = { navController.popBackStack() },
             )
