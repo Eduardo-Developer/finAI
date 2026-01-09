@@ -2,6 +2,7 @@ package com.edudev.finai.presentation.ui.login
 
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -71,12 +72,17 @@ fun LoginScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.checkBiometricLogin()
+    }
+
     LaunchedEffect(uiState.promptBiometric) {
         if (uiState.promptBiometric) {
             biometricAuthenticator.prompt { result ->
                 when (result) {
                     is BiometricResult.Success -> viewModel.loginWithBiometrics()
-                    else -> {}
+                    else -> {
+                    }
                 }
                 viewModel.onBiometricPromptShown()
             }

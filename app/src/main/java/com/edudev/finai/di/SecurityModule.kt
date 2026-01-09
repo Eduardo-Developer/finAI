@@ -14,6 +14,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SecurityModule {
+
+    private const val PREF_FILE_NAME = "secret_user_credentials"
+
     @Provides
     @Singleton
     fun provideEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
@@ -21,9 +24,22 @@ object SecurityModule {
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 
+        return try {
+            createEncryptedSharedPreferences(context, masterKey)
+        } catch (e: Exception) {
+            // If creation fails (e.g. AEADBadTagException), clear the corrupted file and try again
+            context.getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply()
+            createEncryptedSharedPreferences(context, masterKey)
+        }
+    }
+
+    private fun createEncryptedSharedPreferences(
+        context: Context,
+        masterKey: MasterKey
+    ): SharedPreferences {
         return EncryptedSharedPreferences.create(
             context,
-            "secret_user_credentials",
+            PREF_FILE_NAME,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
