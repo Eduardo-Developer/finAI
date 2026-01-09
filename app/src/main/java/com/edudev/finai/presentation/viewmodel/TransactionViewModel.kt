@@ -66,10 +66,10 @@ class TransactionViewModel @Inject constructor(
                 )
                 return@launch
             }
-            
+
             if (validateInput(state)) {
                 _uiState.value = state.copy(isSaving = true)
-                
+
                 try {
                     val transaction = Transaction(
                         amount = state.amount.toDoubleOrNull() ?: 0.0,
@@ -79,7 +79,7 @@ class TransactionViewModel @Inject constructor(
                         type = state.type,
                         date = state.date
                     )
-                    
+
                     addTransactionUseCase(transaction)
                     _uiState.value = TransactionUiState()
                     onSuccess()
@@ -95,17 +95,17 @@ class TransactionViewModel @Inject constructor(
 
     private fun validateInput(state: TransactionUiState): Boolean {
         var isValid = true
-        
+
         if (state.amount.isBlank() || state.amount.toDoubleOrNull() == null || state.amount.toDouble() <= 0) {
             _uiState.value = state.copy(amountError = "Valor inválido")
             isValid = false
         }
-        
+
         if (state.category.isBlank()) {
             _uiState.value = state.copy(categoryError = "Categoria é obrigatória")
             isValid = false
         }
-        
+
         return isValid
     }
 

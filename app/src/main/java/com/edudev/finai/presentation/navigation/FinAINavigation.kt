@@ -13,7 +13,6 @@ sealed class Screen(val route: String, val title: String? = null, val icon: Imag
     object History : Screen("history", "Histórico", Icons.AutoMirrored.Filled.List)
     object Settings : Screen("settings", "Configurações", Icons.Default.Settings)
     object ProfileEdit : Screen("profile_edit")
-
     object AddTransaction : Screen("add_transaction", "Nova Transação", Icons.Default.Add)
     object SignUp : Screen("signup")
     object Login : Screen("login")

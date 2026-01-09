@@ -100,7 +100,6 @@ class DashboardViewModel @Inject constructor(
                         isLoading = false
                     )
                 } catch (e: Exception) {
-                    // Ignore errors
                 }
             }.collect()
         }
@@ -117,7 +116,6 @@ class DashboardViewModel @Inject constructor(
                         dashboardData = dashboardData.copy(aiInsights = insights)
                     )
                 } catch (e: Exception) {
-                    // Ignore AI errors, use fallback insights
                 }
             }
         }

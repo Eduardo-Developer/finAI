@@ -29,9 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.edudev.finai.presentation.components.CategorySelector
-import com.edudev.finai.presentation.components.DateSelector
-import com.edudev.finai.presentation.components.TransactionTypeSelector
+import com.edudev.finai.presentation.components.addTransactionScreen.CategorySelector
+import com.edudev.finai.presentation.components.addTransactionScreen.DateSelector
+import com.edudev.finai.presentation.components.addTransactionScreen.TransactionTypeSelector
 import com.edudev.finai.presentation.viewmodel.TransactionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

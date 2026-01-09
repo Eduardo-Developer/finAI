@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.dashboardScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
 
 @Composable
@@ -51,9 +53,32 @@ fun BalanceCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IncomeExpenseItem("Receitas", income, currencyFormat, true)
-                IncomeExpenseItem("Despesas", expense, currencyFormat, false)
+                IncomeExpenseItem(
+                    label = "Receitas",
+                    value = income,
+                    currencyFormat = currencyFormat,
+                    isIncome = true
+                )
+                IncomeExpenseItem(
+                    label = "Despesas",
+                    value = expense,
+                    currencyFormat = currencyFormat,
+                    isIncome = false
+                )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BalanceCardPreview() {
+    FinAITheme {
+        BalanceCard(
+            balance = 1000.0,
+            income = 500.0,
+            expense = 500.0,
+            currencyFormat = NumberFormat.getCurrencyInstance()
+        )
     }
 }

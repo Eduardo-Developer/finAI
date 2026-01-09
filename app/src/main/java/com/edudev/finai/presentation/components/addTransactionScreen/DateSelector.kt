@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.addTransactionScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edudev.finai.ui.theme.FinAITheme
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -25,6 +27,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateSelector(
+    modifier: Modifier = Modifier,
     selectedDate: Date,
     onDateSelected: (Date) -> Unit
 ) {
@@ -39,7 +42,7 @@ fun DateSelector(
         Text(
             text = "Data",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = modifier.padding(bottom = 8.dp)
         )
         OutlinedTextField(
             value = dateFormat.format(selectedDate),
@@ -93,5 +96,16 @@ fun DateSelector(
                 state = datePickerState
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DateSelectorPreview() {
+    FinAITheme {
+        DateSelector(
+            selectedDate = Date(),
+            onDateSelected = {}
+        )
     }
 }

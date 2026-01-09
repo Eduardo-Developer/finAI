@@ -1,43 +1,51 @@
 package com.edudev.finai.presentation.ui.history
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.edudev.finai.domain.model.Transaction
-import com.edudev.finai.domain.model.TransactionType
-import com.edudev.finai.presentation.viewmodel.HistoryViewModel
-import com.edudev.finai.presentation.viewmodel.TransactionFilter
-import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import com.edudev.finai.R
-import java.util.Locale
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.edudev.finai.R
 import com.edudev.finai.presentation.components.FinAiTopAppBar
+import com.edudev.finai.presentation.components.historyTransaction.FilterChips
+import com.edudev.finai.presentation.components.historyTransaction.TransactionItem
 import com.edudev.finai.presentation.viewmodel.ExportState
-import com.edudev.finai.ui.theme.FinAITheme
+import com.edudev.finai.presentation.viewmodel.HistoryViewModel
 import java.io.IOException
-import javax.xml.validation.ValidatorHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +65,6 @@ fun HistoryScreen(
         contract = ActivityResultContracts.CreateDocument("text/csv"),
         onResult = { uri: Uri? ->
             uri?.let {
-                // Se o usuário escolheu um local, escrevemos os dados no arquivo
                 val csvData = (viewModel.exportState.value as? ExportState.Success)?.csvData
                 if (csvData != null) {
                     try {
@@ -72,18 +79,15 @@ fun HistoryScreen(
         }
     )
 
-    // 2. Use `LaunchedEffect` para reagir às mudanças de estado do ViewModel
     LaunchedEffect(exportState) {
         when (val state = exportState) {
             is ExportState.Success -> {
-                // Estado de sucesso! Lança o seletor de arquivos do sistema
-                fileSaverLauncher.launch("historico_finai.csv") // Nome padrão do arquivo
+                fileSaverLauncher.launch("historico_finai.csv")
             }
 
             is ExportState.Error -> {
-                // Estado de erro. Mostra uma mensagem para o usuário.
                 snackbarHostState.showSnackbar("Erro ao exportar: ${state.message}")
-                viewModel.onExportStateConsumed() // Reseta o estado
+                viewModel.onExportStateConsumed()
             }
 
             else -> {
@@ -91,7 +95,6 @@ fun HistoryScreen(
         }
     }
 
-    //Dialog de confirmação de exportação csv
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.onDismissExportDialog() },
@@ -123,7 +126,6 @@ fun HistoryScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.setSearchQuery(it) },
@@ -139,7 +141,6 @@ fun HistoryScreen(
                 modifier = Modifier.padding(end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Filters
                 FilterChips(
                     modifier = Modifier.weight(1f),
                     selectedFilter = selectedFilter,
@@ -164,7 +165,6 @@ fun HistoryScreen(
                 }
             }
 
-            // Transactions list
             AnimatedContent(
                 targetState = filteredTransactions.isEmpty(),
                 modifier = Modifier.weight(1f)
@@ -195,152 +195,5 @@ fun HistoryScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun FilterChips(
-    modifier: Modifier = Modifier,
-    selectedFilter: TransactionFilter,
-    onFilterSelected: (TransactionFilter) -> Unit
-) {
-    Row(
-        modifier = modifier
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.All,
-            onClick = { onFilterSelected(TransactionFilter.All) },
-            label = { Text("Todas") }
-        )
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.ByType &&
-                    selectedFilter.type == TransactionType.INCOME,
-            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.INCOME)) },
-            label = { Text("Receitas") }
-        )
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.ByType &&
-                    selectedFilter.type == TransactionType.EXPENSE,
-            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.EXPENSE)) },
-            label = { Text("Despesas") }
-        )
-    }
-}
-
-@Composable
-fun TransactionItem(
-    transaction: Transaction,
-    onDeleteClick: () -> Unit
-) {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (transaction.type == TransactionType.INCOME)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.errorContainer
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = transaction.description.ifBlank { transaction.category },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = transaction.category,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = dateFormat.format(transaction.date),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = "${if (transaction.type == TransactionType.INCOME) "+" else "-"}${
-                        currencyFormat.format(
-                            transaction.amount
-                        )
-                    }",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = if (transaction.type == TransactionType.INCOME)
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.error
-                )
-                IconButton(onClick = onDeleteClick) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = "Deletar",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Preview(name = "Filter Chips Preview")
-@Composable
-private fun FilterChipsPreview() {
-    FinAITheme {
-        FilterChips(
-            selectedFilter = TransactionFilter.ByType(TransactionType.EXPENSE),
-            onFilterSelected = {}
-        )
-    }
-}
-
-@Preview(name = "Transaction Item - Income")
-@Composable
-private fun TransactionItemIncomePreview() {
-    val transaction = Transaction(
-        userId = "123456",
-        id = 1,
-        description = "Salário",
-        amount = 5000.0,
-        type = TransactionType.INCOME,
-        category = "Salário",
-        date = Date()
-    )
-    FinAITheme {
-        TransactionItem(transaction = transaction, onDeleteClick = {})
-    }
-}
-
-@Preview(name = "Transaction Item - Expense (Dark)")
-@Composable
-private fun TransactionItemExpensePreview() {
-    val transaction = Transaction(
-        userId = "123456",
-        id = 2,
-        description = "Aluguel",
-        amount = 1500.0,
-        type = TransactionType.EXPENSE,
-        category = "Moradia",
-        date = Date()
-    )
-    FinAITheme {
-        TransactionItem(transaction = transaction, onDeleteClick = {})
     }
 }

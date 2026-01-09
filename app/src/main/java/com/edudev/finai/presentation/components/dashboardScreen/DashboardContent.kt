@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.dashboardScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.DashboardData
+import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -67,5 +69,24 @@ fun DashboardContent(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun DashboardContentPreview() {
+    FinAITheme {
+        DashboardContent(
+            dashboardData = DashboardData(
+                totalBalance = 1000.0,
+                monthlyIncome = 500.0,
+                monthlyExpense = 500.0,
+                categorySpendings = emptyList(),
+                aiInsights = emptyList(),
+                monthlyChartData = emptyList()
+            ),
+            aiInsights = TODO(),
+            modifier = TODO()
+        )
     }
 }

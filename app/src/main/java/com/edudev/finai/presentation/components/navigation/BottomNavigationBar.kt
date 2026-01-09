@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -6,11 +6,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.edudev.finai.presentation.navigation.Screen
+import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
@@ -40,5 +43,15 @@ fun BottomNavigationBar(navController: NavHostController) {
                 }
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BottomNavigationBarPreview() {
+    FinAITheme {
+        BottomNavigationBar(
+            navController = rememberNavController()
+        )
     }
 }

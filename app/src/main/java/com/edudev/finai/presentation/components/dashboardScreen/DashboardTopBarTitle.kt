@@ -1,10 +1,12 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.dashboardScreen
 
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -19,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
 fun DashboardTopBarTitle(
@@ -64,5 +68,17 @@ fun DashboardTopBarTitle(
         if (name.isNotBlank()) {
             Text(text = "Olá, $name")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DashboardTopBarTitlePreview() {
+    FinAITheme {
+        DashboardTopBarTitle(
+            modifier = Modifier.padding(PaddingValues(16.dp)),
+            name = "João",
+            base64Image = null
+        )
     }
 }

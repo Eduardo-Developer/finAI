@@ -1,7 +1,8 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.addTransactionScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,11 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.edudev.finai.domain.model.TransactionType
+import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
 fun TransactionTypeSelector(
+    modifier: Modifier = Modifier,
     selectedType: TransactionType,
     onTypeSelected: (TransactionType) -> Unit
 ) {
@@ -22,7 +26,7 @@ fun TransactionTypeSelector(
         Text(
             text = "Tipo",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = modifier.padding(bottom = 8.dp)
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -37,5 +41,17 @@ fun TransactionTypeSelector(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TransactionTypeSelectorPreview() {
+    FinAITheme {
+        TransactionTypeSelector(
+            modifier = Modifier.padding(PaddingValues(8.dp)),
+            selectedType = TransactionType.INCOME,
+            onTypeSelected = {}
+        )
     }
 }
