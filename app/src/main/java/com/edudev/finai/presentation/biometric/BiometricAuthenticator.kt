@@ -13,24 +13,18 @@ sealed class BiometricResult {
 
 class BiometricAuthenticator(private val activity: AppCompatActivity) {
 
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-    private lateinit var biometricPrompt: BiometricPrompt
-
     fun isBiometricAuthAvailable(): Boolean {
-        return BiometricManager.from(activity).canAuthenticate(
-            BiometricManager.Authenticators.BIOMETRIC_STRONG
-        ) == BiometricManager.BIOMETRIC_SUCCESS
+        val biometricManager = BiometricManager.from(activity)
+        val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or 
+                             BiometricManager.Authenticators.BIOMETRIC_WEAK
+        
+        return biometricManager.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
     fun prompt(onResult: (BiometricResult) -> Unit) {
-        if (!isBiometricAuthAvailable()) {
-            onResult(BiometricResult.Error(-1, "Biometria não disponível ou não cadastrada."))
-            return
-        }
-
         val executor = ContextCompat.getMainExecutor(activity)
 
-        biometricPrompt = BiometricPrompt(
+        val biometricPrompt = BiometricPrompt(
             activity,
             executor,
             object : BiometricPrompt.AuthenticationCallback() {
@@ -51,10 +45,11 @@ class BiometricAuthenticator(private val activity: AppCompatActivity) {
             }
         )
 
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Login com Biometria")
-            .setSubtitle("Toque no sensor para entrar")
-            .setNegativeButtonText("Cancelar")
+            .setSubtitle("Acesse sua conta com segurança")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .setNegativeButtonText("Usar senha")
             .build()
 
         biometricPrompt.authenticate(promptInfo)

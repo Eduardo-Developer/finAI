@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.viewmodel
 
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -11,6 +12,7 @@ import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
 import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class SettingsUiState(
@@ -33,7 +36,8 @@ class SettingsViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val themeRepository: ThemeRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val getUserDataUseCase: GetUserDataUseCase
+    private val getUserDataUseCase: GetUserDataUseCase,
+    private val encryptedPrefs: SharedPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -108,6 +112,18 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             dataStore.edit {
                 it[PreferencesKeys.IS_BIOMETRIC_AUTH_ENABLED] = isEnabled
+                if (isEnabled) {
+                    it[PreferencesKeys.BIOMETRIC_AUTH_PROMPT_SHOWN] = true
+                }
+            }
+            
+            if (!isEnabled) {
+                withContext(Dispatchers.IO) {
+                    encryptedPrefs.edit()
+                        .remove(PreferencesKeys.KEY_USER_EMAIL)
+                        .remove(PreferencesKeys.KEY_USER_PASS)
+                        .apply()
+                }
             }
         }
     }
