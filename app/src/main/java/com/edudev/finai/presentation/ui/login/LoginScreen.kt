@@ -32,13 +32,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.R
 import com.edudev.finai.presentation.biometric.BiometricAuthenticator
 import com.edudev.finai.presentation.biometric.BiometricResult
-import com.edudev.finai.presentation.components.FinAiTextField
+import com.edudev.finai.presentation.components.loginScreen.FinAiTextField
 import com.edudev.finai.presentation.viewmodel.LoginViewModel
+import com.edudev.finai.ui.theme.FinAITheme
+
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
@@ -182,5 +185,16 @@ fun LoginScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    FinAITheme {
+        LoginScreen(
+            onLoginSuccess = {},
+            onSignUpClick = {}
+        )
     }
 }

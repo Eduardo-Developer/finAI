@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.dashboardScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
 
 @Composable
 fun CategorySpendingCard(
+    modifier: Modifier = Modifier,
     category: String,
     total: Double,
     percentage: Float,
@@ -26,7 +29,7 @@ fun CategorySpendingCard(
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -49,5 +52,18 @@ fun CategorySpendingCard(
                 style = MaterialTheme.typography.titleLarge
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CategorySpendingCardPreview() {
+    FinAITheme {
+        CategorySpendingCard(
+            category = "Alimentação",
+            total = 1.0,
+            percentage = 1f,
+            currencyFormat = NumberFormat.getCurrencyInstance()
+        )
     }
 }

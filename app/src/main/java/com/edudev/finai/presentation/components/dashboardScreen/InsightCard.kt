@@ -1,4 +1,4 @@
-package com.edudev.finai.presentation.components
+package com.edudev.finai.presentation.components.dashboardScreen
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,9 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.InsightType
+import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
 fun InsightCard(insight: AIInsight) {
@@ -28,6 +30,19 @@ fun InsightCard(insight: AIInsight) {
             text = insight.message,
             modifier = Modifier.padding(16.dp),
             style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun InsightCardPreview() {
+    FinAITheme {
+        InsightCard(
+            insight = AIInsight(
+                message = "This is a sample insight",
+                type = InsightType.WARNING
+            )
         )
     }
 }

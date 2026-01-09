@@ -98,7 +98,7 @@ class HistoryViewModel @Inject constructor(
             try {
                 deleteTransactionUseCase(currentUserId, id)
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }
@@ -120,11 +120,9 @@ class HistoryViewModel @Inject constructor(
 
             exportTransactionsToCsvUseCase(currentUserId)
                 .onSuccess { csvData ->
-                    // Sucesso! Envia os dados CSV para a UI.
                     _exportState.value = ExportState.Success(csvData)
                 }
                 .onFailure { error ->
-                    // Falha. Envia a mensagem de erro para a UI.
                     _exportState.value = ExportState.Error(error.message ?: "Erro desconhecido")
                 }
         }
