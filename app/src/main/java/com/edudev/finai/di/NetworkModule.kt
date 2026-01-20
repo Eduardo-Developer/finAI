@@ -1,6 +1,8 @@
 package com.edudev.finai.di
 
-import com.edudev.finai.data.remote.api.AIApi
+import com.edudev.finai.BuildConfig
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.generationConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -18,7 +20,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.openai.com/v1/chat/" // Placeholder - ajuste conforme necessário
+    private const val BASE_URL =
+        "https://generativelanguage.googleapis.com/"
 
     @Provides
     @Singleton
@@ -34,7 +37,7 @@ object NetworkModule {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        
+
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -58,7 +61,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAIApi(retrofit: Retrofit): AIApi {
-        return retrofit.create(AIApi::class.java)
+    fun provideGenerativeModel(): GenerativeModel {
+        return GenerativeModel(
+            modelName = "gemini-robotics-er-1.5-preview",
+            apiKey = BuildConfig.geminiApiKey,
+            generationConfig = generationConfig {
+                responseMimeType = "application/json"
+            }
+        )
     }
 }
+

@@ -149,6 +149,7 @@ fun LoginScreen(
                 label = "Email",
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             FinAiTextField(

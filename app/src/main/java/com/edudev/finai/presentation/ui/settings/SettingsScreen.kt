@@ -52,7 +52,6 @@ fun SettingsScreen(
     onNavigateToProfile: () -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-
     val uiState by settingsViewModel.uiState.collectAsState()
     val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
     val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()

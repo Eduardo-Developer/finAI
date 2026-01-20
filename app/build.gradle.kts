@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.testImplementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.secrets.gradle)
 }
 
 android {
@@ -39,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     testOptions {
         unitTests.all {
@@ -66,7 +70,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
 
     // Material Components
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.material)
     
     // Navigation
     implementation(libs.navigation.compose)
@@ -108,15 +112,23 @@ dependencies {
     implementation(libs.androidx.security.crypto)
 
     // Image Cropper
-    implementation("com.vanniktech:android-image-cropper:4.5.0")
+    implementation(libs.android.image.cropper)
+
+    implementation(libs.generativeai)
 
     // Testing
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
-    
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.mockito.junit.jupiter)
+    testImplementation(libs.mockito.kotlin)
+
+    // Testes Unitários (Local)
+    testImplementation (libs.junit)
+    testImplementation (libs.mockk)
+    testImplementation (libs.kotlinx.coroutines.test)
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

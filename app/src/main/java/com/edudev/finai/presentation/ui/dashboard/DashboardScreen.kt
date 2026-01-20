@@ -89,29 +89,15 @@ fun DashboardRouteContent(
                 }
             }
         )
-        AnimatedContent(
-            targetState = uiState.isLoading,
-        ) { isLoading ->
-            when {
-                isLoading && uiState.dashboardData == null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-                uiState.error != null -> {
-                    ErrorView(message = uiState.error ?: stringResource(id = R.string.unknown_error))
-                }
-                else -> {
-                    DashboardContent(
-                        dashboardData = uiState.dashboardData,
-                        aiInsights = if (isAIEnabled) uiState.aiInsights else emptyList(),
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
+        if (uiState.error != null) {
+            ErrorView(message = uiState.error ?: stringResource(id = R.string.unknown_error))
+        } else {
+            DashboardContent(
+                dashboardData = uiState.dashboardData,
+                aiInsights = if (isAIEnabled) uiState.aiInsights else emptyList(),
+                isLoadingAI = uiState.isLoadingAI,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
