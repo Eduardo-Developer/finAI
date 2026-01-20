@@ -34,18 +34,12 @@ class GetUserDataUseCaseTest {
             val fakeUser = User(uid = fakeUserId, fullName = "Eduardo", email = "test@test.com")
             val fakeUserFlow = flowOf(fakeUser)
 
-            // GIVEN - Dado que o repositório retornará um Flow com um usuário falso
             whenever(mockAuthRepository.getUserData(fakeUserId)).thenReturn(fakeUserFlow)
 
-            // Act (Agir)
-            // WHEN - Quando o use case é invocado com o ID do usuário
             val resultFlow = getUserDataUseCase.invoke(fakeUserId)
 
-            // Assert (Afirmar)
-            // THEN - Então o primeiro valor emitido pelo Flow resultante deve ser o usuário falso
             assertEquals(fakeUser, resultFlow.first())
 
-            // E o método getUserData do repositório deve ter sido chamado exatamente uma vez
             verify(mockAuthRepository).getUserData(fakeUserId)
         }
     }

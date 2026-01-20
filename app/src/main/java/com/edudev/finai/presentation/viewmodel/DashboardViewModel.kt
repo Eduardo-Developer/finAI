@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.DashboardData
+import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
 import com.edudev.finai.domain.usecase.GetAllTransactionsUseCase
@@ -14,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -60,17 +60,20 @@ class DashboardViewModel @Inject constructor(
     private fun loadDashboardData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoadingAI = true)
             try {
                 val dashboardData = getDashboardDataUseCase(currentUserId)
                 _uiState.value = _uiState.value.copy(
                     dashboardData = dashboardData,
-                    isLoading = false
+                    isLoading = false,
+                    isLoadingAI = false
                 )
                 loadAIInsights(dashboardData)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     error = e.message,
-                    isLoading = false
+                    isLoading = false,
+                    isLoadingAI = false
                 )
             }
         }
@@ -82,30 +85,35 @@ class DashboardViewModel @Inject constructor(
                 getAllTransactionsUseCase(currentUserId),
                 isAIEnabled
             ) { transactions, aiEnabled ->
+                Pair(transactions, aiEnabled)
+            }.collect { (transactions, aiEnabled) ->
                 try {
                     val dashboardData = getDashboardDataUseCase(currentUserId)
-                    var insights = emptyList<AIInsight>()
-
-                    if (aiEnabled) {
-                        try {
-                            insights = getFinancialInsightsUseCase(transactions)
-                        } catch (e: Exception) {
-                            // Ignore AI errors
-                        }
-                    }
-
                     _uiState.value = _uiState.value.copy(
-                        dashboardData = dashboardData.copy(aiInsights = insights),
-                        aiInsights = insights,
+                        dashboardData = dashboardData,
                         isLoading = false
                     )
+                    if (aiEnabled) {
+                        _uiState.value = _uiState.value.copy(isLoadingAI = true)
+                        try {
+                            val insights = getFinancialInsightsUseCase(transactions)
+                            _uiState.value = _uiState.value.copy(
+                                aiInsights = insights,
+                                dashboardData = _uiState.value.dashboardData?.copy(aiInsights = insights),
+                                isLoadingAI = false
+                            )
+                        } catch (e: Exception) {
+                            _uiState.value = _uiState.value.copy(isLoadingAI = false)
+                        }
+                    }
                 } catch (e: Exception) {
+                    _uiState.value = _uiState.value.copy(isLoading = false)
                 }
-            }.collect()
+            }
         }
     }
 
-    private suspend fun loadAIInsights(dashboardData: DashboardData) {
+    private fun loadAIInsights(dashboardData: DashboardData) {
         viewModelScope.launch {
             if (isAIEnabled.first()) {
                 try {
@@ -122,14 +130,18 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun refresh() {
-        loadInitialData()
+        viewModelScope.launch {
+            loadDashboardData()
+        }
     }
 }
 
 data class DashboardUiState(
     val dashboardData: DashboardData? = null,
+    val transactions: List<Transaction> = emptyList(),
     val aiInsights: List<AIInsight> = emptyList(),
     val isLoading: Boolean = false,
+    val isLoadingAI: Boolean = false,
     val error: String? = null,
     val userName: String = "",
     val userImage: String? = null

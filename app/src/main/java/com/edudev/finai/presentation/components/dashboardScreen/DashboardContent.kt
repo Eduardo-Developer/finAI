@@ -1,12 +1,17 @@
 package com.edudev.finai.presentation.components.dashboardScreen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +26,7 @@ import java.util.Locale
 fun DashboardContent(
     dashboardData: DashboardData?,
     aiInsights: List<AIInsight>,
+    isLoadingAI: Boolean,
     modifier: Modifier = Modifier
 ) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
@@ -39,14 +45,25 @@ fun DashboardContent(
             )
         }
 
-        if (aiInsights.isNotEmpty()) {
+        item {
+            Text(
+                text = "Insights da IA",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        if (isLoadingAI) {
             item {
-                Text(
-                    text = "Insights da IA",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
+        } else {
             items(aiInsights) { insight ->
                 InsightCard(insight = insight)
             }
@@ -86,7 +103,8 @@ private fun DashboardContentPreview() {
                 monthlyChartData = emptyList()
             ),
             aiInsights = TODO(),
-            modifier = TODO()
+            modifier = TODO(),
+            isLoadingAI = false
         )
     }
 }

@@ -1,53 +1,37 @@
-
 package com.edudev.finai.domain.usecase
 
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.repository.TransactionRepository
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
-import org.mockito.kotlin.verify
 import java.util.Date
 
-@ExtendWith(MockitoExtension::class)
 class AddTransactionUseCaseTest {
 
-    @Mock
-    private lateinit var mockTransactionRepository: TransactionRepository
-
-    private lateinit var addTransactionUseCase: AddTransactionUseCase
-
-    @BeforeEach
-    fun setUp() {
-        addTransactionUseCase = AddTransactionUseCase(mockTransactionRepository)
-    }
+    private val repository = mockk<TransactionRepository>()
+    private val useCase = AddTransactionUseCase(repository)
 
     @Test
-    fun `invoke should call insertTransaction on repository`() {
-        runBlocking {
-            // Arrange (Arranjar)
-            // GIVEN - Uma transação falsa é criada
-            val fakeTransaction = Transaction(
-                id = 1L,
-                userId = "testUser",
-                amount = 100.0,
-                category = "Salário",
-                description = "Pagamento do mês",
-                type = TransactionType.INCOME,
-                date = Date()
-            )
+    fun `should call repository to insert transaction successfully`() = runTest {
+        val fakeTransaction = Transaction(
+            id = 0,
+            amount = 100.0,
+            description = "Gasolina",
+            type = TransactionType.EXPENSE,
+            date = Date(),
+            userId = "user123",
+            category = "Transporte"
+        )
+        val expectedId = 1L
+        
+        coEvery { repository.insertTransaction(any()) } returns expectedId
 
-            // Act (Agir)
-            // WHEN - O use case é invocado com a transação falsa
-            addTransactionUseCase.invoke(fakeTransaction)
+        val result = useCase(fakeTransaction)
 
-            // Assert (Afirmar)
-            // THEN - O método insertTransaction do repositório deve ser chamado com a transação
-            verify(mockTransactionRepository).insertTransaction(fakeTransaction)
-        }
+        assertEquals(expectedId, result)
     }
 }
