@@ -57,31 +57,55 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                authRepository.login(uiState.value.email, uiState.value.pass)
+                val loginResult = authRepository.login(uiState.value.email, uiState.value.pass)
 
-                val preferences = dataStore.data.first()
-                val isBiometricEnabled = preferences[PreferencesKeys.IS_BIOMETRIC_AUTH_ENABLED] ?: false
-                val promptShown = preferences[PreferencesKeys.BIOMETRIC_AUTH_PROMPT_SHOWN] ?: false
+                loginResult.onSuccess {
 
-                val hasCredentials = withContext(Dispatchers.IO) {
-                    val email = encryptedPrefs.getString(KEY_USER_EMAIL, null)
-                    val pass = encryptedPrefs.getString(KEY_USER_PASS, null)
-                    !email.isNullOrBlank() && !pass.isNullOrBlank()
+                    val preferences = dataStore.data.first()
+                    val isBiometricEnabled =
+                        preferences[PreferencesKeys.IS_BIOMETRIC_AUTH_ENABLED] ?: false
+                    val promptShown =
+                        preferences[PreferencesKeys.BIOMETRIC_AUTH_PROMPT_SHOWN] ?: false
+
+                    val hasCredentials = withContext(Dispatchers.IO) {
+                        val email = encryptedPrefs.getString(KEY_USER_EMAIL, null)
+                        val pass = encryptedPrefs.getString(KEY_USER_PASS, null)
+                        !email.isNullOrBlank() && !pass.isNullOrBlank()
+                    }
+
+                    if (isBiometricEnabled && !hasCredentials) {
+                        // Se estiver ativado via Settings mas sem credenciais (primeiro login após ativar), salva agora.
+                        saveCredentials(uiState.value.email, uiState.value.pass)
+                        _uiState.update { it.copy(isLoading = false, navigateToHome = true) }
+                    } else if (!promptShown && !isBiometricEnabled) {
+                        // Se nunca mostrou o prompt e biometria está desativada, mostra o onboarding
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                showBiometricOnboardingDialog = true
+                            )
+                        }
+                    } else {
+                        _uiState.update { it.copy(isLoading = false, navigateToHome = true) }
+                    }
                 }
 
-                if (isBiometricEnabled && !hasCredentials) {
-                    // Se estiver ativado via Settings mas sem credenciais (primeiro login após ativar), salva agora.
-                    saveCredentials(uiState.value.email, uiState.value.pass)
-                    _uiState.update { it.copy(isLoading = false, navigateToHome = true) }
-                } else if (!promptShown && !isBiometricEnabled) {
-                    // Se nunca mostrou o prompt e biometria está desativada, mostra o onboarding
-                    _uiState.update { it.copy(isLoading = false, showBiometricOnboardingDialog = true) }
-                } else {
-                    _uiState.update { it.copy(isLoading = false, navigateToHome = true) }
+                loginResult.onFailure { exception ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = exception.message ?: "Erro desconhecido"
+                        )
+                    }
                 }
 
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.message ?: "Erro desconhecido") }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Erro desconhecido"
+                    )
+                }
             }
         }
     }
@@ -102,17 +126,29 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val email = withContext(Dispatchers.IO) { encryptedPrefs.getString(KEY_USER_EMAIL, null) }
-                val pass = withContext(Dispatchers.IO) { encryptedPrefs.getString(KEY_USER_PASS, null) }
+                val email =
+                    withContext(Dispatchers.IO) { encryptedPrefs.getString(KEY_USER_EMAIL, null) }
+                val pass =
+                    withContext(Dispatchers.IO) { encryptedPrefs.getString(KEY_USER_PASS, null) }
 
                 if (!email.isNullOrBlank() && !pass.isNullOrBlank()) {
                     authRepository.login(email, pass)
                     _uiState.update { it.copy(isLoading = false, navigateToHome = true) }
                 } else {
-                    _uiState.update { it.copy(isLoading = false, error = "Credenciais biométricas não encontradas.") }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = "Credenciais biométricas não encontradas."
+                        )
+                    }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = e.message ?: "Erro no login biométrico") }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Erro no login biométrico"
+                    )
+                }
             }
         }
     }
@@ -122,13 +158,23 @@ class LoginViewModel @Inject constructor(
         val currentPass = uiState.value.pass
 
         if (currentEmail.isBlank() || currentPass.isBlank()) {
-             _uiState.update { it.copy(showBiometricOnboardingDialog = false, navigateToHome = true) }
-             return
+            _uiState.update {
+                it.copy(
+                    showBiometricOnboardingDialog = false,
+                    navigateToHome = true
+                )
+            }
+            return
         }
 
         viewModelScope.launch {
             saveCredentials(currentEmail, currentPass)
-            _uiState.update { it.copy(showBiometricOnboardingDialog = false, navigateToHome = true) }
+            _uiState.update {
+                it.copy(
+                    showBiometricOnboardingDialog = false,
+                    navigateToHome = true
+                )
+            }
         }
     }
 
@@ -138,7 +184,12 @@ class LoginViewModel @Inject constructor(
                 it[PreferencesKeys.BIOMETRIC_AUTH_PROMPT_SHOWN] = true
                 it[PreferencesKeys.IS_BIOMETRIC_AUTH_ENABLED] = false
             }
-            _uiState.update { it.copy(showBiometricOnboardingDialog = false, navigateToHome = true) }
+            _uiState.update {
+                it.copy(
+                    showBiometricOnboardingDialog = false,
+                    navigateToHome = true
+                )
+            }
         }
     }
 

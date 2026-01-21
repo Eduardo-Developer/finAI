@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.edudev.finai.presentation.components.FinAiButton
 import com.edudev.finai.presentation.components.addTransactionScreen.CategorySelector
 import com.edudev.finai.presentation.components.addTransactionScreen.DateSelector
 import com.edudev.finai.presentation.components.addTransactionScreen.TransactionTypeSelector
@@ -96,7 +97,6 @@ fun AddTransactionScreen(
                 singleLine = true
             )
 
-            // Data
             DateSelector(
                 selectedDate = uiState.date,
                 onDateSelected = { viewModel.setDate(it) }
@@ -104,18 +104,12 @@ fun AddTransactionScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botão salvar
-            Button(
+            FinAiButton(
                 onClick = { viewModel.saveTransaction(onBackClick) },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isSaving
-            ) {
-                if (uiState.isSaving) {
-                    CircularProgressIndicator(modifier = Modifier.size(20.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-                Text("Salvar")
-            }
+                enabled = !uiState.isSaving,
+                isLoading = uiState.isSaving,
+                text = "Salvar"
+            )
 
             uiState.error?.let { error ->
                 Text(
