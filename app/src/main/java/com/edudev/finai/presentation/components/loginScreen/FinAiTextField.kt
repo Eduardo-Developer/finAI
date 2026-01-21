@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.components.loginScreen
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -7,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
@@ -17,6 +19,7 @@ fun FinAiTextField(
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
@@ -27,7 +30,9 @@ fun FinAiTextField(
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         trailingIcon = trailingIcon,
-        singleLine = true
+        leadingIcon = leadingIcon,
+        singleLine = true,
+        shape = RoundedCornerShape(16.dp)
     )
 }
 

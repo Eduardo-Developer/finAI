@@ -28,11 +28,22 @@ class AuthRepositoryImpl @Inject constructor(
     override val currentUser: String?
         get() = auth.currentUser?.uid
 
-    override suspend fun login(email: String, pass: String): AuthResult {
-        return auth.signInWithEmailAndPassword(email, pass).await()
+    override suspend fun login(email: String, pass: String): Result<Unit> {
+        val authResult = auth.signInWithEmailAndPassword(email, pass).await()
+
+        return if (authResult.user != null) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("Login Falhou Inesperadamente"))
+        }
     }
 
-    override suspend fun signUp(fullName: String, email: String, pass: String, imageUri: Uri?): AuthResult {
+    override suspend fun signUp(
+        fullName: String,
+        email: String,
+        pass: String,
+        imageUri: Uri?
+    ): AuthResult {
         val authResult = auth.createUserWithEmailAndPassword(email, pass).await()
         val user = authResult.user
 

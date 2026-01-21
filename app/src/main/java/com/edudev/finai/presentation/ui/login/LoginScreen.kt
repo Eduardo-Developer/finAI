@@ -2,7 +2,6 @@ package com.edudev.finai.presentation.ui.login
 
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,16 +32,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.R
 import com.edudev.finai.presentation.biometric.BiometricAuthenticator
 import com.edudev.finai.presentation.biometric.BiometricResult
+import com.edudev.finai.presentation.components.FinAiButton
 import com.edudev.finai.presentation.components.loginScreen.FinAiTextField
 import com.edudev.finai.presentation.viewmodel.LoginViewModel
 import com.edudev.finai.ui.theme.FinAITheme
@@ -144,15 +151,22 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             FinAiTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
                 label = "Email",
-                modifier = Modifier.fillMaxWidth()
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Email"
+                    )
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             FinAiTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = uiState.pass,
                 onValueChange = viewModel::onPasswordChange,
                 label = "Senha",
@@ -167,29 +181,33 @@ fun LoginScreen(
                         R.drawable.visibility_off
                     } else {
                         R.drawable.visibility_on
-
                     }
                     IconButton(onClick = viewModel::togglePasswordVisibility) {
-                        Icon(painter = painterResource(id = imageResId), contentDescription = "Visibilidade da senha")
+                        Icon(
+                            painter = painterResource(id = imageResId),
+                            contentDescription = "Visibilidade da senha"
+                        )
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "Email"
+                    )
+                }
             )
+
             Spacer(modifier = Modifier.height(32.dp))
 
-            if (uiState.isLoading) {
-                CircularProgressIndicator()
-            } else {
-                Button(
-                    onClick = { viewModel.login() },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Entrar")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                TextButton(onClick = onSignUpClick) {
-                    Text("Não tem uma conta? Cadastre-se")
-                }
+            FinAiButton(
+                text = "Entrar",
+                onClick = viewModel::login,
+                isLoading = uiState.isLoading
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = onSignUpClick) {
+                Text("Não tem uma conta? Cadastre-se")
             }
         }
     }
