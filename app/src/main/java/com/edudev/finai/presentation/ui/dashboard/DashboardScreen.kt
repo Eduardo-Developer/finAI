@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,83 +16,63 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.edudev.finai.R
 import com.edudev.finai.presentation.components.FinAiTopAppBar
 import com.edudev.finai.presentation.components.dashboardScreen.DashboardContent
 import com.edudev.finai.presentation.components.dashboardScreen.DashboardTopBarTitle
 import com.edudev.finai.presentation.components.dashboardScreen.ErrorView
 import com.edudev.finai.presentation.components.dashboardScreen.ShimmerTitlePlaceholder
-import com.edudev.finai.presentation.components.navigation.BottomNavGraph
-import com.edudev.finai.presentation.components.navigation.BottomNavigationBar
-import com.edudev.finai.presentation.navigation.Screen
 import com.edudev.finai.presentation.viewmodel.DashboardViewModel
 
 @Composable
 fun DashboardScreen(
-    onLogout: () -> Unit,
-    onAddTransactionClick: () -> Unit
-) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        },
-        floatingActionButton = {
-            if (currentRoute == Screen.Dashboard.route) {
-                FloatingActionButton(onClick = onAddTransactionClick) {
-                    Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.add_transaction))
-                }
-            }
-        }
-    ) { innerPadding ->
-        BottomNavGraph(
-            navController = navController,
-            modifier = Modifier.padding(innerPadding),
-            onLogout = onLogout
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DashboardRouteContent(
+    onAddTransactionClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isAIEnabled by viewModel.isAIEnabled.collectAsState(initial = true)
 
-    Column {
-        FinAiTopAppBar(
-            title = {
-                if (uiState.userName.isEmpty() && uiState.error == null) {
-                    ShimmerTitlePlaceholder()
-                } else {
-                    DashboardTopBarTitle(
-                        name = uiState.userName,
-                        base64Image = uiState.userImage
-                    )
-                }
-            },
-            actions = {
-                IconButton(onClick = { viewModel.refresh() }) {
-                    Icon(Icons.Default.Refresh, contentDescription = stringResource(id = R.string.refresh))
-                }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddTransactionClick) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.add_transaction)
+                )
             }
-        )
-        if (uiState.error != null) {
-            ErrorView(message = uiState.error ?: stringResource(id = R.string.unknown_error))
-        } else {
-            DashboardContent(
-                dashboardData = uiState.dashboardData,
-                aiInsights = if (isAIEnabled) uiState.aiInsights else emptyList(),
-                isLoadingAI = uiState.isLoadingAI,
-                modifier = Modifier.fillMaxSize()
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            FinAiTopAppBar(
+                title = {
+                    if (uiState.userName.isEmpty() && uiState.error == null) {
+                        ShimmerTitlePlaceholder()
+                    } else {
+                        DashboardTopBarTitle(
+                            name = uiState.userName,
+                            base64Image = uiState.userImage
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.refresh() }) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = stringResource(id = R.string.refresh)
+                        )
+                    }
+                }
             )
+            if (uiState.error != null) {
+                ErrorView(message = uiState.error ?: stringResource(id = R.string.unknown_error))
+            } else {
+                DashboardContent(
+                    dashboardData = uiState.dashboardData,
+                    aiInsights = if (isAIEnabled) uiState.aiInsights else emptyList(),
+                    isLoadingAI = uiState.isLoadingAI,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

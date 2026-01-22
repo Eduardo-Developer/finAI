@@ -2,23 +2,21 @@ package com.edudev.finai.presentation.components.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.edudev.finai.presentation.navigation.Screen
-import com.edudev.finai.presentation.ui.dashboard.DashboardRouteContent
+import com.edudev.finai.presentation.ui.dashboard.DashboardScreen
 import com.edudev.finai.presentation.ui.history.HistoryScreen
 import com.edudev.finai.presentation.ui.profile_edit.ProfileEditScreen
 import com.edudev.finai.presentation.ui.settings.SettingsScreen
-import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
+    rootNavController: NavHostController,
     onLogout: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
@@ -26,7 +24,9 @@ fun BottomNavGraph(
         modifier = modifier
     ) {
         composable(route = Screen.Dashboard.route) {
-            DashboardRouteContent()
+            DashboardScreen(
+                onAddTransactionClick = { rootNavController.navigate(Screen.AddTransaction.route) }
+            )
         }
 
         composable(route = Screen.History.route) {
@@ -45,18 +45,3 @@ fun BottomNavGraph(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun BottomNavGraphPreview() {
-    FinAITheme {
-        val navController = rememberNavController()
-
-        BottomNavGraph(
-            navController = navController,
-            onLogout = {  },
-            modifier = Modifier
-        )
-    }
-}
-
