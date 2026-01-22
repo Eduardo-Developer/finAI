@@ -57,8 +57,9 @@ fun SettingsScreen(
     val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
     val isBiometricAuthEnabled by settingsViewModel.isBiometricAuthEnabled.collectAsState()
 
-    Scaffold {
+    Scaffold { innerPadding ->
         SettingsScreenContent(
+            modifier = Modifier.padding(innerPadding),
             userName = uiState.userName,
             userImage = uiState.userImage,
             isAIEnabled = isAIEnabled,
@@ -78,6 +79,7 @@ fun SettingsScreen(
 
 @Composable
 fun SettingsScreenContent(
+    modifier: Modifier,
     userName: String,
     userImage: String,
     isAIEnabled: Boolean,
@@ -90,7 +92,7 @@ fun SettingsScreenContent(
     onToggleBiometric: (Boolean) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -152,6 +154,7 @@ fun SettingsScreenContent(
 fun SettingsScreenPreview() {
     FinAITheme {
         SettingsScreenContent(
+            modifier = Modifier,
             userName = "Eduardo Oliveira",
             userImage = "",
             isAIEnabled = true,

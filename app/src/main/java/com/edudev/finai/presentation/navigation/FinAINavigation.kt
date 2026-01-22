@@ -16,4 +16,5 @@ sealed class Screen(val route: String, val title: String? = null, val icon: Imag
     object AddTransaction : Screen("add_transaction", "Nova Transação", Icons.Default.Add)
     object SignUp : Screen("signup")
     object Login : Screen("login")
+    object Main : Screen("main_screen")
 }

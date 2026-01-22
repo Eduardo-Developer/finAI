@@ -19,6 +19,7 @@ import com.edudev.finai.ui.theme.FinAITheme
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         Screen.Dashboard,
+
         Screen.History,
         Screen.Settings
     )
