@@ -12,6 +12,7 @@ val Black = Color.Black
 val LightGray = Color(0xFFF0F0F0) // Fundo claro e superfícies
 val DarkGray = Color(0xFF121212) // Fundo escuro
 val TextColorDark = Color(0xFFE0E0E0) // Cor do texto no tema escuro
+val SecondaryRed = Color(0xFFE11D48)
 
 val LightColorScheme = androidx.compose.material3.lightColorScheme(
     primary = FinAIGreen,
@@ -25,7 +26,8 @@ val LightColorScheme = androidx.compose.material3.lightColorScheme(
     background = LightGray,
     onBackground = Black,
     surface = White,
-    onSurface = Black
+    onSurface = Black,
+    surfaceDim = SecondaryRed
 )
 
 val DarkColorScheme = androidx.compose.material3.darkColorScheme(
@@ -40,5 +42,6 @@ val DarkColorScheme = androidx.compose.material3.darkColorScheme(
     background = DarkGray,
     onBackground = TextColorDark,
     surface = DarkGray,
-    onSurface = TextColorDark
+    onSurface = TextColorDark,
+    surfaceDim = SecondaryRed
 )

@@ -59,7 +59,7 @@ fun SettingsScreen(
 
     Scaffold { innerPadding ->
         SettingsScreenContent(
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(),
             userName = uiState.userName,
             userImage = uiState.userImage,
             isAIEnabled = isAIEnabled,
