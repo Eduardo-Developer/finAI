@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,14 +34,6 @@ fun CategorySelector(
     onCategorySelected: (String) -> Unit,
     error: String?
 ) {
-
-    val PrimaryGreen = Color(0xFF107C57)
-    val SecondaryRed = Color(0xFFE11D48)
-    val BackgroundSlate = Color(0xFFF8FAFC)
-    val TextDark = Color(0xFF1E293B)
-    val TextMuted = Color(0xFF94A3B8)
-    val BorderColor = Color(0xFFE2E8F0)
-
     val categories = listOf(
         "Alimentação", "Transporte", "Moradia", "Saúde",
         "Educação", "Lazer", "Compras", "Outros"
@@ -73,8 +67,8 @@ fun CategorySelector(
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = PrimaryGreen,
-                    unfocusedIndicatorColor = BorderColor
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = colorResource(R.color.BorderColor)
                 ),
                 isError = error != null,
                 supportingText = error?.let { { Text(it) } },

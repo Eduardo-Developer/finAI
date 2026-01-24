@@ -16,10 +16,10 @@ val SecondaryRed = Color(0xFFE11D48)
 
 val LightColorScheme = androidx.compose.material3.lightColorScheme(
     primary = FinAIGreen,
-    onPrimary = White,
+    onPrimary = FinAISoftGreen,
     primaryContainer = FinAISoftGreen,
     onPrimaryContainer = Black,
-    secondary = FinAISoftGreen,
+    secondary = White,
     onSecondary = Black,
     tertiary = FinAIDarkGreen,
     onTertiary = White,

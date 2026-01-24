@@ -1,5 +1,4 @@
 package com.edudev.finai.presentation.ui.dashboard
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -50,7 +49,7 @@ fun DashboardScreen(
                     } else {
                         DashboardTopBarTitle(
                             name = uiState.userName,
-                            base64Image = uiState.userImage
+                            base64Image = uiState.userImage,
                         )
                     }
                 },

@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.firebase.database.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.compose.ui)
     ksp(libs.hilt.compiler)
     
     // Room
