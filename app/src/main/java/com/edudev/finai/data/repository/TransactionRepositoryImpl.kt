@@ -1,5 +1,6 @@
 package com.edudev.finai.data.repository
 
+import androidx.browser.R
 import com.edudev.finai.data.local.dao.TransactionDao
 import com.edudev.finai.data.mapper.toDomain
 import com.edudev.finai.data.mapper.toEntity
@@ -116,7 +117,7 @@ class TransactionRepositoryImpl @Inject constructor(
             CategorySpending(
                 category = result.category,
                 total = result.total,
-                percentage = if (total > 0) ((result.total / total) * 100).toFloat() else 0f
+                percentage = if (total > 0) ((result.total / total) * 100).toFloat() else 0f,
             )
         }
     }

@@ -36,6 +36,7 @@ biometric = "1.2.0-alpha05"
 security-crypto = "1.1.0-alpha06"
 appcompat = "1.7.1"
 secretsGradle = "2.0.1"
+ui = "1.10.1"
 
 [libraries]
 android-image-cropper = { module = "com.vanniktech:android-image-cropper", version.ref = "androidImageCropper" }
@@ -106,6 +107,7 @@ firebase-database-ktx = { group = "com.google.firebase", name = "firebase-databa
 androidx-biometric = { group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometric" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 
 [plugins]
