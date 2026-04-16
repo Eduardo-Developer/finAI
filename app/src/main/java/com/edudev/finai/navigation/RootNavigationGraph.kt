@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.presentation.navigation.Screen
 import com.edudev.finai.presentation.ui.login.LoginScreen
 import com.edudev.finai.presentation.ui.main.MainScreen
@@ -13,11 +12,12 @@ import com.edudev.finai.presentation.ui.transaction.AddTransactionScreen
 
 @Composable
 fun RootNavigationGraph (
-    authRepository: AuthRepository,
+    isUserLoggedIn: () -> Boolean,
+    onLogout: () -> Unit,
 ) {
     val navController = rememberNavController()
     val startDestination =
-        if (authRepository.getCurrentUser() != null) Screen.Main.route else Screen.Login.route
+        if (isUserLoggedIn()) Screen.Main.route else Screen.Login.route
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Screen.Login.route) {
@@ -48,7 +48,7 @@ fun RootNavigationGraph (
             MainScreen(
                 rootNavController = navController,
                 onLogout = {
-                    authRepository.logout()
+                    onLogout()
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Main.route) { inclusive = true }
                         launchSingleTop = true

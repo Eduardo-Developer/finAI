@@ -32,7 +32,7 @@ class DashboardViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
-    val currentUserId = authRepository.getCurrentUser()?.uid ?: ""
+    val currentUserId = authRepository.currentUser ?: ""
     val isAIEnabled = preferencesRepository.isAIEnabled
 
     init {

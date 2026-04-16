@@ -1,3 +1,5 @@
+package com.edudev.finai.presentation.components.loginScreen
+
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,17 +37,16 @@ fun ProfileImagePicker(
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        // Se uma imagem foi selecionada, mostre-a. Senão, mostre um ícone placeholder.
         if (imageUri != null) {
             AsyncImage(
                 model = imageUri,
                 contentDescription = "Foto de perfil selecionada",
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop // Garante que a imagem preencha o círculo
+                contentScale = ContentScale.Crop
             )
         } else {
             Icon(
-                painter = painterResource(id = R.drawable.add_profile), // Crie este ícone
+                painter = painterResource(id = R.drawable.add_profile),
                 contentDescription = "Adicionar foto de perfil",
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.primary

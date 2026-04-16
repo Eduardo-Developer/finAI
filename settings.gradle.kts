@@ -21,4 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "FinAI"
 include(":app")
+include(":domain")
+include(":data")
+include(":core:ui")
+include(":core:di")
  

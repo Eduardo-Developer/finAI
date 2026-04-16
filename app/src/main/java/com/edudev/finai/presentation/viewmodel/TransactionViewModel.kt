@@ -59,13 +59,11 @@ class TransactionViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value
 
-            val currentUserId = authRepository.getCurrentUser()?.uid
-            if (currentUserId == null) {
-                _uiState.value = state.copy(
-                    error = "Usuário não autenticado"
-                )
-                return@launch
-            }
+            val currentUserId = authRepository.currentUser
+                ?: run {
+                    _uiState.value = state.copy(error = "Usuário não autenticado")
+                    return@launch
+                }
 
             if (validateInput(state)) {
                 _uiState.value = state.copy(isSaving = true)
