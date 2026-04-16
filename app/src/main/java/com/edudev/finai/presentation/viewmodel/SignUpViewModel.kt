@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.viewmodel
 
+import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import android.util.Base64
 
 data class SignUpUiState(
     val imageUri: Uri? = null,
@@ -24,7 +27,8 @@ data class SignUpUiState(
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val contentResolver: ContentResolver
 ) : ViewModel() {
 
     private val _signUpState = MutableStateFlow(SignUpUiState())
@@ -65,11 +69,26 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             _signUpState.value = SignUpUiState(isLoading = true)
             try {
-                authRepository.signUp(fullName, email, pass, imageUri)
+                val imageBase64 = imageUri?.let { uriToBase64(it) }
+                authRepository.signUp(fullName, email, pass, imageBase64)
                 _signUpState.value = SignUpUiState(signUpSuccess = true)
             } catch (e: Exception) {
                 _signUpState.value = SignUpUiState(signUpError = e.message)
             }
+        }
+    }
+
+    private fun uriToBase64(uri: Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            inputStream?.use { input ->
+                input.copyTo(byteArrayOutputStream)
+            }
+            val imageBytes = byteArrayOutputStream.toByteArray()
+            Base64.encodeToString(imageBytes, Base64.DEFAULT)
+        } catch (e: Exception) {
+            null
         }
     }
 }

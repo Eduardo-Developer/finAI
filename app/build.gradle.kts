@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.secrets.gradle)
 }
 
 android {
@@ -52,14 +51,18 @@ android {
 }
 
 dependencies {
+    // Internal modules
+    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:di"))
+
     // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
 
-    //coil
-    implementation(libs.coil.compose)
-    
     // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -68,54 +71,27 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.androidx.compose.ui)
 
-    // Material Components
+    // Material
     implementation(libs.material)
-    
+
     // Navigation
     implementation(libs.navigation.compose)
-    
-    // Hilt
+
+    // Hilt (ViewModel injection + navigation-compose)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.compose.ui)
     ksp(libs.hilt.compiler)
-    
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-    
-    // Network
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.moshi)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
-    
-    // DataStore
-    implementation(libs.datastore.preferences)
-    
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-    
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.database.ktx)
 
-    // Biometric & Security
+    // Biometric
     implementation(libs.androidx.biometric)
-    implementation(libs.androidx.security.crypto)
+
+    // Coil
+    implementation(libs.coil.compose)
 
     // Image Cropper
     implementation(libs.android.image.cropper)
-
-    implementation(libs.generativeai)
 
     // Testing
     testImplementation(libs.junit.jupiter.api)
@@ -123,12 +99,9 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.mockito.junit.jupiter)
     testImplementation(libs.mockito.kotlin)
-
-    // Testes Unitários (Local)
-    testImplementation (libs.junit)
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
-
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

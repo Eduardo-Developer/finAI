@@ -33,7 +33,7 @@ class HistoryViewModel @Inject constructor(
     private val _exportState = MutableStateFlow<ExportState>(ExportState.Idle)
     val exportState = _exportState.asStateFlow()
 
-    private val currentUserId = authRepository.getCurrentUser()?.uid ?: ""
+    private val currentUserId = authRepository.currentUser ?: ""
 
     private val _selectedFilter = MutableStateFlow<TransactionFilter>(TransactionFilter.All)
     val selectedFilter: StateFlow<TransactionFilter> = _selectedFilter.asStateFlow()

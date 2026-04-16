@@ -1,6 +1,6 @@
 package com.edudev.finai.presentation.ui.signup
 
-import ProfileImagePicker
+import com.edudev.finai.presentation.components.loginScreen.ProfileImagePicker
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
