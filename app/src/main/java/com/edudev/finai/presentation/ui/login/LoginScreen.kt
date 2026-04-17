@@ -1,47 +1,44 @@
 package com.edudev.finai.presentation.ui.login
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.R
 import com.edudev.finai.presentation.biometric.BiometricAuthenticator
 import com.edudev.finai.presentation.biometric.BiometricResult
-import com.edudev.finai.presentation.components.FinAiButton
-import com.edudev.finai.presentation.components.loginScreen.FinAiTextField
-import com.edudev.finai.presentation.viewmodel.LoginViewModel
 import com.edudev.finai.presentation.viewmodel.LoginUiState
+import com.edudev.finai.presentation.viewmodel.LoginViewModel
+import com.edudev.finai.ui.components.FinAICard
+import com.edudev.finai.ui.components.FinAIPrimaryButton
+import com.edudev.finai.ui.components.FinAITextField
+import com.edudev.finai.ui.modifiers.noiseBackground
+import com.edudev.finai.ui.theme.Emerald
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
@@ -82,8 +79,7 @@ fun LoginScreen(
             biometricAuthenticator.prompt { result ->
                 when (result) {
                     is BiometricResult.Success -> viewModel.loginWithBiometrics()
-                    else -> {
-                    }
+                    else -> {}
                 }
                 viewModel.onBiometricPromptShown()
             }
@@ -126,18 +122,10 @@ fun LoginScreenContent(
                 title = { Text("Login com Biometria") },
                 text = { Text("Deseja usar sua impressão digital para entrar mais rápido da próxima vez?") },
                 confirmButton = {
-                    TextButton(
-                        onClick = onBiometricDialogConfirm
-                    ) {
-                        Text("Sim")
-                    }
+                    TextButton(onClick = onBiometricDialogConfirm) { Text("Sim") }
                 },
                 dismissButton = {
-                    TextButton(
-                        onClick = onBiometricDialogDismiss
-                    ) {
-                        Text("Não")
-                    }
+                    TextButton(onClick = onBiometricDialogDismiss) { Text("Não") }
                 }
             )
         } else {
@@ -148,80 +136,174 @@ fun LoginScreenContent(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier.noiseBackground(0.05f)
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
         ) {
-
-            Image(
-                painter = painterResource(R.drawable.finaisvg),
-                contentDescription = "logo"
+            // Background Atmospheric Glow
+            Box(
+                modifier = Modifier
+                    .size(400.dp)
+                    .background(Emerald.copy(alpha = 0.02f), CircleShape)
+                    .blur(100.dp)
             )
 
-            FinAiTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.email,
-                onValueChange = onEmailChange,
-                label = "Email",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = "E-mail"
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    modifier = Modifier.padding(bottom = 64.dp), // Level 3 spacing
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = buildAnnotatedString {
+                            append("Fin")
+                            withStyle(style = SpanStyle(color = Emerald)) {
+                                append("AI")
+                            }
+                        },
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = (-2).sp
+                    )
+                    Text(
+                        text = "THE OBSIDIAN LEDGER",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp),
+                        letterSpacing = 1.sp
                     )
                 }
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                FinAICard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 48.dp), // Increased for airier feel
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    shape = RoundedCornerShape(32.dp) // Larger corner radius for container
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp), // More internal breathing room
+                        verticalArrangement = Arrangement.spacedBy(32.dp) // Level 3 internal spacing
+                    ) {
+                        // Email Field
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "EMAIL ADDRESS",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.Bold
+                            )
+                            FinAITextField(
+                                value = uiState.email,
+                                onValueChange = onEmailChange,
+                                placeholder = "your@email.com",
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Email,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            )
+                        }
 
-            FinAiTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = uiState.pass,
-                onValueChange = onPasswordChange,
-                label = "Senha",
-                visualTransformation =
-                if (uiState.isPasswordVisible) {
-                    VisualTransformation.None
-                } else {
-                    PasswordVisualTransformation()
-                },
-                trailingIcon = {
-                    val imageResId = if (uiState.isPasswordVisible) {
-                        R.drawable.visibility_off
-                    } else {
-                        R.drawable.visibility_on
+                        // Password Field
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "PASSWORD",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.Bold
+                            )
+                            FinAITextField(
+                                value = uiState.pass,
+                                onValueChange = onPasswordChange,
+                                placeholder = "••••••••",
+                                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Lock,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                trailingIcon = {
+                                    val imageResId = if (uiState.isPasswordVisible) {
+                                        R.drawable.visibility_off
+                                    } else {
+                                        R.drawable.visibility_on
+                                    }
+                                    IconButton(onClick = onTogglePasswordVisibility) {
+                                        Icon(
+                                            painter = painterResource(id = imageResId),
+                                            contentDescription = "Toggle visibility",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            )
+                            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                                TextButton(onClick = { /* TODO */ }) {
+                                    Text(
+                                        text = "Forgot Password?",
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = Emerald
+                                    )
+                                }
+                            }
+                        }
+
+                        // Submit Button
+                        FinAIPrimaryButton(
+                            text = "Entrar",
+                            onClick = onLoginClick,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
-                    IconButton(onClick = onTogglePasswordVisibility) {
-                        Icon(
-                            painter = painterResource(id = imageResId),
-                            contentDescription = "Visibilidade da senha"
+                }
+
+                // Footer
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Don't have an account?",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    TextButton(onClick = onSignUpClick) {
+                        Text(
+                            text = "Sign Up",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Emerald,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "Email"
-                    )
                 }
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            FinAiButton(
-                text = "Entrar",
-                onClick = onLoginClick,
-                isLoading = uiState.isLoading,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            TextButton(onClick = onSignUpClick) {
-                Text("Não tem uma conta? Cadastre-se")
             }
         }
     }
@@ -240,66 +322,6 @@ private fun LoginScreenPreview() {
             navigateToHome = false,
             promptBiometric = false,
             showBiometricOnboardingDialog = false
-        )
-        LoginScreenContent(
-            uiState = dummyUiState,
-            snackbarHostState = remember { SnackbarHostState() },
-            biometricAuthAvailable = true,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onTogglePasswordVisibility = {},
-            onLoginClick = {},
-            onSignUpClick = {},
-            onBiometricDialogConfirm = {},
-            onBiometricDialogDismiss = {},
-            onBiometricOnboardingDeclined = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenLoadingPreview() {
-    FinAITheme {
-        val dummyUiState = LoginUiState(
-            email = "test@example.com",
-            pass = "password123",
-            isPasswordVisible = false,
-            isLoading = true,
-            error = null,
-            navigateToHome = false,
-            promptBiometric = false,
-            showBiometricOnboardingDialog = false
-        )
-        LoginScreenContent(
-            uiState = dummyUiState,
-            snackbarHostState = remember { SnackbarHostState() },
-            biometricAuthAvailable = true,
-            onEmailChange = {},
-            onPasswordChange = {},
-            onTogglePasswordVisibility = {},
-            onLoginClick = {},
-            onSignUpClick = {},
-            onBiometricDialogConfirm = {},
-            onBiometricDialogDismiss = {},
-            onBiometricOnboardingDeclined = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LoginScreenBiometricDialogPreview() {
-    FinAITheme {
-        val dummyUiState = LoginUiState(
-            email = "test@example.com",
-            pass = "password123",
-            isPasswordVisible = false,
-            isLoading = false,
-            error = null,
-            navigateToHome = false,
-            promptBiometric = false,
-            showBiometricOnboardingDialog = true
         )
         LoginScreenContent(
             uiState = dummyUiState,

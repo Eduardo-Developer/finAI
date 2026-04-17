@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
-import com.edudev.finai.domain.repository.ThemeRepository
 import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +20,6 @@ data class SettingsUiState(
     val userName: String = "",
     val userImage: String = "",
     val isAIEnabled: Boolean = false,
-    val isDarkTheme: Boolean = false,
     val isBiometricAuthEnabled: Boolean = false,
     val showLogoffConfirmDialog: Boolean = false,
     val error: String? = null
@@ -30,7 +28,6 @@ data class SettingsUiState(
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val themeRepository: ThemeRepository,
     private val preferencesRepository: PreferencesRepository,
     private val getUserDataUseCase: GetUserDataUseCase,
     private val savedStateHandle: SavedStateHandle
@@ -42,13 +39,11 @@ class SettingsViewModel @Inject constructor(
     val uiState: StateFlow<SettingsUiState> = combine(
         _uiState,
         preferencesRepository.isAIEnabled,
-        themeRepository.isDarkTheme,
         preferencesRepository.isBiometricAuthEnabled,
         _showLogoffConfirmDialog
-    ) { state, aiEnabled, darkTheme, biometricEnabled, showDialog ->
+    ) { state, aiEnabled, biometricEnabled, showDialog ->
         state.copy(
             isAIEnabled = aiEnabled,
-            isDarkTheme = darkTheme,
             isBiometricAuthEnabled = biometricEnabled,
             showLogoffConfirmDialog = showDialog
         )
@@ -86,11 +81,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setDarkTheme(isDark: Boolean) {
-        viewModelScope.launch {
-            themeRepository.setDarkTheme(isDark)
-        }
-    }
 
     fun setAIEnabled(isEnabled: Boolean) {
         viewModelScope.launch {

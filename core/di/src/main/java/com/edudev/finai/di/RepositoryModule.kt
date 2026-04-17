@@ -3,12 +3,10 @@ package com.edudev.finai.di
 import com.edudev.finai.data.repository.AIRepositoryImpl
 import com.edudev.finai.data.repository.AuthRepositoryImpl
 import com.edudev.finai.data.repository.PreferencesRepositoryImpl
-import com.edudev.finai.data.repository.ThemeRepositoryImpl
 import com.edudev.finai.data.repository.TransactionRepositoryImpl
 import com.edudev.finai.domain.repository.AIRepository
 import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
-import com.edudev.finai.domain.repository.ThemeRepository
 import com.edudev.finai.domain.repository.TransactionRepository
 import dagger.Binds
 import dagger.Module
@@ -43,10 +41,4 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindThemeRepository(
-        themeRepositoryImpl: ThemeRepositoryImpl
-    ): ThemeRepository
 }

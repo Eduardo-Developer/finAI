@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
             
-            FinAITheme(darkTheme = uiState.isDarkTheme) {
+            FinAITheme {
                 RootNavigationGraph(
                     isUserLoggedIn = { mainViewModel.isUserLoggedIn() },
                     onLogout = { mainViewModel.logout() }

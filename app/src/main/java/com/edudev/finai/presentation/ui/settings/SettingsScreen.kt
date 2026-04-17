@@ -83,12 +83,10 @@ fun SettingsScreen(
             userName = uiState.userName,
             userImage = uiState.userImage,
             isAIEnabled = uiState.isAIEnabled,
-            isDarkTheme = uiState.isDarkTheme,
             isBiometricEnabled = uiState.isBiometricAuthEnabled,
             onLogout = { settingsViewModel.onLogoffIntent() },
             onNavigateToProfile = onNavigateToProfile,
             onToggleAI = { settingsViewModel.setAIEnabled(it) },
-            onToggleTheme = { settingsViewModel.setDarkTheme(it) },
             onToggleBiometric = { settingsViewModel.setBiometricAuthEnabled(it) }
         )
     }
@@ -100,12 +98,10 @@ fun SettingsScreenContent(
     userName: String,
     userImage: String,
     isAIEnabled: Boolean,
-    isDarkTheme: Boolean,
     isBiometricEnabled: Boolean,
     onLogout: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onToggleAI: (Boolean) -> Unit,
-    onToggleTheme: (Boolean) -> Unit,
     onToggleBiometric: (Boolean) -> Unit
 ) {
     Column(
@@ -129,14 +125,6 @@ fun SettingsScreenContent(
             )
         }
 
-        SettingsSection(title = "Aparência") {
-            SettingsItemSwitch(
-                title = "Tema Escuro",
-                description = "Usar tema escuro",
-                checked = isDarkTheme,
-                onCheckedChange = onToggleTheme
-            )
-        }
 
         SettingsSection(title = "Segurança") {
             SettingsItemSwitch(
@@ -175,12 +163,10 @@ fun SettingsScreenPreview() {
             userName = "Eduardo Oliveira",
             userImage = "",
             isAIEnabled = true,
-            isDarkTheme = false,
             isBiometricEnabled = true,
             onLogout = {},
             onNavigateToProfile = {},
             onToggleAI = {},
-            onToggleTheme = {},
             onToggleBiometric = {}
         )
     }

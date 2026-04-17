@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 fun FinAICard(
     modifier: Modifier = Modifier,
     containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surfaceContainer,
+    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(16.dp),
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(shape)
             .background(containerColor)
             .padding(16.dp),
         content = content
@@ -59,6 +60,15 @@ private fun FinAICardPreview() {
                 .padding(16.dp),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
         ) {
+            FinAISection(modifier = Modifier.fillMaxWidth()) {
+                FinAICard(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "This is a card inside a section",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
             FinAISection(modifier = Modifier.fillMaxWidth()) {
                 FinAICard(modifier = Modifier.fillMaxWidth()) {
                     Text(

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,11 +21,18 @@ import com.edudev.finai.ui.theme.Emerald
 import com.edudev.finai.ui.theme.Jade
 import com.edudev.finai.ui.theme.MintEmerald
 
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+
 @Composable
 fun FinAIPrimaryButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shape: androidx.compose.ui.graphics.Shape = androidx.compose.foundation.shape.CircleShape,
+    content: (@Composable () -> Unit)? = null
 ) {
     val gradient = Brush.linearGradient(
         colors = listOf(Emerald, Jade),
@@ -34,18 +42,41 @@ fun FinAIPrimaryButton(
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(24.dp))
+            .drawBehind {
+                drawIntoCanvas { canvas ->
+                    val paint = android.graphics.Paint().apply {
+                        color = Emerald.copy(alpha = 0.04f).toArgb()
+                        setShadowLayer(12.dp.toPx(), 0f, 8.dp.toPx(), Emerald.copy(alpha = 0.04f).toArgb())
+                    }
+                    canvas.nativeCanvas.drawRoundRect(
+                        0f, 0f, size.width, size.height,
+                        12.dp.toPx(), 12.dp.toPx(), // Closest approximation
+                        paint
+                    )
+                }
+            }
+            .clip(shape)
             .background(gradient)
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 24.dp),
+            .padding(vertical = 16.dp, horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold
-        )
+        androidx.compose.foundation.layout.Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold
+            )
+            if (content != null) {
+                Box(modifier = Modifier.padding(start = 8.dp)) {
+                    content()
+                }
+            }
+        }
     }
 }
 
@@ -53,18 +84,19 @@ fun FinAIPrimaryButton(
 fun FinAISecondaryButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shape: androidx.compose.ui.graphics.Shape = androidx.compose.foundation.shape.CircleShape
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(24.dp))
+            .clip(shape)
             .border(
                 width = 1.dp,
                 color = MintEmerald.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(24.dp)
+                shape = shape
             )
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 24.dp),
+            .padding(vertical = 14.dp, horizontal = 24.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

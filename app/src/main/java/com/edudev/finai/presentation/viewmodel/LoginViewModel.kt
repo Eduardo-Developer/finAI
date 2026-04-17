@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val loginResult = authRepository.login(uiState.value.email, uiState.value.pass)
+                val loginResult = authRepository.login(uiState.value.email.trim(), uiState.value.pass)
 
                 loginResult.onSuccess {
                     val isBiometricEnabled = preferencesRepository.isBiometricAuthEnabled.first()
