@@ -133,6 +133,7 @@ class DashboardViewModel @Inject constructor(
                     val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
                     _uiState.value = _uiState.value.copy(
                         dashboardData = dashboardData,
+                        transactions = transactions,
                         isLoading = false
                     )
                     if (aiEnabled) {
