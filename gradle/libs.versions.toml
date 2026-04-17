@@ -114,6 +114,7 @@ androidx-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref 
 javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "ui" }
 
 
 [plugins]

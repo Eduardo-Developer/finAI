@@ -36,3 +36,4 @@ local.properties
 .externalNativeBuild
 .cxx
 local.properties
+.agents/

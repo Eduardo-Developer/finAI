@@ -1,47 +1,61 @@
 package com.edudev.finai.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 
-// Paleta de Cores Simplificada
-val FinAIGreen = Color(0xFF117B5B) // Verde principal e vibrante
-val FinAISoftGreen = Color(0xFFEFFCEF) // Verde mais suave para papéis secundários
-val FinAIDarkGreen = Color(0xFF1B5E20) // Verde escuro para contraste
+// Onyx & Emerald Precision Palette
+val Onyx = Color(0xFF111412)
+val Emerald = Color(0xFF00E475)
+val MintEmerald = Color(0xFF83D7B2)
 
-val White = Color.White
-val Black = Color.Black
-val LightGray = Color(0xFFF0F0F0) // Fundo claro e superfícies
-val DarkGray = Color(0xFF121212) // Fundo escuro
-val TextColorDark = Color(0xFFE0E0E0) // Cor do texto no tema escuro
-val SecondaryRed = Color(0xFFE11D48)
+// Tonal Architecture for Obsidian Ledger
+val SurfaceContainerLow = Color(0xFF151916)
+val SurfaceContainer = Color(0xFF1C211E)
+val SurfaceContainerHigh = Color(0xFF262C28)
+val SurfaceContainerHighest = Color(0xFF323933)
 
-val LightColorScheme = androidx.compose.material3.lightColorScheme(
-    primary = FinAIGreen,
-    onPrimary = FinAISoftGreen,
-    primaryContainer = FinAISoftGreen,
-    onPrimaryContainer = Black,
-    secondary = White,
-    onSecondary = Black,
-    tertiary = FinAIDarkGreen,
-    onTertiary = White,
-    background = LightGray,
-    onBackground = Black,
-    surface = White,
-    onSurface = Black,
-    surfaceDim = SecondaryRed
+// Secondary & Semantic
+val Jade = Color(0xFF00A550) // For gradients
+val ErrorRed = Color(0xFFE11D48)
+
+// On-Surface (Tonal White to prevent eye strain)
+val OnSurfaceWhite = Color(0xFFE0E6E2)
+val OnSurfaceVariant = Color(0xFF94A399)
+
+val LightColorScheme = lightColorScheme(
+    primary = Emerald,
+    onPrimary = Onyx,
+    primaryContainer = MintEmerald,
+    onPrimaryContainer = Onyx,
+    secondary = MintEmerald,
+    onSecondary = Onyx,
+    background = Color(0xFFF7F9F8),
+    onBackground = Onyx,
+    surface = Color.White,
+    onSurface = Onyx,
+    error = ErrorRed,
+    onError = Color.White,
 )
 
-val DarkColorScheme = androidx.compose.material3.darkColorScheme(
-    primary = FinAIGreen,
-    onPrimary = White,
-    primaryContainer = FinAIDarkGreen,
-    onPrimaryContainer = TextColorDark,
-    secondary = FinAISoftGreen,
-    onSecondary = Black,
-    tertiary = FinAIDarkGreen,
-    onTertiary = TextColorDark,
-    background = DarkGray,
-    onBackground = TextColorDark,
-    surface = DarkGray,
-    onSurface = TextColorDark,
-    surfaceDim = SecondaryRed
+val DarkColorScheme = darkColorScheme(
+    primary = Emerald,
+    onPrimary = Onyx,
+    primaryContainer = Jade,
+    onPrimaryContainer = OnSurfaceWhite,
+    secondary = MintEmerald,
+    onSecondary = Onyx,
+    background = Onyx,
+    onBackground = OnSurfaceWhite,
+    surface = Onyx,
+    onSurface = OnSurfaceWhite,
+    surfaceVariant = SurfaceContainer,
+    onSurfaceVariant = OnSurfaceVariant,
+    error = ErrorRed,
+    onError = Onyx,
+    outline = SurfaceContainerHigh,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainer = SurfaceContainer,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest
 )

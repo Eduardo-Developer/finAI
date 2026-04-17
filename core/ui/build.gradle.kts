@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.ui.text.google.fonts)
 }
