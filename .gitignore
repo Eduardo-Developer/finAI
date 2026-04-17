@@ -1,3 +1,26 @@
+# Build outputs
+/build
+**/build/
+
+# Generated files
+**/generated/
+**/.gradle/
+.gradle/
+local.properties
+
+# Kapt / KSP generated
+**/kapt/
+**/ksp/
+
+# AGP (Android Gradle Plugin) cache
+**/.cxx/
+**/.externalNativeBuild/
+
+# IDE
+/.idea/
+*.iml
+.DS_Store
+
 *.iml
 .gradle
 /local.properties

@@ -8,6 +8,8 @@ import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.repository.AIRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AIRepositoryImpl @Inject constructor(
@@ -18,8 +20,8 @@ class AIRepositoryImpl @Inject constructor(
     override suspend fun getFinancialInsights(
         transactions: List<Transaction>,
         periodDays: Int
-    ): List<AIInsight> {
-        return try {
+    ): List<AIInsight> = withContext(Dispatchers.IO) {
+        try {
             // 1. Otimização de Tokens: Não envie o DTO completo, apenas o essencial
             val transactionsSummary = transactions.joinToString("\n") {
                 "${it.date}: ${it.category} - R$ ${it.amount} (${it.type})"

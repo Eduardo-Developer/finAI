@@ -7,10 +7,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -21,10 +23,10 @@ class AuthRepositoryImpl @Inject constructor(
     override val currentUser: String?
         get() = auth.currentUser?.uid
 
-    override suspend fun login(email: String, pass: String): Result<Unit> {
+    override suspend fun login(email: String, pass: String): Result<Unit> = withContext(Dispatchers.IO) {
         val authResult = auth.signInWithEmailAndPassword(email, pass).await()
 
-        return if (authResult.user != null) {
+        if (authResult.user != null) {
             Result.success(Unit)
         } else {
             Result.failure(Exception("Login Falhou Inesperadamente"))
@@ -36,7 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         pass: String,
         imageBase64: String?
-    ): Result<Unit> {
+    ): Result<Unit> = withContext(Dispatchers.IO) {
         val authResult = auth.createUserWithEmailAndPassword(email, pass).await()
         val user = authResult.user
 
@@ -52,7 +54,7 @@ class AuthRepositoryImpl @Inject constructor(
             throw IllegalStateException("User creation failed, user is null.")
         }
 
-        return Result.success(Unit)
+        Result.success(Unit)
     }
 
     override fun logout() {

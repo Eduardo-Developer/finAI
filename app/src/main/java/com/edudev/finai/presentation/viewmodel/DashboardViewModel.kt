@@ -11,15 +11,18 @@ import com.edudev.finai.domain.usecase.GetAllTransactionsUseCase
 import com.edudev.finai.domain.usecase.GetDashboardDataUseCase
 import com.edudev.finai.domain.usecase.GetFinancialInsightsUseCase
 import com.edudev.finai.domain.usecase.GetTransactionsByDateRangeUseCase
+import androidx.lifecycle.SavedStateHandle
 import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -32,15 +35,32 @@ class DashboardViewModel @Inject constructor(
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
     private val getUserDataUseCase: GetUserDataUseCase,
     private val preferencesRepository: PreferencesRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
-    val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
-    val currentUserId = authRepository.currentUser ?: ""
-    val isAIEnabled = preferencesRepository.isAIEnabled
+    private val _showDateRangePicker = MutableStateFlow(false)
+    
+    val uiState: StateFlow<DashboardUiState> = combine(
+        _uiState,
+        preferencesRepository.isAIEnabled,
+        _showDateRangePicker
+    ) { state, aiEnabled, showDatePicker ->
+        state.copy(
+            isAIEnabled = aiEnabled,
+            showDateRangePicker = showDatePicker
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = DashboardUiState()
+    )
 
-    private val dateFilterFlow = MutableStateFlow<Pair<Date?, Date?>>(Pair(null, null))
+    val currentUserId = authRepository.currentUser ?: ""
+
+    private val filterStartDateFlow = savedStateHandle.getStateFlow<Long?>("start_date", null)
+    private val filterEndDateFlow = savedStateHandle.getStateFlow<Long?>("end_date", null)
 
     init {
         loadInitialData()
@@ -68,10 +88,13 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, isLoadingAI = true)
             try {
-                val filter = dateFilterFlow.value
-                val dashboardData = getDashboardDataUseCase(currentUserId, filter.first, filter.second)
+                val start = filterStartDateFlow.value?.let { Date(it) }
+                val end = filterEndDateFlow.value?.let { Date(it) }
+                val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
                 _uiState.value = _uiState.value.copy(
                     dashboardData = dashboardData,
+                    filterStartDate = start,
+                    filterEndDate = end,
                     isLoading = false,
                     isLoadingAI = false
                 )
@@ -90,20 +113,24 @@ class DashboardViewModel @Inject constructor(
     private fun observeTransactions() {
         viewModelScope.launch {
             combine(
-                dateFilterFlow.flatMapLatest { (start, end) ->
+                filterStartDateFlow,
+                filterEndDateFlow
+            ) { start, end -> Pair(start, end) }
+                .flatMapLatest { (startMillis, endMillis) ->
+                    val start = startMillis?.let { Date(it) }
+                    val end = endMillis?.let { Date(it) }
                     if (start != null && end != null) {
                         getTransactionsByDateRangeUseCase(currentUserId, start, end)
                     } else {
                         getAllTransactionsUseCase(currentUserId)
                     }
-                },
-                isAIEnabled
-            ) { transactions, aiEnabled ->
-                Pair(transactions, aiEnabled)
-            }.collect { (transactions, aiEnabled) ->
+                }.combine(preferencesRepository.isAIEnabled) { transactions, aiEnabled ->
+                    Pair(transactions, aiEnabled)
+                }.collect { (transactions, aiEnabled) ->
                 try {
-                    val filter = dateFilterFlow.value
-                    val dashboardData = getDashboardDataUseCase(currentUserId, filter.first, filter.second)
+                    val start = filterStartDateFlow.value?.let { Date(it) }
+                    val end = filterEndDateFlow.value?.let { Date(it) }
+                    val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
                     _uiState.value = _uiState.value.copy(
                         dashboardData = dashboardData,
                         isLoading = false
@@ -130,9 +157,10 @@ class DashboardViewModel @Inject constructor(
 
     private fun loadAIInsights(dashboardData: DashboardData) {
         viewModelScope.launch {
-            if (isAIEnabled.first()) {
+            if (preferencesRepository.isAIEnabled.first()) {
                 try {
-                    val (start, end) = dateFilterFlow.value
+                    val start = filterStartDateFlow.value?.let { Date(it) }
+                    val end = filterEndDateFlow.value?.let { Date(it) }
                     val transactions = if (start != null && end != null) {
                         getTransactionsByDateRangeUseCase(currentUserId, start, end).first()
                     } else {
@@ -150,12 +178,17 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun onDateFilterChanged(startDate: Date?, endDate: Date?) {
-        dateFilterFlow.value = Pair(startDate, endDate)
-        _uiState.value = _uiState.value.copy(
-            filterStartDate = startDate,
-            filterEndDate = endDate
-        )
+        savedStateHandle["start_date"] = startDate?.time
+        savedStateHandle["end_date"] = endDate?.time
         refresh()
+    }
+
+    fun onShowDatePicker() {
+        _showDateRangePicker.value = true
+    }
+
+    fun onDismissDatePicker() {
+        _showDateRangePicker.value = false
     }
 
     fun refresh() {
@@ -175,5 +208,7 @@ data class DashboardUiState(
     val userName: String = "",
     val userImage: String? = null,
     val filterStartDate: Date? = null,
-    val filterEndDate: Date? = null
+    val filterEndDate: Date? = null,
+    val isAIEnabled: Boolean = true,
+    val showDateRangePicker: Boolean = false
 )

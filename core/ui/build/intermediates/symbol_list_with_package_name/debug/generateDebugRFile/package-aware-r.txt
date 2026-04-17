@@ -1,5 +1,0 @@
-com.edudev.finai.core.ui
-font inter
-font inter_bold
-font inter_medium
-font inter_semibold

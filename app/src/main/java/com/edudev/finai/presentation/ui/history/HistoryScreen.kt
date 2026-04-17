@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,9 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,31 +42,46 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.edudev.finai.R
 import com.edudev.finai.presentation.components.FinAiTopAppBar
+import com.edudev.finai.presentation.components.dashboardScreen.DateRangePickerModal
 import com.edudev.finai.presentation.components.historyTransaction.FilterChips
 import com.edudev.finai.presentation.components.historyTransaction.TransactionItem
 import com.edudev.finai.presentation.viewmodel.ExportState
 import com.edudev.finai.presentation.viewmodel.HistoryViewModel
+import com.edudev.finai.presentation.viewmodel.TransactionFilter
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
-    val filteredTransactions by viewModel.filteredTransactions.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val selectedFilter by viewModel.selectedFilter.collectAsState()
-    val showDialog by viewModel.showExportConfirmDialog.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
+
+    if (uiState.showDatePicker) {
+        DateRangePickerModal(
+            onDateRangeSelected = { range ->
+                val startMillis = range.first
+                val endMillis = range.second
+                if (startMillis != null && endMillis != null) {
+                    viewModel.setFilter(TransactionFilter.ByDateRange(startMillis, endMillis))
+                }
+            },
+            onDismiss = { viewModel.onDismissDatePicker() }
+        )
+    }
 
     val context = LocalContext.current
-    val exportState by viewModel.exportState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val fileSaverLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/csv"),
         onResult = { uri: Uri? ->
             uri?.let {
-                val csvData = (viewModel.exportState.value as? ExportState.Success)?.csvData
+                val csvData = (uiState.exportState as? ExportState.Success)?.csvData
                 if (csvData != null) {
                     try {
                         context.contentResolver.openOutputStream(it)?.use { outputStream ->
@@ -79,8 +95,8 @@ fun HistoryScreen(
         }
     )
 
-    LaunchedEffect(exportState) {
-        when (val state = exportState) {
+    LaunchedEffect(uiState.exportState) {
+        when (val state = uiState.exportState) {
             is ExportState.Success -> {
                 fileSaverLauncher.launch("historico_finai.csv")
             }
@@ -95,7 +111,7 @@ fun HistoryScreen(
         }
     }
 
-    if (showDialog) {
+    if (uiState.showExportConfirmDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.onDismissExportDialog() },
             title = { Text("Confirmar Exportação") },
@@ -116,9 +132,34 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             FinAiTopAppBar(
-                title = { Text("Histórico") },
-
-                )
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Histórico")
+                        if (uiState.selectedFilter is TransactionFilter.ByDateRange) {
+                            val filter = uiState.selectedFilter as TransactionFilter.ByDateRange
+                            val startDate = dateFormat.format(Date(filter.startMillis))
+                            val endDate = dateFormat.format(Date(filter.endMillis))
+                            Text(
+                                text = " • $startDate até $endDate",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { viewModel.onShowDatePicker() }) {
+                        Icon(
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = "Filtrar por data",
+                            tint = if (uiState.selectedFilter is TransactionFilter.ByDateRange) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onBackground
+                            }
+                        )
+                    }
+                }
+            )
         }
     ) { paddingValues ->
         Column(
@@ -127,7 +168,7 @@ fun HistoryScreen(
                 .padding(paddingValues)
         ) {
             OutlinedTextField(
-                value = searchQuery,
+                value = uiState.searchQuery,
                 onValueChange = { viewModel.setSearchQuery(it) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,22 +179,23 @@ fun HistoryScreen(
             )
 
             Row(
-                modifier = Modifier.padding(end = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FilterChips(
-                    modifier = Modifier.weight(1f),
-                    selectedFilter = selectedFilter,
+                    selectedFilter = uiState.selectedFilter,
                     onFilterSelected = { viewModel.setFilter(it) }
                 )
 
                 IconButton(
                     onClick = {
-                        if (exportState !is ExportState.Loading) {
+                        if (uiState.exportState !is ExportState.Loading) {
                             viewModel.onExportIntent()
                         }
-                    }) {
-                    if (exportState is ExportState.Loading) {
+                    }
+                ) {
+                    if (uiState.exportState is ExportState.Loading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     } else {
                         Icon(
@@ -166,7 +208,7 @@ fun HistoryScreen(
             }
 
             AnimatedContent(
-                targetState = filteredTransactions.isEmpty(),
+                targetState = uiState.filteredTransactions.isEmpty(),
                 modifier = Modifier.weight(1f)
             ) { isEmpty ->
                 if (isEmpty) {
@@ -185,7 +227,7 @@ fun HistoryScreen(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(filteredTransactions) { transaction ->
+                        items(uiState.filteredTransactions) { transaction ->
                             TransactionItem(
                                 transaction = transaction,
                                 onDeleteClick = { viewModel.deleteTransaction(transaction.id!!) }

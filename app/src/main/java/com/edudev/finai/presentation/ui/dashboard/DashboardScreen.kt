@@ -18,11 +18,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,19 +43,16 @@ fun DashboardScreen(
     onAddTransactionClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val isAIEnabled by viewModel.isAIEnabled.collectAsState(initial = true)
-    
-    var showDateRangePicker by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (showDateRangePicker) {
+    if (uiState.showDateRangePicker) {
         DateRangePickerModal(
             onDateRangeSelected = { dateRange ->
                 val startDate = dateRange.first?.let { Date(it) }
                 val endDate = dateRange.second?.let { Date(it) }
                 viewModel.onDateFilterChanged(startDate, endDate)
             },
-            onDismiss = { showDateRangePicker = false }
+            onDismiss = { viewModel.onDismissDatePicker() }
         )
     }
 
@@ -84,7 +79,7 @@ fun DashboardScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showDateRangePicker = true }) {
+                    IconButton(onClick = { viewModel.onShowDatePicker() }) {
                         Icon(
                             Icons.Default.DateRange,
                             contentDescription = "Filtrar por data"
@@ -115,7 +110,7 @@ fun DashboardScreen(
                 }
 
                 AssistChip(
-                    onClick = { showDateRangePicker = true },
+                    onClick = { viewModel.onShowDatePicker() },
                     label = { Text(filterText) },
                     trailingIcon = if (uiState.filterStartDate != null) {
                         {
@@ -135,7 +130,7 @@ fun DashboardScreen(
             } else {
                 DashboardContent(
                     dashboardData = uiState.dashboardData,
-                    aiInsights = if (isAIEnabled) uiState.aiInsights else emptyList(),
+                    aiInsights = if (uiState.isAIEnabled) uiState.aiInsights else emptyList(),
                     isLoadingAI = uiState.isLoadingAI,
                     modifier = Modifier.fillMaxSize()
                 )

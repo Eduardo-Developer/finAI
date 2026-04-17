@@ -41,6 +41,13 @@ fun FilterChips(
             onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.EXPENSE)) },
             label = { Text("Despesas") }
         )
+        if (selectedFilter is TransactionFilter.ByDateRange) {
+            FilterChip(
+                selected = true,
+                onClick = { onFilterSelected(TransactionFilter.All) },
+                label = { Text("Data") }
+            )
+        }
     }
 }
 
