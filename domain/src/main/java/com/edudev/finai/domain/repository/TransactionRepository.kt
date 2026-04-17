@@ -30,5 +30,5 @@ interface TransactionRepository {
         startDate: Date,
         endDate: Date
     ): List<CategorySpending>
-    suspend fun getDashboardData(userId: String): DashboardData
+    suspend fun getDashboardData(userId: String, startDate: Date? = null, endDate: Date? = null): DashboardData
 }

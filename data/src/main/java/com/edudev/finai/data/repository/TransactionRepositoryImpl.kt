@@ -122,22 +122,30 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDashboardData(userId: String): DashboardData {
-        val calendar = Calendar.getInstance()
-        val endDate = calendar.time
+    override suspend fun getDashboardData(userId: String, startDate: Date?, endDate: Date?): DashboardData {
+        val finalStartDate: Date
+        val finalEndDate: Date
 
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        val startDate = calendar.time
+        if (startDate != null && endDate != null) {
+            finalStartDate = startDate
+            finalEndDate = endDate
+        } else {
+            val calendar = Calendar.getInstance()
+            finalEndDate = calendar.time
 
-        val monthlyIncome = getTotalByTypeAndDateRange(userId,TransactionType.INCOME, startDate, endDate)
-        val monthlyExpense = getTotalByTypeAndDateRange(userId,TransactionType.EXPENSE, startDate, endDate)
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            finalStartDate = calendar.time
+        }
+
+        val monthlyIncome = getTotalByTypeAndDateRange(userId, TransactionType.INCOME, finalStartDate, finalEndDate)
+        val monthlyExpense = getTotalByTypeAndDateRange(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
         val totalBalance = monthlyIncome - monthlyExpense
 
-        val categorySpendings = getCategorySpendings(userId,TransactionType.EXPENSE, startDate, endDate)
+        val categorySpendings = getCategorySpendings(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
 
         // Generate monthly chart data (last 6 months)
         val monthlyChartData = generateMonthlyChartData(userId = userId)
