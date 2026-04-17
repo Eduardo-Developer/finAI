@@ -1,14 +1,21 @@
 package com.edudev.finai.presentation.components.historyTransaction
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.presentation.viewmodel.TransactionFilter
 import com.edudev.finai.ui.theme.FinAITheme
@@ -21,33 +28,60 @@ fun FilterChips(
 ) {
     Row(
         modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.All,
-            onClick = { onFilterSelected(TransactionFilter.All) },
-            label = { Text("Todas") }
+        FilterPill(
+            text = "Todas",
+            isSelected = selectedFilter is TransactionFilter.All,
+            onClick = { onFilterSelected(TransactionFilter.All) }
         )
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.ByType &&
+        FilterPill(
+            text = "Receitas",
+            isSelected = selectedFilter is TransactionFilter.ByType &&
                     selectedFilter.type == TransactionType.INCOME,
-            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.INCOME)) },
-            label = { Text("Receitas") }
+            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.INCOME)) }
         )
-        FilterChip(
-            selected = selectedFilter is TransactionFilter.ByType &&
+        FilterPill(
+            text = "Despesas",
+            isSelected = selectedFilter is TransactionFilter.ByType &&
                     selectedFilter.type == TransactionType.EXPENSE,
-            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.EXPENSE)) },
-            label = { Text("Despesas") }
+            onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.EXPENSE)) }
         )
-        if (selectedFilter is TransactionFilter.ByDateRange) {
-            FilterChip(
-                selected = true,
-                onClick = { onFilterSelected(TransactionFilter.All) },
-                label = { Text("Data") }
+    }
+}
+
+@Composable
+private fun FilterPill(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+
+    Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .then(
+                if (!isSelected) Modifier.border(1.dp, borderColor, CircleShape) else Modifier
             )
-        }
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                letterSpacing = 0.5.sp
+            ),
+            color = contentColor
+        )
     }
 }
 
@@ -55,9 +89,11 @@ fun FilterChips(
 @Composable
 private fun FilterChipsPreview() {
     FinAITheme {
-        FilterChips(
-            selectedFilter = TransactionFilter.ByType(TransactionType.EXPENSE),
-            onFilterSelected = {}
-        )
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(16.dp)) {
+            FilterChips(
+                selectedFilter = TransactionFilter.ByType(TransactionType.EXPENSE),
+                onFilterSelected = {}
+            )
+        }
     }
 }
