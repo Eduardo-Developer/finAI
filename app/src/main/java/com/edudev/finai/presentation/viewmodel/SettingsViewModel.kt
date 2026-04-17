@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edudev.finai.domain.repository.AuthRepository
@@ -10,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +20,10 @@ import javax.inject.Inject
 data class SettingsUiState(
     val userName: String = "",
     val userImage: String = "",
+    val isAIEnabled: Boolean = false,
+    val isDarkTheme: Boolean = false,
+    val isBiometricAuthEnabled: Boolean = false,
+    val showLogoffConfirmDialog: Boolean = false,
     val error: String? = null
 )
 
@@ -28,10 +33,30 @@ class SettingsViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val preferencesRepository: PreferencesRepository,
     private val getUserDataUseCase: GetUserDataUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _showLogoffConfirmDialog = savedStateHandle.getStateFlow("show_logoff_dialog", false)
+
+    val uiState: StateFlow<SettingsUiState> = combine(
+        _uiState,
+        preferencesRepository.isAIEnabled,
+        themeRepository.isDarkTheme,
+        preferencesRepository.isBiometricAuthEnabled,
+        _showLogoffConfirmDialog
+    ) { state, aiEnabled, darkTheme, biometricEnabled, showDialog ->
+        state.copy(
+            isAIEnabled = aiEnabled,
+            isDarkTheme = darkTheme,
+            isBiometricAuthEnabled = biometricEnabled,
+            showLogoffConfirmDialog = showDialog
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SettingsUiState()
+    )
 
     init {
         loadUserData()
@@ -61,30 +86,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    val isAIEnabled: StateFlow<Boolean> = preferencesRepository.isAIEnabled
-        .stateIn(
-            scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
-    private val _showLogoffConfirmDialog = MutableStateFlow(false)
-    val showLogoffConfirmDialog = _showLogoffConfirmDialog.asStateFlow()
-
-    val isBiometricAuthEnabled: StateFlow<Boolean> = preferencesRepository.isBiometricAuthEnabled
-        .stateIn(
-            scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
-    val isDarkTheme: StateFlow<Boolean> = themeRepository.isDarkTheme
-        .stateIn(
-            scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
     fun setDarkTheme(isDark: Boolean) {
         viewModelScope.launch {
             themeRepository.setDarkTheme(isDark)
@@ -113,10 +114,10 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onLogoffIntent() {
-        _showLogoffConfirmDialog.value = true
+        savedStateHandle["show_logoff_dialog"] = true
     }
 
     fun onDismissLogofftDialog() {
-        _showLogoffConfirmDialog.value = false
+        savedStateHandle["show_logoff_dialog"] = false
     }
 }

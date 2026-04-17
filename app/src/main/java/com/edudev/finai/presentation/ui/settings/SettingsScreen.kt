@@ -24,9 +24,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.edudev.finai.presentation.viewmodel.SettingsViewModel
 import android.graphics.BitmapFactory
+import androidx.compose.runtime.Composable
 import com.edudev.finai.presentation.components.settings.ProfileHeader
 import com.edudev.finai.presentation.components.settings.SettingsItemButton
 import com.edudev.finai.presentation.components.settings.SettingsItemSwitch
@@ -52,23 +52,40 @@ fun SettingsScreen(
     onNavigateToProfile: () -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val uiState by settingsViewModel.uiState.collectAsState()
-    val isAIEnabled by settingsViewModel.isAIEnabled.collectAsState()
-    val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
-    val isBiometricAuthEnabled by settingsViewModel.isBiometricAuthEnabled.collectAsState()
+    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+    if (uiState.showLogoffConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { settingsViewModel.onDismissLogofftDialog() },
+            title = { Text("Confirmar Saída") },
+            text = { Text("Deseja realmente sair da sua conta?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        settingsViewModel.logout()
+                        onLogout()
+                    }
+                ) {
+                    Text("Sair", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { settingsViewModel.onDismissLogofftDialog() }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Scaffold { innerPadding ->
         SettingsScreenContent(
-            modifier = Modifier.padding(),
+            modifier = Modifier.padding(innerPadding),
             userName = uiState.userName,
             userImage = uiState.userImage,
-            isAIEnabled = isAIEnabled,
-            isDarkTheme = isDarkTheme,
-            isBiometricEnabled = isBiometricAuthEnabled,
-            onLogout = {
-                settingsViewModel.onLogoffIntent()
-                onLogout()
-            },
+            isAIEnabled = uiState.isAIEnabled,
+            isDarkTheme = uiState.isDarkTheme,
+            isBiometricEnabled = uiState.isBiometricAuthEnabled,
+            onLogout = { settingsViewModel.onLogoffIntent() },
             onNavigateToProfile = onNavigateToProfile,
             onToggleAI = { settingsViewModel.setAIEnabled(it) },
             onToggleTheme = { settingsViewModel.setDarkTheme(it) },

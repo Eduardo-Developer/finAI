@@ -5,8 +5,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.edudev.finai.domain.repository.ThemeRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ThemeRepositoryImpl @Inject constructor(
@@ -22,8 +24,10 @@ class ThemeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setDarkTheme(isDarkTheme: Boolean) {
-        dataStore.edit {
-            it[PreferencesKeys.IS_DARK_THEME] = isDarkTheme
+        withContext(Dispatchers.IO) {
+            dataStore.edit {
+                it[PreferencesKeys.IS_DARK_THEME] = isDarkTheme
+            }
         }
     }
 }
