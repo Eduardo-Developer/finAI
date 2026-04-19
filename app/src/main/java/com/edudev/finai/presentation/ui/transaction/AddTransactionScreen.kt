@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edudev.finai.R
 import com.edudev.finai.presentation.components.FinAiButton
 import com.edudev.finai.presentation.components.addTransactionScreen.CategorySelector
 import com.edudev.finai.presentation.components.addTransactionScreen.DateSelector
@@ -76,20 +78,20 @@ fun AddTransactionScreen(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.btn_close),
                         tint = Emerald,
                         modifier = Modifier.size(28.dp)
                     )
                 }
                 Text(
-                    text = "New Transaction",
+                    text = stringResource(com.edudev.finai.R.string.new_transaction_title),
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = OnSurfaceWhite,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = (-0.02).sp
                     )
                 )
-                Box(modifier = Modifier.size(48.dp)) // Spacer to balance the close button
+                Box(modifier = Modifier.size(48.dp))
             }
         },
         bottomBar = {
@@ -103,7 +105,7 @@ fun AddTransactionScreen(
                     onClick = { viewModel.saveTransaction(onBackClick) },
                     enabled = !uiState.isSaving,
                     isLoading = uiState.isSaving,
-                    text = "Save Transaction"
+                    text = stringResource(R.string.btn_save_transaction)
                 )
             }
         }
@@ -127,7 +129,7 @@ fun AddTransactionScreen(
 
             // Amount Input Group
             Text(
-                text = "AMOUNT",
+                text = stringResource(R.string.label_amount),
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = OnSurfaceVariant,
                     letterSpacing = 1.sp,
@@ -182,11 +184,11 @@ fun AddTransactionScreen(
                 )
                 
                 FormField(
-                    label = "Description",
+                    label = stringResource(R.string.label_description),
                     value = uiState.description,
                     onValueChange = { viewModel.setDescription(it) },
                     icon = Icons.Default.Edit,
-                    placeholder = "What was this for?"
+                    placeholder = stringResource(R.string.placeholder_description)
                 )
                 
                 DateSelector(

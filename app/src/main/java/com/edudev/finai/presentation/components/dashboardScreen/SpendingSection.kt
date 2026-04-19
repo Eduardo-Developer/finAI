@@ -11,7 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import com.edudev.finai.domain.model.CategorySpending
 import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
@@ -39,7 +40,7 @@ fun SpendingSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Spending",
+                    text = stringResource(R.string.label_spending),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )

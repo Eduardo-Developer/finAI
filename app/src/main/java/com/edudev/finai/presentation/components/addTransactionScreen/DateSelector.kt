@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,7 +59,7 @@ fun DateSelector(
 
     Column(modifier = modifier) {
         Text(
-            text = "DATE",
+            text = stringResource(R.string.label_date),
             style = MaterialTheme.typography.labelSmall.copy(
                 color = MintEmerald,
                 letterSpacing = 1.sp,
@@ -120,12 +122,12 @@ fun DateSelector(
                         }
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.btn_ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker.value = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.btn_cancel))
                 }
             }
         ) {

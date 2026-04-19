@@ -12,6 +12,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +38,8 @@ fun TransactionTypeToggle(
             .padding(6.dp)
     ) {
         val options = listOf(
-            TransactionType.INCOME to "INCOME",
-            TransactionType.EXPENSE to "EXPENSE"
+            TransactionType.INCOME to stringResource(R.string.type_income),
+            TransactionType.EXPENSE to stringResource(R.string.type_expense)
         )
 
         options.forEach { (type, label) ->

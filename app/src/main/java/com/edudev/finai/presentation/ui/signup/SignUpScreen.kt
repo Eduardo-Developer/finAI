@@ -19,6 +19,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -76,7 +78,7 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Crie uma conta", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.create_account_title), style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(24.dp))
 
         ProfileImagePicker(
@@ -93,7 +95,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = signUpUiState.fullName,
             onValueChange = { viewModel.onFullNameChanged(it) },
-            label = { Text("Nome Completo") },
+            label = { Text(stringResource(R.string.label_full_name)) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +103,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = signUpUiState.email,
             onValueChange = { viewModel.onEmailChanged(it) },
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.label_email)) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -109,7 +111,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = signUpUiState.password,
             onValueChange = { viewModel.onPasswordChanged(it) },
-            label = { Text("Senha") },
+            label = { Text(stringResource(R.string.label_password)) },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
         )
@@ -118,7 +120,7 @@ fun SignUpScreen(
         OutlinedTextField(
             value = signUpUiState.confirmPassword,
             onValueChange = { viewModel.onConfirmPasswordChanged(it) },
-            label = { Text("Confirmar Senha") },
+            label = { Text(stringResource(R.string.label_confirm_password)) },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
             isError = signUpUiState.signUpError != null
@@ -137,12 +139,12 @@ fun SignUpScreen(
                 onClick = { viewModel.signUp(signUpUiState.fullName, signUpUiState.email, signUpUiState.password, signUpUiState.confirmPassword, imageUri = selectedImageUri) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Criar Conta")
+                Text(stringResource(R.string.btn_create_account))
             }
         }
 
         TextButton(onClick = onNavigateToLogin) {
-            Text("Já possui uma conta? Logar")
+            Text(stringResource(R.string.link_already_have_account))
         }
     }
 

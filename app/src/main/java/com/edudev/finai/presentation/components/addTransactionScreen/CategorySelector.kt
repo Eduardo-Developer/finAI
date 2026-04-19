@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,7 +57,7 @@ fun CategorySelector(
 
     Column(modifier = modifier) {
         Text(
-            text = "CATEGORY",
+            text = stringResource(R.string.label_category),
             style = MaterialTheme.typography.labelSmall.copy(
                 color = MintEmerald,
                 letterSpacing = 1.sp,
@@ -82,7 +84,7 @@ fun CategorySelector(
                 )
                 
                 Text(
-                    text = selectedCategory.ifBlank { "Select Category" },
+                    text = selectedCategory.ifBlank { stringResource(R.string.placeholder_category) },
                     modifier = Modifier.padding(start = 12.dp).weight(1f),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = if (selectedCategory.isBlank()) OnSurfaceVariant.copy(alpha = 0.5f) else OnSurfaceWhite,

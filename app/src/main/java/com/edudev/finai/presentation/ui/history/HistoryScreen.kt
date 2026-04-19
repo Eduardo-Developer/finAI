@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.ui.history
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,16 +98,16 @@ fun HistoryScreen(
         AlertDialog(
             onDismissRequest = { viewModel.onDismissExportDialog() },
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            title = { Text("Confirmar Exportaçao", style = MaterialTheme.typography.titleLarge) },
-            text = { Text("Deseja realmente exportar o histórico de transações para um arquivo CSV?", style = MaterialTheme.typography.bodyMedium) },
+            title = { Text(stringResource(R.string.export_confirm_title), style = MaterialTheme.typography.titleLarge) },
+            text = { Text(stringResource(R.string.export_confirm_message), style = MaterialTheme.typography.bodyMedium) },
             confirmButton = {
                 TextButton(onClick = { viewModel.onExportClicked() }) {
-                    Text("Sim", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.btn_yes), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { viewModel.onDismissExportDialog() }) {
-                    Text("Não", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.btn_no), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         )
@@ -121,13 +123,11 @@ fun HistoryScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Section 1: Header
             HeaderSection(
                 onExportClick = { viewModel.onExportIntent() },
                 isExporting = uiState.exportState is ExportState.Loading
             )
 
-            // Section 2: Search Bar
             SearchBarSection(
                 query = uiState.searchQuery,
                 onQueryChange = { viewModel.setSearchQuery(it) },
@@ -135,16 +135,14 @@ fun HistoryScreen(
                 isFilterActive = uiState.selectedFilter is TransactionFilter.ByDateRange
             )
 
-            // Section 3: Filter Chips
             FilterChips(
                 selectedFilter = uiState.selectedFilter,
                 onFilterSelected = { viewModel.setFilter(it) },
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Section 4: Transaction List Grouped by Date
-            val groupedTransactions = remember(uiState.filteredTransactions) {
-                groupTransactionsByDate(uiState.filteredTransactions)
+            val groupedTransactions = remember(uiState.filteredTransactions, context) {
+                groupTransactionsByDate(context, uiState.filteredTransactions)
             }
 
             AnimatedContent(
@@ -189,7 +187,7 @@ private fun HeaderSection(
     ) {
         Column {
             Text(
-                text = "History",
+                text = stringResource(R.string.history_title),
                 style = MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-2).sp
@@ -197,7 +195,7 @@ private fun HeaderSection(
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Review your recent activity",
+                text = stringResource(R.string.history_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -214,7 +212,7 @@ private fun HeaderSection(
             } else {
                 Icon(
                     painter = painterResource(R.drawable.csv_icon),
-                    contentDescription = "Export CSV",
+                    contentDescription = stringResource(R.string.export_confirm_title),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
@@ -244,7 +242,7 @@ private fun SearchBarSection(
                 .weight(1f)
                 .height(56.dp)
                 .clip(CircleShape),
-            placeholder = { Text("Search transactions...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+            placeholder = { Text(stringResource(R.string.search_transactions_hint), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -268,7 +266,7 @@ private fun SearchBarSection(
         ) {
             Icon(
                 imageVector = Icons.Default.FilterList,
-                contentDescription = "Date Filter",
+                contentDescription = stringResource(R.string.search_transactions_hint),
                 tint = if (isFilterActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -318,30 +316,30 @@ private fun EmptyHistoryPlaceholder() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No transactions found",
+            text = stringResource(R.string.msg_no_transactions_found),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
 
-private fun groupTransactionsByDate(transactions: List<Transaction>): List<Pair<String, List<Transaction>>> {
+private fun groupTransactionsByDate(context: Context, transactions: List<Transaction>): List<Pair<String, List<Transaction>>> {
     val groupedMap = transactions
         .sortedByDescending { it.date }
         .groupBy { transaction ->
-            getRelativeDate(transaction.date)
+            getRelativeDate(context, transaction.date)
         }
     return groupedMap.toList()
 }
 
-private fun getRelativeDate(date: Date): String {
+private fun getRelativeDate(context: Context, date: Date): String {
     val now = Calendar.getInstance()
     val target = Calendar.getInstance().apply { time = date }
 
     return when {
-        isSameDay(now, target) -> "Today"
-        isYesterday(now, target) -> "Yesterday"
-        else -> SimpleDateFormat("MMMM d, yyyy", Locale.US).format(date)
+        isSameDay(now, target) -> context.getString(R.string.label_today)
+        isYesterday(now, target) -> context.getString(R.string.label_yesterday)
+        else -> SimpleDateFormat("MMMM d, yyyy", Locale("pt", "BR")).format(date)
     }
 }
 

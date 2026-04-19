@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -119,13 +120,13 @@ fun LoginScreenContent(
         if (biometricAuthAvailable) {
             AlertDialog(
                 onDismissRequest = onBiometricDialogDismiss,
-                title = { Text("Login com Biometria") },
-                text = { Text("Deseja usar sua impressão digital para entrar mais rápido da próxima vez?") },
+                title = { Text(stringResource(R.string.biometric_login_title)) },
+                text = { Text(stringResource(R.string.biometric_login_message)) },
                 confirmButton = {
-                    TextButton(onClick = onBiometricDialogConfirm) { Text("Sim") }
+                    TextButton(onClick = onBiometricDialogConfirm) { Text(stringResource(R.string.btn_yes)) }
                 },
                 dismissButton = {
-                    TextButton(onClick = onBiometricDialogDismiss) { Text("Não") }
+                    TextButton(onClick = onBiometricDialogDismiss) { Text(stringResource(R.string.btn_no)) }
                 }
             )
         } else {
@@ -176,7 +177,7 @@ fun LoginScreenContent(
                         letterSpacing = (-2).sp
                     )
                     Text(
-                        text = "THE OBSIDIAN LEDGER",
+                        text = stringResource(R.string.app_tagline),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp),
@@ -200,7 +201,7 @@ fun LoginScreenContent(
                         // Email Field
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
-                                text = "EMAIL ADDRESS",
+                                text = stringResource(R.string.label_email_address),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = FontWeight.Bold
@@ -224,7 +225,7 @@ fun LoginScreenContent(
                         // Password Field
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
-                                text = "PASSWORD",
+                                text = stringResource(R.string.label_password_caps),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = FontWeight.Bold
@@ -262,7 +263,7 @@ fun LoginScreenContent(
                             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                                 TextButton(onClick = { /* TODO */ }) {
                                     Text(
-                                        text = "Forgot Password?",
+                                        text = stringResource(R.string.btn_forgot_password),
                                         style = MaterialTheme.typography.labelLarge,
                                         color = Emerald
                                     )
@@ -272,7 +273,7 @@ fun LoginScreenContent(
 
                         // Submit Button
                         FinAIPrimaryButton(
-                            text = "Entrar",
+                            text = stringResource(R.string.btn_login),
                             onClick = onLoginClick,
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -291,13 +292,13 @@ fun LoginScreenContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Don't have an account?",
+                        text = stringResource(R.string.msg_dont_have_account),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     TextButton(onClick = onSignUpClick) {
                         Text(
-                            text = "Sign Up",
+                            text = stringResource(R.string.btn_sign_up),
                             style = MaterialTheme.typography.bodySmall,
                             color = Emerald,
                             fontWeight = FontWeight.Bold

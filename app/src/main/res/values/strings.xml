@@ -3,4 +3,82 @@
     <string name="add_transaction">Adicionar transação</string>
     <string name="refresh">Atualizar</string>
     <string name="unknown_error">Erro desconhecido</string>
+
+    <!-- General -->
+    <string name="btn_save">Salvar</string>
+    <string name="btn_save_transaction">Salvar Transação</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_yes">Sim</string>
+    <string name="btn_no">Não</string>
+    <string name="btn_logout">Sair</string>
+    <string name="btn_view_all">Ver tudo</string>
+    <string name="btn_use_password">Usar senha</string>
+
+    <!-- Auth -->
+    <string name="create_account_title">Crie uma conta</string>
+    <string name="btn_create_account">Criar Conta</string>
+    <string name="link_already_have_account">Já possui uma conta? Logar</string>
+    <string name="label_full_name">Nome Completo</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Senha</string>
+    <string name="label_confirm_password">Confirmar Senha</string>
+
+    <!-- Dashboard -->
+    <string name="label_total_balance">SALDO TOTAL</string>
+    <string name="label_recent_activity">Atividade Recente</string>
+    <string name="msg_no_recent_activity">Nenhuma atividade recente</string>
+    <string name="label_spending">Gastos</string>
+    <string name="label_date">DATA</string>
+    <string name="greeting_format">Olá, %1$s</string>
+
+    <!-- Settings -->
+    <string name="settings_section_ai">IA e Análise</string>
+    <string name="settings_item_ai_title">Sugestões da IA</string>
+    <string name="settings_item_ai_desc">Ativar análises inteligentes de gastos</string>
+    <string name="settings_section_security">Segurança</string>
+    <string name="settings_item_biometric_title">Login com Biometria</string>
+    <string name="settings_item_biometric_desc">Acessar sua conta com impressão digital ou rosto</string>
+    <string name="settings_section_account">Conta</string>
+    <string name="settings_item_logout_desc">Desconectar sua conta do aplicativo</string>
+    <string name="logout_confirm_title">Confirmar Saída</string>
+    <string name="logout_confirm_message">Deseja realmente sair da sua conta?</string>
+    <string name="app_version">FinAI v1.0</string>
+
+    <!-- Profile Edit -->
+    <string name="edit_profile_title">Editar Perfil</string>
+
+    <!-- Biometric -->
+    <string name="biometric_login_title">Login com Biometria</string>
+    <string name="biometric_login_message">Deseja usar sua impressão digital para entrar mais rápido da próxima vez?</string>
+
+    <!-- History -->
+    <string name="history_title">Histórico</string>
+    <string name="history_subtitle">Veja sua atividade recente</string>
+    <string name="export_confirm_title">Confirmar Exportação</string>
+    <string name="export_confirm_message">Deseja realmente exportar o histórico de transações para um arquivo CSV?</string>
+    <string name="search_transactions_hint">Buscar transações...</string>
+    <string name="msg_no_transactions_found">Nenhuma transação encontrada</string>
+    <string name="label_today">Hoje</string>
+    <string name="label_yesterday">Ontem</string>
+
+    <!-- Login -->
+    <string name="btn_login">Entrar</string>
+    <string name="label_email_address">ENDEREÇO DE EMAIL</string>
+    <string name="label_password_caps">SENHA</string>
+    <string name="btn_forgot_password">Esqueceu a senha?</string>
+    <string name="msg_dont_have_account">Não tem uma conta?</string>
+    <string name="btn_sign_up">Cadastrar-se</string>
+    <string name="app_tagline">O LIVRO DE OBSIDIANA</string>
+
+    <!-- Add Transaction -->
+    <string name="new_transaction_title">Nova Transação</string>
+    <string name="btn_close">Fechar</string>
+    <string name="label_amount">VALOR</string>
+    <string name="label_description">Descrição</string>
+    <string name="placeholder_description">Para o que foi isso?</string>
+    <string name="label_category">CATEGORIA</string>
+    <string name="placeholder_category">Selecionar Categoria</string>
+    <string name="type_income">RECEITA</string>
+    <string name="type_expense">DESPESA</string>
 </resources>

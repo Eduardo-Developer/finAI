@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,7 +52,7 @@ fun DashboardTopBarTitle(
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                contentDescription = "Foto de Perfil",
+                contentDescription = stringResource(R.string.edit_profile_title),
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape),
@@ -59,14 +61,14 @@ fun DashboardTopBarTitle(
         } else {
             Icon(
                 imageVector = Icons.Default.Person,
-                contentDescription = "Foto de Perfil",
+                contentDescription = stringResource(R.string.edit_profile_title),
                 modifier = Modifier.size(40.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         if (name.isNotBlank()) {
-            Text(text = "Olá, $name")
+            Text(text = stringResource(R.string.greeting_format, name))
         }
     }
 }

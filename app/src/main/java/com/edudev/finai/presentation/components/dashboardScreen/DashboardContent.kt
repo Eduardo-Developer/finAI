@@ -14,6 +14,12 @@ import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
 import java.util.Locale
+import java.util.Date
+import androidx.compose.ui.tooling.preview.Preview
+import com.edudev.finai.domain.model.CategorySpending
+import com.edudev.finai.domain.model.InsightType
+import com.edudev.finai.domain.model.MonthlyChartData
+import com.edudev.finai.domain.model.TransactionType
 
 @Composable
 fun DashboardContent(
@@ -74,5 +80,80 @@ fun DashboardContent(
         item {
             Spacer(modifier = Modifier.height(32.dp))
         }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
+@Composable
+fun DashboardContentPreview() {
+    val mockCategorySpendings = listOf(
+        CategorySpending("Alimentação", 1200.0, 0.4f),
+        CategorySpending("Transporte", 500.0, 0.2f),
+        CategorySpending("Lazer", 300.0, 0.1f),
+        CategorySpending("Saúde", 400.0, 0.15f),
+        CategorySpending("Outros", 150.0, 0.15f)
+    )
+
+    val mockMonthlyChartData = listOf(
+        MonthlyChartData("Jan", 5000.0, 4000.0),
+        MonthlyChartData("Fev", 5500.0, 3500.0),
+        MonthlyChartData("Mar", 6000.0, 4500.0)
+    )
+
+    val mockDashboardData = DashboardData(
+        totalBalance = 15450.50,
+        monthlyIncome = 6000.0,
+        monthlyExpense = 4500.0,
+        categorySpendings = mockCategorySpendings,
+        aiInsights = emptyList(), // Passing empty list to focus on spending
+        monthlyChartData = mockMonthlyChartData
+    )
+
+    val mockTransactions = listOf(
+        Transaction(
+            id = 1,
+            userId = "user1",
+            amount = 150.0,
+            category = "Alimentação",
+            description = "Supermercado",
+            type = TransactionType.EXPENSE,
+            date = Date()
+        ),
+        Transaction(
+            id = 2,
+            userId = "user1",
+            amount = 50.0,
+            category = "Transporte",
+            description = "Uber",
+            type = TransactionType.EXPENSE,
+            date = Date()
+        ),
+        Transaction(
+            id = 3,
+            userId = "user1",
+            amount = 3000.0,
+            category = "Salário",
+            description = "Pagamento Mensal",
+            type = TransactionType.INCOME,
+            date = Date()
+        )
+    )
+
+    val mockAIInsights = listOf(
+        AIInsight(
+            message = "Você gastou 15% a mais em alimentação este mês.",
+            type = InsightType.WARNING,
+            savingsSuggestion = 200.0
+        )
+    )
+
+    FinAITheme {
+        DashboardContent(
+            dashboardData = mockDashboardData,
+            transactions = mockTransactions,
+            aiInsights = mockAIInsights,
+            isLoadingAI = false,
+            onViewAllTransactions = {}
+        )
     }
 }

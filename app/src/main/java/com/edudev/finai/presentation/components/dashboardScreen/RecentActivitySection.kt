@@ -17,8 +17,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.edudev.finai.R
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.ui.theme.FinAITheme
@@ -47,13 +49,13 @@ fun RecentActivitySection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Recent Activity",
+                    text = stringResource(R.string.label_recent_activity),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 TextButton(onClick = onViewAllClick) {
                     Text(
-                        text = "View All",
+                        text = stringResource(R.string.btn_view_all),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -69,7 +71,7 @@ fun RecentActivitySection(
                 
                 if (transactions.isEmpty()) {
                     Text(
-                        text = "No recent activity",
+                        text = stringResource(R.string.msg_no_recent_activity),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(vertical = 16.dp).align(Alignment.CenterHorizontally)

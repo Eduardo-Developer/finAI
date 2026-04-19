@@ -1,48 +1,30 @@
 package com.edudev.finai.presentation.ui.settings
 
-import android.util.Base64
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
-import com.edudev.finai.presentation.viewmodel.SettingsViewModel
-import android.graphics.BitmapFactory
-import androidx.compose.runtime.Composable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edudev.finai.R
 import com.edudev.finai.presentation.components.settings.ProfileHeader
 import com.edudev.finai.presentation.components.settings.SettingsItemButton
 import com.edudev.finai.presentation.components.settings.SettingsItemSwitch
 import com.edudev.finai.presentation.components.settings.SettingsSection
+import com.edudev.finai.presentation.viewmodel.SettingsViewModel
 import com.edudev.finai.ui.theme.FinAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,8 +39,8 @@ fun SettingsScreen(
     if (uiState.showLogoffConfirmDialog) {
         AlertDialog(
             onDismissRequest = { settingsViewModel.onDismissLogofftDialog() },
-            title = { Text("Confirmar Saída") },
-            text = { Text("Deseja realmente sair da sua conta?") },
+            title = { Text(stringResource(R.string.logout_confirm_title)) },
+            text = { Text(stringResource(R.string.logout_confirm_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -66,12 +48,12 @@ fun SettingsScreen(
                         onLogout()
                     }
                 ) {
-                    Text("Sair", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.btn_logout), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { settingsViewModel.onDismissLogofftDialog() }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.btn_cancel))
                 }
             }
         )
@@ -116,29 +98,29 @@ fun SettingsScreenContent(
             onProfileClick = onNavigateToProfile
         )
 
-        SettingsSection(title = "IA e Análise") {
+        SettingsSection(title = stringResource(R.string.settings_section_ai)) {
             SettingsItemSwitch(
-                title = "Sugestões da IA",
-                description = "Ativar análises inteligentes de gastos",
+                title = stringResource(R.string.settings_item_ai_title),
+                description = stringResource(R.string.settings_item_ai_desc),
                 checked = isAIEnabled,
                 onCheckedChange = onToggleAI
             )
         }
 
 
-        SettingsSection(title = "Segurança") {
+        SettingsSection(title = stringResource(R.string.settings_section_security)) {
             SettingsItemSwitch(
-                title = "Login com Biometria",
-                description = "Acessar sua conta com impressão digital ou rosto",
+                title = stringResource(R.string.settings_item_biometric_title),
+                description = stringResource(R.string.settings_item_biometric_desc),
                 checked = isBiometricEnabled,
                 onCheckedChange = onToggleBiometric
             )
         }
 
-        SettingsSection(title = "Conta") {
+        SettingsSection(title = stringResource(R.string.settings_section_account)) {
             SettingsItemButton(
-                title = "Sair",
-                description = "Desconectar sua conta do aplicativo",
+                title = stringResource(R.string.btn_logout),
+                description = stringResource(R.string.settings_item_logout_desc),
                 onClick = onLogout
             )
         }
@@ -146,7 +128,7 @@ fun SettingsScreenContent(
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = "FinAI v1.0",
+            text = stringResource(R.string.app_version),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)

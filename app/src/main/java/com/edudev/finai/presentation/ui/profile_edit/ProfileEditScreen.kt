@@ -17,6 +17,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -36,12 +38,12 @@ fun ProfileEditScreen(
     Scaffold(
         topBar = {
             FinAiTopAppBar(
-                title = { Text("Editar Perfil") },
+                title = { Text(stringResource(R.string.edit_profile_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(R.string.btn_cancel) // Using cancel as fallback for back
                         )
                     }
                 }
@@ -58,14 +60,14 @@ fun ProfileEditScreen(
             OutlinedTextField(
                 value = uiState.fullName,
                 onValueChange = viewModel::onNameChange,
-                label = { Text("Nome Completo") },
+                label = { Text(stringResource(R.string.label_full_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.label_email)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -78,7 +80,7 @@ fun ProfileEditScreen(
                     onClick = { viewModel.saveProfile() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Salvar")
+                    Text(stringResource(R.string.btn_save))
                 }
             }
         }

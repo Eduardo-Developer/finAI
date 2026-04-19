@@ -23,10 +23,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.edudev.finai.R
 import com.edudev.finai.ui.theme.Emerald
 import com.edudev.finai.ui.theme.FinAITheme
 import com.edudev.finai.ui.theme.Jade
@@ -101,7 +103,7 @@ fun FinAiButton(
 private fun FinAiButtonPreview() {
     FinAITheme {
         Box(Modifier.background(Onyx)) {
-            FinAiButton(onClick = {}, text = "Save Transaction")
+            FinAiButton(onClick = {}, text = stringResource(R.string.btn_save_transaction))
         }
     }
 }
