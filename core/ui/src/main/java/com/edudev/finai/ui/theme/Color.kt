@@ -10,18 +10,18 @@ val Emerald = Color(0xFF00E475)
 val MintEmerald = Color(0xFF83D7B2)
 
 // Tonal Architecture for Obsidian Ledger
-val SurfaceContainerLow = Color(0xFF151916)
-val SurfaceContainer = Color(0xFF1C211E)
-val SurfaceContainerHigh = Color(0xFF262C28)
-val SurfaceContainerHighest = Color(0xFF323933)
+val SurfaceContainerLow = Color(0xFF191C1A)
+val SurfaceContainer = Color(0xFF1D201E)
+val SurfaceContainerHigh = Color(0xFF282B28)
+val SurfaceContainerHighest = Color(0xFF323533)
 
 // Secondary & Semantic
 val Jade = Color(0xFF00A550) // For gradients
 val ErrorRed = Color(0xFFE11D48)
 
 // On-Surface (Tonal White to prevent eye strain)
-val OnSurfaceWhite = Color(0xFFE0E6E2)
-val OnSurfaceVariant = Color(0xFF94A399)
+val OnSurfaceWhite = Color(0xFFE1E3DF)
+val OnSurfaceVariant = Color(0xFFBEC9C1)
 
 val LightColorScheme = lightColorScheme(
     primary = Emerald,

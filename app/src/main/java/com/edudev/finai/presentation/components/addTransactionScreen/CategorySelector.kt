@@ -1,30 +1,42 @@
 package com.edudev.finai.presentation.components.addTransactionScreen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.edudev.finai.R
+import androidx.compose.ui.unit.sp
 import com.edudev.finai.ui.theme.FinAITheme
+import com.edudev.finai.ui.theme.MintEmerald
+import com.edudev.finai.ui.theme.OnSurfaceVariant
+import com.edudev.finai.ui.theme.OnSurfaceWhite
+import com.edudev.finai.ui.theme.Onyx
+import com.edudev.finai.ui.theme.SurfaceContainerHighest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,48 +53,67 @@ fun CategorySelector(
 
     var expanded by remember { mutableStateOf(false) }
 
-    Column {
+    Column(modifier = modifier) {
         Text(
-            text = "Categoria",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = modifier.padding(bottom = 8.dp)
+            text = "CATEGORY",
+            style = MaterialTheme.typography.labelSmall.copy(
+                color = MintEmerald,
+                letterSpacing = 1.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
 
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = selectedCategory.ifBlank { "Selecione uma categoria" },
-                onValueChange = {},
-                readOnly = true,
+        Box {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor(),
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = colorResource(R.color.BorderColor)
-                ),
-                isError = error != null,
-                supportingText = error?.let { { Text(it) } },
-                placeholder = { Text("Selecione uma categoria") }
-            )
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(SurfaceContainerHighest)
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.List,
+                    contentDescription = null,
+                    tint = OnSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Text(
+                    text = selectedCategory.ifBlank { "Select Category" },
+                    modifier = Modifier.padding(start = 12.dp).weight(1f),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = if (selectedCategory.isBlank()) OnSurfaceVariant.copy(alpha = 0.5f) else OnSurfaceWhite,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = OnSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .background(SurfaceContainerHighest)
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
-                        text = { Text(category) },
+                        text = { 
+                            Text(
+                                text = category,
+                                color = OnSurfaceWhite,
+                                style = MaterialTheme.typography.bodyMedium
+                            ) 
+                        },
                         onClick = {
                             onCategorySelected(category)
                             expanded = false
@@ -97,23 +128,22 @@ fun CategorySelector(
                 text = it,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 8.dp, start = 16.dp)
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF111412)
 @Composable
 private fun CategorySelectorPreview() {
-    FinAITheme(
-
-    ) {
-        CategorySelector(
-            modifier = Modifier.padding(16.dp),
-            selectedCategory = "",
-            onCategorySelected = {},
-            error = null
-        )
+    FinAITheme {
+        Box(Modifier.background(Onyx).padding(16.dp)) {
+            CategorySelector(
+                selectedCategory = "",
+                onCategorySelected = {},
+                error = null
+            )
+        }
     }
 }

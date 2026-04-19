@@ -24,9 +24,7 @@ fun BottomNavGraph(
         modifier = modifier
     ) {
         composable(route = Screen.Dashboard.route) {
-            DashboardScreen(
-                onAddTransactionClick = { rootNavController.navigate(Screen.AddTransaction.route) }
-            )
+            DashboardScreen()
         }
 
         composable(route = Screen.History.route) {

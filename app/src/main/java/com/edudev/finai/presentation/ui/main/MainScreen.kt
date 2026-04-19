@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.edudev.finai.presentation.components.navigation.BottomNavGraph
 import com.edudev.finai.presentation.components.navigation.BottomNavigationBar
+import com.edudev.finai.presentation.navigation.Screen
 
 @Composable
 fun MainScreen(
@@ -18,7 +19,10 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController = bottomNavController)
+            BottomNavigationBar(
+                navController = bottomNavController,
+                onAddClick = { rootNavController.navigate(Screen.AddTransaction.route) }
+            )
         }
     ) { innerPadding ->
         BottomNavGraph(

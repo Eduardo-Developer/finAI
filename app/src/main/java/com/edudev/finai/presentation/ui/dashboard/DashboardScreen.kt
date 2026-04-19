@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,12 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.edudev.finai.R
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.CategorySpending
 import com.edudev.finai.domain.model.DashboardData
@@ -42,6 +38,8 @@ import com.edudev.finai.presentation.components.dashboardScreen.ErrorView
 import com.edudev.finai.presentation.components.dashboardScreen.ShimmerTitlePlaceholder
 import com.edudev.finai.presentation.viewmodel.DashboardUiState
 import com.edudev.finai.presentation.viewmodel.DashboardViewModel
+import androidx.compose.ui.res.stringResource
+import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -49,14 +47,12 @@ import java.util.Locale
 
 @Composable
 fun DashboardScreen(
-    onAddTransactionClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DashboardScreenContent(
         uiState = uiState,
-        onAddTransactionClick = onAddTransactionClick,
         onDateRangeSelected = { startDate, endDate ->
             viewModel.onDateFilterChanged(startDate, endDate)
         },
@@ -70,7 +66,6 @@ fun DashboardScreen(
 @Composable
 fun DashboardScreenContent(
     uiState: DashboardUiState,
-    onAddTransactionClick: () -> Unit,
     onDateRangeSelected: (Date?, Date?) -> Unit,
     onDismissDatePicker: () -> Unit,
     onShowDatePicker: () -> Unit,
@@ -88,16 +83,7 @@ fun DashboardScreenContent(
         )
     }
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = onAddTransactionClick) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add_transaction)
-                )
-            }
-        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinAiTopAppBar(
                 title = {
@@ -212,7 +198,6 @@ fun DashboardScreenPreview() {
                 transactions = dummyTransactions,
                 aiInsights = dummyInsights
             ),
-            onAddTransactionClick = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},
@@ -231,7 +216,6 @@ fun DashboardScreenLoadingPreview() {
                 isLoading = true,
                 isLoadingAI = true
             ),
-            onAddTransactionClick = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},
@@ -249,7 +233,6 @@ fun DashboardScreenErrorPreview() {
             uiState = DashboardUiState(
                 error = "Ocorreu um erro ao carregar os dados."
             ),
-            onAddTransactionClick = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},
