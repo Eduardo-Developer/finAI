@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
-            
+
             FinAITheme {
                 RootNavigationGraph(
                     isUserLoggedIn = { mainViewModel.isUserLoggedIn() },

@@ -5,13 +5,12 @@ import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.repository.AIRepository
 import javax.inject.Inject
 
-class GetFinancialInsightsUseCase @Inject constructor(
+class GetFinancialInsightsUseCase
+@Inject
+constructor(
     private val repository: AIRepository
 ) {
-    suspend operator fun invoke(
-        transactions: List<Transaction>,
-        periodDays: Int = 30
-    ): List<AIInsight> {
+    suspend operator fun invoke(transactions: List<Transaction>, periodDays: Int = 30): List<AIInsight> {
         return repository.getFinancialInsights(transactions, periodDays)
     }
 }

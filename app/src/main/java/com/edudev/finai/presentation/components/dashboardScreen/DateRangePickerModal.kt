@@ -13,10 +13,7 @@ import com.edudev.finai.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateRangePickerModal(
-    onDateRangeSelected: (Pair<Long?, Long?>) -> Unit,
-    onDismiss: () -> Unit
-) {
+fun DateRangePickerModal(onDateRangeSelected: (Pair<Long?, Long?>) -> Unit, onDismiss: () -> Unit) {
     val dateRangePickerState = rememberDateRangePickerState()
 
     DatePickerDialog(

@@ -9,122 +9,142 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.edudev.finai.core.ui.R
 
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
-)
+val provider =
+    GoogleFont.Provider(
+        providerAuthority = "com.google.android.gms.fonts",
+        providerPackage = "com.google.android.gms",
+        certificates = R.array.com_google_android_gms_fonts_certs
+    )
 
 val ManropeFont = GoogleFont("Manrope")
 
-val ManropeFamily = FontFamily(
-    Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Normal),
-    Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Medium),
-    Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.SemiBold),
-    Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Bold)
-)
+val ManropeFamily =
+    FontFamily(
+        Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Normal),
+        Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Medium),
+        Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.SemiBold),
+        Font(googleFont = ManropeFont, fontProvider = provider, weight = FontWeight.Bold)
+    )
 
 // Define os estilos de tipografia para o app
-val FinAITypography = Typography(
-    displayLarge = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.02).sp, // Updated for premium feel
-    ),
-    displayMedium = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
-        letterSpacing = (-0.02).sp,
-    ),
-    displaySmall = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
-        letterSpacing = (-0.02).sp,
-    ),
-    headlineLarge = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-    ),
-    headlineMedium = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-    ),
-    headlineSmall = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
-    ),
-    titleLarge = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-    ),
-    titleMedium = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp,
-    ),
-    titleSmall = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    bodyLarge = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-    ),
-    bodyMedium = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp,
-    ),
-    bodySmall = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp,
-    ),
-    labelLarge = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    labelMedium = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-    ),
-    labelSmall = TextStyle(
-        fontFamily = ManropeFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 1.sp, // Higher tracking for archival feel
-    ),
-)
+val FinAITypography =
+    Typography(
+        displayLarge =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 57.sp,
+            lineHeight = 64.sp,
+            // Updated for premium feel
+            letterSpacing = (-0.02).sp
+        ),
+        displayMedium =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 45.sp,
+            lineHeight = 52.sp,
+            letterSpacing = (-0.02).sp
+        ),
+        displaySmall =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 36.sp,
+            lineHeight = 44.sp,
+            letterSpacing = (-0.02).sp
+        ),
+        headlineLarge =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 32.sp,
+            lineHeight = 40.sp
+        ),
+        headlineMedium =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 28.sp,
+            lineHeight = 36.sp
+        ),
+        headlineSmall =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 24.sp,
+            lineHeight = 32.sp
+        ),
+        titleLarge =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            lineHeight = 28.sp
+        ),
+        titleMedium =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.15.sp
+        ),
+        titleSmall =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.1.sp
+        ),
+        bodyLarge =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.5.sp
+        ),
+        bodyMedium =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.25.sp
+        ),
+        bodySmall =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.4.sp
+        ),
+        labelLarge =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.1.sp
+        ),
+        labelMedium =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.5.sp
+        ),
+        labelSmall =
+        TextStyle(
+            fontFamily = ManropeFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 11.sp,
+            lineHeight = 16.sp,
+            // Higher tracking for archival feel
+            letterSpacing = 1.sp
+        )
+    )

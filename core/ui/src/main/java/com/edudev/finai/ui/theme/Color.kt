@@ -1,8 +1,8 @@
 package com.edudev.finai.ui.theme
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 
 // Onyx & Emerald Precision Palette
 val Onyx = Color(0xFF111412)
@@ -23,39 +23,41 @@ val ErrorRed = Color(0xFFE11D48)
 val OnSurfaceWhite = Color(0xFFE1E3DF)
 val OnSurfaceVariant = Color(0xFFBEC9C1)
 
-val LightColorScheme = lightColorScheme(
-    primary = Emerald,
-    onPrimary = Onyx,
-    primaryContainer = MintEmerald,
-    onPrimaryContainer = Onyx,
-    secondary = MintEmerald,
-    onSecondary = Onyx,
-    background = Color(0xFFF7F9F8),
-    onBackground = Onyx,
-    surface = Color.White,
-    onSurface = Onyx,
-    error = ErrorRed,
-    onError = Color.White,
-)
+val LightColorScheme =
+    lightColorScheme(
+        primary = Emerald,
+        onPrimary = Onyx,
+        primaryContainer = MintEmerald,
+        onPrimaryContainer = Onyx,
+        secondary = MintEmerald,
+        onSecondary = Onyx,
+        background = Color(0xFFF7F9F8),
+        onBackground = Onyx,
+        surface = Color.White,
+        onSurface = Onyx,
+        error = ErrorRed,
+        onError = Color.White
+    )
 
-val DarkColorScheme = darkColorScheme(
-    primary = Emerald,
-    onPrimary = Onyx,
-    primaryContainer = Jade,
-    onPrimaryContainer = OnSurfaceWhite,
-    secondary = MintEmerald,
-    onSecondary = Onyx,
-    background = Onyx,
-    onBackground = OnSurfaceWhite,
-    surface = Onyx,
-    onSurface = OnSurfaceWhite,
-    surfaceVariant = SurfaceContainer,
-    onSurfaceVariant = OnSurfaceVariant,
-    error = ErrorRed,
-    onError = Onyx,
-    outline = SurfaceContainerHigh,
-    surfaceContainerLow = SurfaceContainerLow,
-    surfaceContainer = SurfaceContainer,
-    surfaceContainerHigh = SurfaceContainerHigh,
-    surfaceContainerHighest = SurfaceContainerHighest
-)
+val DarkColorScheme =
+    darkColorScheme(
+        primary = Emerald,
+        onPrimary = Onyx,
+        primaryContainer = Jade,
+        onPrimaryContainer = OnSurfaceWhite,
+        secondary = MintEmerald,
+        onSecondary = Onyx,
+        background = Onyx,
+        onBackground = OnSurfaceWhite,
+        surface = Onyx,
+        onSurface = OnSurfaceWhite,
+        surfaceVariant = SurfaceContainer,
+        onSurfaceVariant = OnSurfaceVariant,
+        error = ErrorRed,
+        onError = Onyx,
+        outline = SurfaceContainerHigh,
+        surfaceContainerLow = SurfaceContainerLow,
+        surfaceContainer = SurfaceContainer,
+        surfaceContainerHigh = SurfaceContainerHigh,
+        surfaceContainerHighest = SurfaceContainerHighest
+    )

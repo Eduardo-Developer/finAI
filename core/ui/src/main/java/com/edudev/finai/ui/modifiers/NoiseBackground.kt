@@ -8,9 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.unit.IntSize
 import kotlin.random.Random
 
 /**
@@ -18,9 +15,10 @@ import kotlin.random.Random
  * Matches the "Obsidian Ledger" aesthetic.
  */
 fun Modifier.noiseBackground(opacity: Float = 0.05f): Modifier = composed {
-    val noiseBitmap = remember {
-        createNoiseBitmap(200, 200)
-    }
+    val noiseBitmap =
+        remember {
+            createNoiseBitmap(200, 200)
+        }
 
     this.drawBehind {
         val imageBitmap = noiseBitmap.asImageBitmap()

@@ -3,13 +3,12 @@ package com.edudev.finai.presentation.components.navigation
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -32,7 +31,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -60,10 +58,7 @@ private val NotchRadius = (FabSize / 2) + 8.dp
  * Each half of the semicircle is approximated by a cubic bezier using the
  * standard k = 0.5523 constant for quarter-circle approximation.
  */
-private fun DrawScope.drawNotchedBackground(
-    color: Color,
-    notchRadiusPx: Float
-) {
+private fun DrawScope.drawNotchedBackground(color: Color, notchRadiusPx: Float) {
     val w = size.width
     val h = size.height
     val cx = w / 2f
@@ -71,41 +66,51 @@ private fun DrawScope.drawNotchedBackground(
     // Standard constant for approximating a quarter-circle with a cubic bezier
     val k = 0.5522847498f
 
-    val path = Path().apply {
-        moveTo(0f, 0f)
+    val path =
+        Path().apply {
+            moveTo(0f, 0f)
 
-        // ── Left flat part ──────────────────────────────────────────────────
-        lineTo(cx - notchRadiusPx, 0f)
+            // ── Left flat part ──────────────────────────────────────────────────
+            lineTo(cx - notchRadiusPx, 0f)
 
-        // ── Left quarter-circle: (cx-R, 0) → (cx, R) ──────────────────────
-        cubicTo(
-            cx - notchRadiusPx,           k * notchRadiusPx, // CP1
-            cx - (k * notchRadiusPx),     notchRadiusPx,     // CP2
-            cx,                           notchRadiusPx      // end (bottom of arc)
-        )
+            // ── Left quarter-circle: (cx-R, 0) → (cx, R) ──────────────────────
+            cubicTo(
+                cx - notchRadiusPx,
+                // CP1
+                k * notchRadiusPx,
+                cx - (k * notchRadiusPx),
+                // CP2
+                notchRadiusPx,
+                cx,
+                // end (bottom of arc)
+                notchRadiusPx
+            )
 
-        // ── Right quarter-circle: (cx, R) → (cx+R, 0) ─────────────────────
-        cubicTo(
-            cx + (k * notchRadiusPx),     notchRadiusPx,     // CP1
-            cx + notchRadiusPx,           k * notchRadiusPx, // CP2
-            cx + notchRadiusPx,           0f                 // end
-        )
+            // ── Right quarter-circle: (cx, R) → (cx+R, 0) ─────────────────────
+            cubicTo(
+                cx + (k * notchRadiusPx),
+                // CP1
+                notchRadiusPx,
+                cx + notchRadiusPx,
+                // CP2
+                k * notchRadiusPx,
+                cx + notchRadiusPx,
+                // end
+                0f
+            )
 
-        // ── Right flat part ─────────────────────────────────────────────────
-        lineTo(w, 0f)
-        lineTo(w, h)
-        lineTo(0f, h)
-        close()
-    }
+            // ── Right flat part ─────────────────────────────────────────────────
+            lineTo(w, 0f)
+            lineTo(w, h)
+            lineTo(0f, h)
+            close()
+        }
 
     drawPath(path = path, color = color)
 }
 
 @Composable
-fun BottomNavigationBar(
-    navController: NavHostController,
-    onAddClick: () -> Unit
-) {
+fun BottomNavigationBar(navController: NavHostController, onAddClick: () -> Unit) {
     val leftItems = listOf(Screen.Dashboard, Screen.History)
     val rightItems = listOf(Screen.Settings)
 
@@ -115,14 +120,16 @@ fun BottomNavigationBar(
     val fabOverlapDp = FabSize / 2 // how much the FAB pokes above the nav bar
 
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .height(NavBarHeight + fabOverlapDp)
     ) {
         // ---- Canvas-drawn notched background ----
         Canvas(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .height(NavBarHeight)
                 .align(Alignment.BottomCenter)
@@ -133,18 +140,18 @@ fun BottomNavigationBar(
             )
         }
 
-        // ---- Left navigation items ----
+        // ---- Navigation Items Row ----
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .align(Alignment.BottomStart)
-                .height(NavBarHeight)
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .height(NavBarHeight),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Left side items
             leftItems.forEach { screen ->
                 NavigationBarItem(
+                    modifier = Modifier.weight(1f),
                     icon = { Icon(requireNotNull(screen.icon), contentDescription = null) },
                     label = { Text(requireNotNull(screen.title), style = MaterialTheme.typography.labelSmall) },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
@@ -157,27 +164,23 @@ fun BottomNavigationBar(
                     ),
                     onClick = {
                         navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = false
+                            }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                         }
                     }
                 )
             }
-        }
 
-        // ---- Right navigation items ----
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .align(Alignment.BottomEnd)
-                .height(NavBarHeight)
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            // Spacer for FAB area - Adjusted for better clearance
+            Spacer(modifier = Modifier.weight(1.2f))
+
+            // Right side items
             rightItems.forEach { screen ->
                 NavigationBarItem(
+                    modifier = Modifier.weight(1f),
                     icon = { Icon(requireNotNull(screen.icon), contentDescription = null) },
                     label = { Text(requireNotNull(screen.title), style = MaterialTheme.typography.labelSmall) },
                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
@@ -190,9 +193,11 @@ fun BottomNavigationBar(
                     ),
                     onClick = {
                         navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = false
+                            }
                             launchSingleTop = true
-                            restoreState = true
+                            restoreState = false
                         }
                     }
                 )
@@ -201,7 +206,8 @@ fun BottomNavigationBar(
 
         // ---- Centered FAB ----
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(FabSize)
                 .align(Alignment.TopCenter)
                 .shadow(

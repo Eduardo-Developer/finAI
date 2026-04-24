@@ -9,14 +9,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.edudev.finai.domain.repository.PreferencesRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class PreferencesRepositoryImpl @Inject constructor(
+class PreferencesRepositoryImpl
+@Inject
+constructor(
     @ApplicationContext private val context: Context,
     private val encryptedPrefs: SharedPreferences
 ) : PreferencesRepository {
@@ -31,17 +33,20 @@ class PreferencesRepositoryImpl @Inject constructor(
         private const val KEY_USER_PASS = "biometric_user_pass"
     }
 
-    override val isAIEnabled: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[AI_ENABLED_KEY] ?: true
-    }
+    override val isAIEnabled: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[AI_ENABLED_KEY] ?: true
+        }
 
-    override val isDarkTheme: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[DARK_THEME_KEY] ?: false
-    }
+    override val isDarkTheme: Flow<Boolean> =
+        dataStore.data.map { preferences ->
+            preferences[DARK_THEME_KEY] ?: false
+        }
 
-    override val isBiometricAuthEnabled: Flow<Boolean> = dataStore.data.map {
-        it[IS_BIOMETRIC_AUTH_ENABLED] ?: false
-    }
+    override val isBiometricAuthEnabled: Flow<Boolean> =
+        dataStore.data.map {
+            it[IS_BIOMETRIC_AUTH_ENABLED] ?: false
+        }
 
     override suspend fun setAIEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->

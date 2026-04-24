@@ -11,10 +11,7 @@ import com.edudev.finai.presentation.ui.signup.SignUpScreen
 import com.edudev.finai.presentation.ui.transaction.AddTransactionScreen
 
 @Composable
-fun RootNavigationGraph (
-    isUserLoggedIn: () -> Boolean,
-    onLogout: () -> Unit,
-) {
+fun RootNavigationGraph(isUserLoggedIn: () -> Boolean, onLogout: () -> Unit) {
     val navController = rememberNavController()
     val startDestination =
         if (isUserLoggedIn()) Screen.Main.route else Screen.Login.route
@@ -59,7 +56,7 @@ fun RootNavigationGraph (
 
         composable(Screen.AddTransaction.route) {
             AddTransactionScreen(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

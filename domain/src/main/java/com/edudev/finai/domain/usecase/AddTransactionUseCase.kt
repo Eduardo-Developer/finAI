@@ -4,7 +4,9 @@ import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.repository.TransactionRepository
 import javax.inject.Inject
 
-class AddTransactionUseCase @Inject constructor(
+class AddTransactionUseCase
+@Inject
+constructor(
     private val repository: TransactionRepository
 ) {
     suspend operator fun invoke(transaction: Transaction): Long {

@@ -16,7 +16,6 @@ import org.mockito.kotlin.whenever
 
 @ExtendWith(MockitoExtension::class)
 class GetUserDataUseCaseTest {
-
     @Mock
     private lateinit var mockAuthRepository: AuthRepository
 

@@ -24,7 +24,14 @@ fun BottomNavGraph(
         modifier = modifier
     ) {
         composable(route = Screen.Dashboard.route) {
-            DashboardScreen()
+            DashboardScreen(
+                onNavigateToHistory = {
+                    navController.navigate(Screen.History.route) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable(route = Screen.History.route) {

@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,12 +42,14 @@ fun FinAiButton(
     text: String,
     icon: ImageVector? = null
 ) {
-    val gradient = Brush.linearGradient(
-        colors = listOf(Emerald, Jade)
-    )
+    val gradient =
+        Brush.linearGradient(
+            colors = listOf(Emerald, Jade)
+        )
 
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .height(60.dp)
             .shadow(
@@ -87,7 +88,8 @@ fun FinAiButton(
                 }
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.headlineSmall.copy(
+                    style =
+                    MaterialTheme.typography.headlineSmall.copy(
                         color = Onyx,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold

@@ -15,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.edudev.finai.R
@@ -29,13 +29,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun RecentActivitySection(
-    transactions: List<Transaction>,
-    onViewAllClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun RecentActivitySection(transactions: List<Transaction>, onViewAllClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(32.dp)),
         color = MaterialTheme.colorScheme.surfaceContainerLow
@@ -68,7 +65,7 @@ fun RecentActivitySection(
                 transactions.take(3).forEach { transaction ->
                     RecentTransactionItem(transaction = transaction)
                 }
-                
+
                 if (transactions.isEmpty()) {
                     Text(
                         text = stringResource(R.string.msg_no_recent_activity),
@@ -88,7 +85,8 @@ private fun RecentTransactionItem(transaction: Transaction) {
     val dateFormat = SimpleDateFormat("MMM d, h:mm a", Locale.US)
 
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable { /* Detail */ }
@@ -96,7 +94,8 @@ private fun RecentTransactionItem(transaction: Transaction) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainer),
@@ -105,7 +104,11 @@ private fun RecentTransactionItem(transaction: Transaction) {
             Icon(
                 imageVector = getCategoryIcon(transaction.category),
                 contentDescription = null,
-                tint = if (transaction.type == TransactionType.INCOME) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                tint = if (transaction.type == TransactionType.INCOME) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -130,7 +133,11 @@ private fun RecentTransactionItem(transaction: Transaction) {
                 currencyFormat.format(transaction.amount).replace("R$", "").trim()
             }",
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.ExtraBold),
-            color = if (transaction.type == TransactionType.INCOME) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+            color = if (transaction.type == TransactionType.INCOME) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            }
         )
     }
 }
@@ -150,7 +157,8 @@ private fun RecentActivitySectionPreview() {
     FinAITheme {
         Box(modifier = Modifier.padding(16.dp)) {
             RecentActivitySection(
-                transactions = listOf(
+                transactions =
+                listOf(
                     Transaction(
                         id = 1L,
                         userId = "1",

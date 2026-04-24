@@ -14,15 +14,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SecurityModule {
-
     private const val PREF_FILE_NAME = "secret_user_credentials"
 
     @Provides
     @Singleton
     fun provideEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+        val masterKey =
+            MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
         return try {
             createEncryptedSharedPreferences(context, masterKey)
@@ -33,10 +33,7 @@ object SecurityModule {
         }
     }
 
-    private fun createEncryptedSharedPreferences(
-        context: Context,
-        masterKey: MasterKey
-    ): SharedPreferences {
+    private fun createEncryptedSharedPreferences(context: Context, masterKey: MasterKey): SharedPreferences {
         return EncryptedSharedPreferences.create(
             context,
             PREF_FILE_NAME,

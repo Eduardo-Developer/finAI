@@ -47,6 +47,10 @@
 
     <!-- Profile Edit -->
     <string name="edit_profile_title">Editar Perfil</string>
+    <string name="label_full_name_caps">NOME COMPLETO</string>
+    <string name="label_phone_number_caps">NÚMERO DE TELEFONE</string>
+    <string name="btn_change_photo">Alterar Foto</string>
+    <string name="btn_save_changes">Salvar Alterações</string>
 
     <!-- Biometric -->
     <string name="biometric_login_title">Login com Biometria</string>

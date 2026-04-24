@@ -21,13 +21,10 @@ import com.edudev.finai.presentation.viewmodel.TransactionFilter
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun FilterChips(
-    modifier: Modifier = Modifier,
-    selectedFilter: TransactionFilter,
-    onFilterSelected: (TransactionFilter) -> Unit
-) {
+fun FilterChips(modifier: Modifier = Modifier, selectedFilter: TransactionFilter, onFilterSelected: (TransactionFilter) -> Unit) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -40,31 +37,30 @@ fun FilterChips(
         )
         FilterPill(
             text = "Receitas",
-            isSelected = selectedFilter is TransactionFilter.ByType &&
-                    selectedFilter.type == TransactionType.INCOME,
+            isSelected =
+            selectedFilter is TransactionFilter.ByType &&
+                selectedFilter.type == TransactionType.INCOME,
             onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.INCOME)) }
         )
         FilterPill(
             text = "Despesas",
-            isSelected = selectedFilter is TransactionFilter.ByType &&
-                    selectedFilter.type == TransactionType.EXPENSE,
+            isSelected =
+            selectedFilter is TransactionFilter.ByType &&
+                selectedFilter.type == TransactionType.EXPENSE,
             onClick = { onFilterSelected(TransactionFilter.ByType(TransactionType.EXPENSE)) }
         )
     }
 }
 
 @Composable
-private fun FilterPill(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
+private fun FilterPill(text: String, isSelected: Boolean, onClick: () -> Unit) {
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer
     val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
     val borderColor = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
 
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .clip(CircleShape)
             .background(backgroundColor)
             .then(
@@ -76,7 +72,8 @@ private fun FilterPill(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.labelLarge.copy(
+            style =
+            MaterialTheme.typography.labelLarge.copy(
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                 letterSpacing = 0.5.sp
             ),

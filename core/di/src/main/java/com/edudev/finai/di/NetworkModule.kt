@@ -9,17 +9,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     private const val BASE_URL =
         "https://generativelanguage.googleapis.com/"
 
@@ -34,9 +33,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+        val loggingInterceptor =
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
 
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
@@ -48,10 +48,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(
-        okHttpClient: OkHttpClient,
-        moshi: Moshi
-    ): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
@@ -65,10 +62,10 @@ object NetworkModule {
         return GenerativeModel(
             modelName = "gemini-robotics-er-1.5-preview",
             apiKey = BuildConfig.geminiApiKey,
-            generationConfig = generationConfig {
+            generationConfig =
+            generationConfig {
                 responseMimeType = "application/json"
             }
         )
     }
 }
-

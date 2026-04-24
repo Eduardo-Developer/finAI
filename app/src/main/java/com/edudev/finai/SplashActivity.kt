@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 import kotlinx.coroutines.delay
 
@@ -41,12 +40,15 @@ class SplashActivity : ComponentActivity() {
 @Composable
 fun SplashScreen(onSplashEnd: () -> Unit) {
     var startAnimation by remember { mutableStateOf(false) }
-    val alphaAnim = animateFloatAsState(
-        targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = 800
-        ), label = "SplashAlpha"
-    )
+    val alphaAnim =
+        animateFloatAsState(
+            targetValue = if (startAnimation) 1f else 0f,
+            animationSpec =
+            tween(
+                durationMillis = 800
+            ),
+            label = "SplashAlpha"
+        )
 
     LaunchedEffect(key1 = true) {
         startAnimation = true
@@ -60,7 +62,8 @@ fun SplashScreen(onSplashEnd: () -> Unit) {
 @Composable
 fun Splash(alpha: Float) {
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .background(MaterialTheme.colorScheme.primary)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -68,7 +71,8 @@ fun Splash(alpha: Float) {
         Image(
             painter = painterResource(id = com.edudev.finai.R.drawable.finailogo),
             contentDescription = "FinAI Logo",
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth(0.5f)
                 .aspectRatio(1f)
                 .alpha(alpha = alpha)

@@ -19,8 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import com.edudev.finai.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,11 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 import com.edudev.finai.ui.theme.MintEmerald
 import com.edudev.finai.ui.theme.OnSurfaceVariant
@@ -42,23 +41,26 @@ import com.edudev.finai.ui.theme.SurfaceContainerHighest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategorySelector(
-    modifier: Modifier = Modifier,
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit,
-    error: String?
-) {
-    val categories = listOf(
-        "Alimentação", "Transporte", "Moradia", "Saúde",
-        "Educação", "Lazer", "Compras", "Outros"
-    )
+fun CategorySelector(modifier: Modifier = Modifier, selectedCategory: String, onCategorySelected: (String) -> Unit, error: String?) {
+    val categories =
+        listOf(
+            "Alimentação",
+            "Transporte",
+            "Moradia",
+            "Saúde",
+            "Educação",
+            "Lazer",
+            "Compras",
+            "Outros"
+        )
 
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         Text(
             text = stringResource(R.string.label_category),
-            style = MaterialTheme.typography.labelSmall.copy(
+            style =
+            MaterialTheme.typography.labelSmall.copy(
                 color = MintEmerald,
                 letterSpacing = 1.sp,
                 fontWeight = FontWeight.Bold
@@ -68,7 +70,8 @@ fun CategorySelector(
 
         Box {
             Row(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(24.dp))
                     .background(SurfaceContainerHighest)
@@ -82,11 +85,12 @@ fun CategorySelector(
                     tint = OnSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
-                
+
                 Text(
                     text = selectedCategory.ifBlank { stringResource(R.string.placeholder_category) },
                     modifier = Modifier.padding(start = 12.dp).weight(1f),
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style =
+                    MaterialTheme.typography.bodyMedium.copy(
                         color = if (selectedCategory.isBlank()) OnSurfaceVariant.copy(alpha = 0.5f) else OnSurfaceWhite,
                         fontWeight = FontWeight.Medium
                     )
@@ -103,18 +107,19 @@ fun CategorySelector(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth(0.9f)
                     .background(SurfaceContainerHighest)
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
-                        text = { 
+                        text = {
                             Text(
                                 text = category,
                                 color = OnSurfaceWhite,
                                 style = MaterialTheme.typography.bodyMedium
-                            ) 
+                            )
                         },
                         onClick = {
                             onCategorySelected(category)

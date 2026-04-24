@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -30,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,25 +50,21 @@ import com.edudev.finai.presentation.components.addTransactionScreen.Transaction
 import com.edudev.finai.presentation.viewmodel.TransactionViewModel
 import com.edudev.finai.ui.theme.Emerald
 import com.edudev.finai.ui.theme.FinAITheme
-import com.edudev.finai.ui.theme.Jade
-import com.edudev.finai.ui.theme.MintEmerald
 import com.edudev.finai.ui.theme.OnSurfaceVariant
 import com.edudev.finai.ui.theme.OnSurfaceWhite
 import com.edudev.finai.ui.theme.Onyx
 import com.edudev.finai.ui.theme.SurfaceContainerLow
 
 @Composable
-fun AddTransactionScreen(
-    onBackClick: () -> Unit,
-    viewModel: TransactionViewModel = hiltViewModel()
-) {
+fun AddTransactionScreen(onBackClick: () -> Unit, viewModel: TransactionViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Onyx,
         topBar = {
             Row(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -85,7 +81,8 @@ fun AddTransactionScreen(
                 }
                 Text(
                     text = stringResource(com.edudev.finai.R.string.new_transaction_title),
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style =
+                    MaterialTheme.typography.titleLarge.copy(
                         color = OnSurfaceWhite,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = (-0.02).sp
@@ -96,7 +93,8 @@ fun AddTransactionScreen(
         },
         bottomBar = {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .padding(24.dp)
                     .navigationBarsPadding()
@@ -111,7 +109,8 @@ fun AddTransactionScreen(
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(horizontal = 24.dp),
@@ -130,7 +129,8 @@ fun AddTransactionScreen(
             // Amount Input Group
             Text(
                 text = stringResource(R.string.label_amount),
-                style = MaterialTheme.typography.labelSmall.copy(
+                style =
+                MaterialTheme.typography.labelSmall.copy(
                     color = OnSurfaceVariant,
                     letterSpacing = 1.sp,
                     fontWeight = FontWeight.Bold
@@ -146,24 +146,47 @@ fun AddTransactionScreen(
             ) {
                 Text(
                     text = "R$",
-                    style = MaterialTheme.typography.displaySmall.copy(
+                    style =
+                    MaterialTheme.typography.displaySmall.copy(
                         color = OnSurfaceVariant,
                         fontWeight = FontWeight.SemiBold
                     )
                 )
                 Spacer(Modifier.width(12.dp))
                 BasicTextField(
-                    value = uiState.amount,
-                    onValueChange = { viewModel.setAmount(it) },
-                    textStyle = MaterialTheme.typography.displayLarge.copy(
+                    value = TextFieldValue(
+                        text = uiState.amount,
+                        selection = TextRange(uiState.amount.length)
+                    ),
+                    onValueChange = { newValue ->
+                        viewModel.setAmount(newValue.text)
+                    },
+                    textStyle =
+                    MaterialTheme.typography.displayLarge.copy(
                         color = OnSurfaceWhite,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = (-0.02).sp
                     ),
                     cursorBrush = SolidColor(Emerald),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    modifier = Modifier.fillMaxWidth(0.7f)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(0.7f),
+                    decorationBox = { innerTextField ->
+                        Box(contentAlignment = Alignment.Center) {
+                            if (uiState.amount.isEmpty()) {
+                                Text(
+                                    text = "0,00",
+                                    style = MaterialTheme.typography.displayLarge.copy(
+                                        color = OnSurfaceWhite.copy(alpha = 0.3f),
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        letterSpacing = (-0.02).sp
+                                    )
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
                 )
             }
 
@@ -171,7 +194,8 @@ fun AddTransactionScreen(
 
             // Form Section
             Column(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .background(SurfaceContainerLow, RoundedCornerShape(32.dp))
                     .padding(24.dp),
@@ -182,7 +206,7 @@ fun AddTransactionScreen(
                     onCategorySelected = { viewModel.setCategory(it) },
                     error = uiState.categoryError
                 )
-                
+
                 FormField(
                     label = stringResource(R.string.label_description),
                     value = uiState.description,
@@ -190,7 +214,7 @@ fun AddTransactionScreen(
                     icon = Icons.Default.Edit,
                     placeholder = stringResource(R.string.placeholder_description)
                 )
-                
+
                 DateSelector(
                     selectedDate = uiState.date,
                     onDateSelected = { viewModel.setDate(it) }

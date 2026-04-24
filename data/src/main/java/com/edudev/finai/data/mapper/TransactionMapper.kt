@@ -46,7 +46,8 @@ fun Transaction.toDto(): TransactionData {
 fun InsightDto.toDomain(): AIInsight {
     return AIInsight(
         message = message,
-        type = when (type.lowercase()) {
+        type =
+        when (type.lowercase()) {
             "warning" -> InsightType.WARNING
             "suggestion" -> InsightType.SUGGESTION
             else -> InsightType.POSITIVE

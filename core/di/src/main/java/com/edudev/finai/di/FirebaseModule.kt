@@ -15,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 object FirebaseModule {
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
     @Provides
     fun provideFirebaseDatabase(): FirebaseDatabase = FirebaseDatabase.getInstance()
 
@@ -22,5 +23,4 @@ object FirebaseModule {
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
         return context.contentResolver
     }
-
 }

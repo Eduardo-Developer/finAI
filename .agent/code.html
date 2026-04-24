@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile - FinAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#591b18",
+                        "surface-tint": "#00e475",
+                        "on-surface": "#e1e3df",
+                        "on-primary-fixed": "#00210b",
+                        "tertiary-fixed": "#ffdad6",
+                        "surface-container-low": "#191c1a",
+                        "secondary": "#83d7b2",
+                        "secondary-container": "#006749",
+                        "on-primary-container": "#2ef381",
+                        "on-background": "#e1e3df",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#bec9c1",
+                        "primary-fixed": "#62ff96",
+                        "tertiary-fixed-dim": "#ffb4ac",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#76312c",
+                        "primary-fixed-dim": "#00e475",
+                        "on-error": "#690005",
+                        "surface-container": "#1d201e",
+                        "surface": "#111412",
+                        "tertiary-container": "#90453f",
+                        "surface-variant": "#323533",
+                        "primary-container": "#006a33",
+                        "on-secondary-fixed": "#002115",
+                        "inverse-surface": "#e1e3df",
+                        "surface-bright": "#373a37",
+                        "surface-container-highest": "#323533",
+                        "background": "#111412",
+                        "on-primary-fixed-variant": "#005226",
+                        "on-secondary-container": "#8ee2bc",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#006d35",
+                        "on-primary": "#003918",
+                        "inverse-on-surface": "#2e312f",
+                        "secondary-fixed": "#9ff4cd",
+                        "primary": "#00e475",
+                        "on-secondary-fixed-variant": "#005139",
+                        "secondary-fixed-dim": "#83d7b2",
+                        "surface-container-lowest": "#0c0f0d",
+                        "on-secondary": "#003826",
+                        "surface-container-high": "#282b28",
+                        "tertiary": "#ffb4ac",
+                        "on-tertiary-container": "#ffc7c1",
+                        "outline-variant": "#3f4943",
+                        "outline": "#88938c",
+                        "on-tertiary-fixed": "#3d0606",
+                        "surface-dim": "#111412"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-[#111412] dark:bg-[#111412] text-[#00E475] font-['Manrope'] tracking-tight docked full-width top-0 no-line tonal-shift flat no-shadows flex justify-between items-center px-6 h-16 w-full sticky z-40">
+<button class="text-[#BEC9C1] hover:bg-[#1D201E] transition-colors active:scale-95 duration-200 p-2 rounded-full -ml-2">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tighter text-[#E1E3DF]">Edit Profile</h1>
+<div class="w-10"></div> <!-- Spacer to center title -->
+</header>
+<main class="px-6 pt-8 pb-12 max-w-md mx-auto">
+<!-- Avatar Section -->
+<div class="flex flex-col items-center justify-center mb-10">
+<div class="relative w-28 h-28 mb-4">
+<img alt="Sarah Jenkins profile photo" class="w-full h-full object-cover rounded-full shadow-[0_8px_32px_rgba(0,228,117,0.1)] border-2 border-surface-container-highest" data-alt="Close up professional headshot of a confident young woman with warm lighting and subtle dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSOcj-r8Cxy25FbJhSTIHBBhjxwhJrvjgIavBeqq9ZUy7uXZ3lPBrZd5oc-QjiPZGXxXmOqVcVTDjRe9S_Jbri7YcxDQAW0VeYp-Wk1q11o5AH0sdLuVi4GG5Bq5RHbAqVUmK1-4-ejzQ07AiwcYPxMGjhg_gv1fAvk_F2ibWSv8cWVU9BFUPqspOrxSv4bjKv2MqcgzNPjfNNjX7gSjoHMcpRcf_6kkpqIEaeXkd81V8g6sK1J1Cx96ErutR4F6ppvfadLbuCBHCU"/>
+<button class="absolute bottom-0 right-0 bg-surface-container-high rounded-full p-2 border border-outline-variant shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+<button class="text-primary font-medium text-sm hover:underline active:opacity-80 transition-opacity">
+                Change Photo
+            </button>
+</div>
+<!-- Form Section -->
+<form class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-medium uppercase tracking-[0.05em] text-on-surface-variant ml-1" for="fullName">Full Name</label>
+<div class="relative bg-surface-container-highest rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-primary transition-all duration-200">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="person">person</span>
+</div>
+<input class="w-full bg-transparent border-none text-on-surface placeholder-on-surface-variant py-4 pl-12 pr-4 focus:ring-0 text-base font-body outline-none" id="fullName" placeholder="Enter your full name" type="text" value="Sarah Jenkins"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-medium uppercase tracking-[0.05em] text-on-surface-variant ml-1" for="email">Email Address</label>
+<div class="relative bg-surface-container-highest rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-primary transition-all duration-200">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="mail">mail</span>
+</div>
+<input class="w-full bg-transparent border-none text-on-surface placeholder-on-surface-variant py-4 pl-12 pr-4 focus:ring-0 text-base font-body outline-none" id="email" placeholder="Enter your email" type="email" value="sarah.jenkins@example.com"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[10px] font-medium uppercase tracking-[0.05em] text-on-surface-variant ml-1" for="phone">Phone Number</label>
+<div class="relative bg-surface-container-highest rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-primary transition-all duration-200">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="call">call</span>
+</div>
+<input class="w-full bg-transparent border-none text-on-surface placeholder-on-surface-variant py-4 pl-12 pr-4 focus:ring-0 text-base font-body outline-none" id="phone" placeholder="Enter your phone number" type="tel" value="+1 (555) 123-4567"/>
+</div>
+</div>
+<!-- Save Button -->
+<div class="pt-8">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-4 rounded-xl shadow-[0_8px_24px_rgba(0,228,117,0.15)] active:scale-95 transition-all duration-200 flex justify-center items-center gap-2" type="button">
+                    Save Changes
+                </button>
+</div>
+</form>
+</main>
+</body></html>

@@ -20,7 +20,8 @@ fun FinAiTopAppBar(
         title = title,
         actions = actions,
         navigationIcon = navigationIcon,
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors =
+        TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.onBackground,
             actionIconContentColor = MaterialTheme.colorScheme.onBackground,

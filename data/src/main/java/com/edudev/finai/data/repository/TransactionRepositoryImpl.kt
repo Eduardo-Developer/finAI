@@ -1,6 +1,5 @@
 package com.edudev.finai.data.repository
 
-import androidx.browser.R
 import com.edudev.finai.data.local.dao.TransactionDao
 import com.edudev.finai.data.mapper.toDomain
 import com.edudev.finai.data.mapper.toEntity
@@ -10,21 +9,22 @@ import com.edudev.finai.domain.model.MonthlyChartData
 import com.edudev.finai.domain.model.Transaction
 import com.edudev.finai.domain.model.TransactionType
 import com.edudev.finai.domain.repository.TransactionRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
-class TransactionRepositoryImpl @Inject constructor(
+class TransactionRepositoryImpl
+@Inject
+constructor(
     private val transactionDao: TransactionDao
 ) : TransactionRepository {
-
     override fun getAllTransactions(userId: String): Flow<List<Transaction>> {
         return transactionDao.getAllTransactions(userId = userId).map { entities ->
             entities.map { it.toDomain() }
@@ -75,12 +75,8 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getTransactionsByDateRange(
-        userId: String,
-        startDate: Date,
-        endDate: Date
-    ): Flow<List<Transaction>> {
-        return transactionDao.getTransactionsByDateRange(userId,startDate, endDate).map { entities ->
+    override fun getTransactionsByDateRange(userId: String, startDate: Date, endDate: Date): Flow<List<Transaction>> {
+        return transactionDao.getTransactionsByDateRange(userId, startDate, endDate).map { entities ->
             entities.map { it.toDomain() }
         }
     }
@@ -97,14 +93,10 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionDao.deleteTransaction(userId, id)
     }
 
-    override suspend fun getTotalByTypeAndDateRange(
-        userId: String,
-        type: TransactionType,
-        startDate: Date,
-        endDate: Date
-    ): Double = withContext(Dispatchers.IO) {
-        transactionDao.getTotalByTypeAndDateRange(userId, type, startDate, endDate) ?: 0.0
-    }
+    override suspend fun getTotalByTypeAndDateRange(userId: String, type: TransactionType, startDate: Date, endDate: Date): Double =
+        withContext(Dispatchers.IO) {
+            transactionDao.getTotalByTypeAndDateRange(userId, type, startDate, endDate) ?: 0.0
+        }
 
     override suspend fun getCategorySpendings(
         userId: String,
@@ -119,93 +111,93 @@ class TransactionRepositoryImpl @Inject constructor(
             CategorySpending(
                 category = result.category,
                 total = result.total,
-                percentage = if (total > 0) ((result.total / total) * 100).toFloat() else 0f,
+                percentage = if (total > 0) ((result.total / total) * 100).toFloat() else 0f
             )
         }
     }
 
-    override suspend fun getDashboardData(userId: String, startDate: Date?, endDate: Date?): DashboardData =
-        withContext(Dispatchers.IO) {
-            val finalStartDate: Date
-            val finalEndDate: Date
+    override suspend fun getDashboardData(userId: String, startDate: Date?, endDate: Date?): DashboardData = withContext(Dispatchers.IO) {
+        val finalStartDate: Date
+        val finalEndDate: Date
 
-            if (startDate != null && endDate != null) {
-                finalStartDate = startDate
-                finalEndDate = endDate
-            } else {
-                val calendar = Calendar.getInstance()
-                finalEndDate = calendar.time
+        if (startDate != null && endDate != null) {
+            finalStartDate = startDate
+            finalEndDate = endDate
+        } else {
+            val calendar = Calendar.getInstance()
+            finalEndDate = calendar.time
 
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                finalStartDate = calendar.time
-            }
-
-            val monthlyIncome =
-                getTotalByTypeAndDateRange(userId, TransactionType.INCOME, finalStartDate, finalEndDate)
-            val monthlyExpense =
-                getTotalByTypeAndDateRange(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
-            val totalBalance = monthlyIncome - monthlyExpense
-
-            val categorySpendings =
-                getCategorySpendings(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
-
-            // Generate monthly chart data (last 6 months)
-            val monthlyChartData = generateMonthlyChartData(userId = userId)
-
-            DashboardData(
-                totalBalance = totalBalance,
-                monthlyIncome = monthlyIncome,
-                monthlyExpense = monthlyExpense,
-                categorySpendings = categorySpendings,
-                aiInsights = emptyList(), // Will be populated by ViewModel
-                monthlyChartData = monthlyChartData
-            )
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            finalStartDate = calendar.time
         }
 
-    private suspend fun generateMonthlyChartData(userId: String): List<MonthlyChartData> =
-        withContext(Dispatchers.IO) {
-            val calendar = Calendar.getInstance()
-            val months = mutableListOf<MonthlyChartData>()
-            val monthNames = arrayOf(
+        val monthlyIncome =
+            getTotalByTypeAndDateRange(userId, TransactionType.INCOME, finalStartDate, finalEndDate)
+        val monthlyExpense =
+            getTotalByTypeAndDateRange(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
+        val totalBalance = monthlyIncome - monthlyExpense
+
+        val categorySpendings =
+            getCategorySpendings(userId, TransactionType.EXPENSE, finalStartDate, finalEndDate)
+
+        // Generate monthly chart data (last 6 months)
+        val monthlyChartData = generateMonthlyChartData(userId = userId)
+
+        DashboardData(
+            totalBalance = totalBalance,
+            monthlyIncome = monthlyIncome,
+            monthlyExpense = monthlyExpense,
+            categorySpendings = categorySpendings,
+            // Will be populated by ViewModel
+            aiInsights = emptyList(),
+            monthlyChartData = monthlyChartData
+        )
+    }
+
+    private suspend fun generateMonthlyChartData(userId: String): List<MonthlyChartData> = withContext(Dispatchers.IO) {
+        val calendar = Calendar.getInstance()
+        val months = mutableListOf<MonthlyChartData>()
+        val monthNames =
+            arrayOf(
                 "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
                 "Jul", "Ago", "Set", "Out", "Nov", "Dez"
             )
 
-            for (i in 5 downTo 0) {
-                calendar.add(Calendar.MONTH, -i)
-                val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH)
+        for (i in 5 downTo 0) {
+            calendar.add(Calendar.MONTH, -i)
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
 
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                val monthStart = calendar.time
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            val monthStart = calendar.time
 
-                calendar.add(Calendar.MONTH, 1)
-                calendar.add(Calendar.MILLISECOND, -1)
-                val monthEnd = calendar.time
+            calendar.add(Calendar.MONTH, 1)
+            calendar.add(Calendar.MILLISECOND, -1)
+            val monthEnd = calendar.time
 
-                val income = getTotalByTypeAndDateRange(userId, TransactionType.INCOME, monthStart, monthEnd)
-                val expense = getTotalByTypeAndDateRange(userId, TransactionType.EXPENSE, monthStart, monthEnd)
+            val income = getTotalByTypeAndDateRange(userId, TransactionType.INCOME, monthStart, monthEnd)
+            val expense = getTotalByTypeAndDateRange(userId, TransactionType.EXPENSE, monthStart, monthEnd)
 
-                months.add(
-                    MonthlyChartData(
-                        month = "${monthNames[month]}\n$year",
-                        income = income,
-                        expense = expense
-                    )
+            months.add(
+                MonthlyChartData(
+                    month = "${monthNames[month]}\n$year",
+                    income = income,
+                    expense = expense
                 )
+            )
 
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.YEAR, year)
-            }
-
-            months.reversed()
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.YEAR, year)
         }
+
+        months.reversed()
+    }
 }

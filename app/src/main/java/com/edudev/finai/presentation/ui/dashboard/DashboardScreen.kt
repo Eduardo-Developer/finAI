@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.edudev.finai.R
 import com.edudev.finai.domain.model.AIInsight
 import com.edudev.finai.domain.model.CategorySpending
 import com.edudev.finai.domain.model.DashboardData
@@ -38,21 +40,18 @@ import com.edudev.finai.presentation.components.dashboardScreen.ErrorView
 import com.edudev.finai.presentation.components.dashboardScreen.ShimmerTitlePlaceholder
 import com.edudev.finai.presentation.viewmodel.DashboardUiState
 import com.edudev.finai.presentation.viewmodel.DashboardViewModel
-import androidx.compose.ui.res.stringResource
-import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
-) {
+fun DashboardScreen(onNavigateToHistory: () -> Unit, viewModel: DashboardViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DashboardScreenContent(
         uiState = uiState,
+        onNavigateToHistory = onNavigateToHistory,
         onDateRangeSelected = { startDate, endDate ->
             viewModel.onDateFilterChanged(startDate, endDate)
         },
@@ -66,6 +65,7 @@ fun DashboardScreen(
 @Composable
 fun DashboardScreenContent(
     uiState: DashboardUiState,
+    onNavigateToHistory: () -> Unit,
     onDateRangeSelected: (Date?, Date?) -> Unit,
     onDismissDatePicker: () -> Unit,
     onShowDatePicker: () -> Unit,
@@ -92,7 +92,7 @@ fun DashboardScreenContent(
                     } else {
                         DashboardTopBarTitle(
                             name = uiState.userName,
-                            base64Image = uiState.userImage,
+                            base64Image = uiState.userImage
                         )
                     }
                 },
@@ -114,7 +114,8 @@ fun DashboardScreenContent(
 
             // Filter Indicator
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -131,7 +132,8 @@ fun DashboardScreenContent(
                 AssistChip(
                     onClick = onShowDatePicker,
                     label = { Text(filterText) },
-                    trailingIcon = if (uiState.filterStartDate != null) {
+                    trailingIcon =
+                    if (uiState.filterStartDate != null) {
                         {
                             IconButton(
                                 onClick = onClearDateFilter,
@@ -140,7 +142,9 @@ fun DashboardScreenContent(
                                 Icon(Icons.Default.Clear, contentDescription = "Limpar Filtro")
                             }
                         }
-                    } else null
+                    } else {
+                        null
+                    }
                 )
             }
 
@@ -152,7 +156,7 @@ fun DashboardScreenContent(
                     transactions = uiState.transactions,
                     aiInsights = if (uiState.isAIEnabled) uiState.aiInsights else emptyList(),
                     isLoadingAI = uiState.isLoadingAI,
-                    onViewAllTransactions = { /* Navigate to History */ },
+                    onViewAllTransactions = onNavigateToHistory,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -163,41 +167,48 @@ fun DashboardScreenContent(
 @Preview(showBackground = true)
 @Composable
 fun DashboardScreenPreview() {
-    val dummyInsights = listOf(
-        AIInsight("Você economizou 15% a mais que no mês passado!", InsightType.POSITIVE),
-        AIInsight("Seu gasto com alimentação subiu consideravelmente.", InsightType.WARNING)
-    )
-
-    val dummyTransactions = listOf(
-        Transaction(1, "u1", 150.0, "Alimentação", "Restaurante", TransactionType.EXPENSE, Date()),
-        Transaction(2, "u1", 2500.0, "Salário", "Emprego", TransactionType.INCOME, Date()),
-        Transaction(3, "u1", 50.0, "Transporte", "Uber", TransactionType.EXPENSE, Date())
-    )
-
-    val dummyDashboardData = DashboardData(
-        totalBalance = 2300.0,
-        monthlyIncome = 2500.0,
-        monthlyExpense = 200.0,
-        categorySpendings = listOf(
-            CategorySpending("Alimentação", 150.0, 0.75f),
-            CategorySpending("Transporte", 50.0, 0.25f)
-        ),
-        aiInsights = dummyInsights,
-        monthlyChartData = listOf(
-            MonthlyChartData("Jan", 2000.0, 1500.0),
-            MonthlyChartData("Feb", 2200.0, 1800.0),
-            MonthlyChartData("Mar", 2500.0, 200.0)
+    val dummyInsights =
+        listOf(
+            AIInsight("Você economizou 15% a mais que no mês passado!", InsightType.POSITIVE),
+            AIInsight("Seu gasto com alimentação subiu consideravelmente.", InsightType.WARNING)
         )
-    )
+
+    val dummyTransactions =
+        listOf(
+            Transaction(1, "u1", 150.0, "Alimentação", "Restaurante", TransactionType.EXPENSE, Date()),
+            Transaction(2, "u1", 2500.0, "Salário", "Emprego", TransactionType.INCOME, Date()),
+            Transaction(3, "u1", 50.0, "Transporte", "Uber", TransactionType.EXPENSE, Date())
+        )
+
+    val dummyDashboardData =
+        DashboardData(
+            totalBalance = 2300.0,
+            monthlyIncome = 2500.0,
+            monthlyExpense = 200.0,
+            categorySpendings =
+            listOf(
+                CategorySpending("Alimentação", 150.0, 0.75f),
+                CategorySpending("Transporte", 50.0, 0.25f)
+            ),
+            aiInsights = dummyInsights,
+            monthlyChartData =
+            listOf(
+                MonthlyChartData("Jan", 2000.0, 1500.0),
+                MonthlyChartData("Feb", 2200.0, 1800.0),
+                MonthlyChartData("Mar", 2500.0, 200.0)
+            )
+        )
 
     FinAITheme {
         DashboardScreenContent(
-            uiState = DashboardUiState(
+            uiState =
+            DashboardUiState(
                 userName = "Eduardo",
                 dashboardData = dummyDashboardData,
                 transactions = dummyTransactions,
                 aiInsights = dummyInsights
             ),
+            onNavigateToHistory = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},
@@ -212,10 +223,12 @@ fun DashboardScreenPreview() {
 fun DashboardScreenLoadingPreview() {
     FinAITheme {
         DashboardScreenContent(
-            uiState = DashboardUiState(
+            uiState =
+            DashboardUiState(
                 isLoading = true,
                 isLoadingAI = true
             ),
+            onNavigateToHistory = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},
@@ -230,9 +243,11 @@ fun DashboardScreenLoadingPreview() {
 fun DashboardScreenErrorPreview() {
     FinAITheme {
         DashboardScreenContent(
-            uiState = DashboardUiState(
+            uiState =
+            DashboardUiState(
                 error = "Ocorreu um erro ao carregar os dados."
             ),
+            onNavigateToHistory = {},
             onDateRangeSelected = { _, _ -> },
             onDismissDatePicker = {},
             onShowDatePicker = {},

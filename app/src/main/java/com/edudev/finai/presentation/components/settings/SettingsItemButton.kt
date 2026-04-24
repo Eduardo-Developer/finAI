@@ -20,14 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun SettingsItemButton(
-    modifier: Modifier = Modifier,
-    title: String,
-    description: String,
-    onClick: () -> Unit
-) {
+fun SettingsItemButton(modifier: Modifier = Modifier, title: String, description: String, onClick: () -> Unit) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp),
@@ -61,7 +57,7 @@ private fun SettingsItemButtonPreview() {
             modifier = Modifier.padding(PaddingValues(16.dp)),
             title = "Sair",
             description = "Desconectar sua conta do aplicativo",
-            onClick = {},
+            onClick = {}
         )
     }
 }

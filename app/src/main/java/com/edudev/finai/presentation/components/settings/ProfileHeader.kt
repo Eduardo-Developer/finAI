@@ -26,30 +26,29 @@ import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun ProfileHeader(
-    userName: String,
-    userImage: String,
-    onProfileClick: () -> Unit
-) {
+fun ProfileHeader(userName: String, userImage: String, onProfileClick: () -> Unit) {
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val imageBitmap = try {
-            val decodedString = Base64.decode(userImage, Base64.DEFAULT)
-            BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size).asImageBitmap()
-        } catch (e: Exception) {
-            null
-        }
+        val imageBitmap =
+            try {
+                val decodedString = Base64.decode(userImage, Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size).asImageBitmap()
+            } catch (e: Exception) {
+                null
+            }
 
         if (imageBitmap != null) {
             Image(
                 bitmap = imageBitmap,
                 contentDescription = "Foto de perfil",
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(60.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop

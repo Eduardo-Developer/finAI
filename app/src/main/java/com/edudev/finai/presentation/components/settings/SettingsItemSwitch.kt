@@ -16,14 +16,10 @@ import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun SettingsItemSwitch(
-    title: String,
-    description: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
+fun SettingsItemSwitch(title: String, description: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,

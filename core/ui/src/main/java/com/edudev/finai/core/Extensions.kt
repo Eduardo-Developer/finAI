@@ -23,17 +23,21 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     val startOffsetX by transition.animateFloat(
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
-        animationSpec = infiniteRepeatable(
+        animationSpec =
+        infiniteRepeatable(
             animation = tween(1000)
-        ), label = "shimmerAnimation"
+        ),
+        label = "shimmerAnimation"
     )
 
     background(
-        brush = Brush.linearGradient(
-            colors = listOf(
+        brush =
+        Brush.linearGradient(
+            colors =
+            listOf(
                 Color(0xFFB8B5B5),
                 Color(0xFF8F8B8B),
-                Color(0xFFB8B5B5),
+                Color(0xFFB8B5B5)
             ),
             start = Offset(startOffsetX, 0f),
             end = Offset(startOffsetX + size.width.toFloat(), size.height.toFloat())

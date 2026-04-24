@@ -26,23 +26,21 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionItem(
-    transaction: Transaction,
-    onDeleteClick: () -> Unit
-) {
+fun TransactionItem(transaction: Transaction, onDeleteClick: () -> Unit) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart) {
-                onDeleteClick()
-                true
-            } else {
-                false
+    val dismissState =
+        rememberSwipeToDismissBoxState(
+            confirmValueChange = {
+                if (it == SwipeToDismissBoxValue.EndToStart) {
+                    onDeleteClick()
+                    true
+                } else {
+                    false
+                }
             }
-        }
-    )
+        )
 
     SwipeToDismissBox(
         state = dismissState,
@@ -52,7 +50,8 @@ fun TransactionItem(
                 when (dismissState.targetValue) {
                     SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.error
                     else -> Color.Transparent
-                }, label = "DismissBackground"
+                },
+                label = "DismissBackground"
             )
             Box(
                 Modifier
@@ -74,14 +73,16 @@ fun TransactionItem(
             color = MaterialTheme.colorScheme.surfaceContainerLow
         ) {
             Row(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Category Icon Box
                 Box(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .size(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -103,7 +104,8 @@ fun TransactionItem(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = transaction.description.ifBlank { transaction.category },
-                        style = MaterialTheme.typography.bodyLarge.copy(
+                        style =
+                        MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.sp
                         ),
@@ -121,14 +123,17 @@ fun TransactionItem(
                     text = "${if (transaction.type == TransactionType.INCOME) "+" else "-"} ${
                         currencyFormat.format(transaction.amount).replace("R$", "").trim()
                     }",
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    style =
+                    MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = (-0.5).sp
                     ),
-                    color = if (transaction.type == TransactionType.INCOME)
+                    color =
+                    if (transaction.type == TransactionType.INCOME) {
                         MaterialTheme.colorScheme.primary
-                    else
+                    } else {
                         MaterialTheme.colorScheme.onSurface
+                    }
                 )
             }
         }
@@ -150,15 +155,16 @@ private fun getCategoryIcon(category: String): ImageVector {
 @Preview(showBackground = true)
 @Composable
 private fun TransactionItemPreview() {
-    val transaction = Transaction(
-        userId = "123",
-        id = 1,
-        description = "Blue Bottle Coffee",
-        amount = 12.50,
-        type = TransactionType.EXPENSE,
-        category = "Alimentação",
-        date = Date()
-    )
+    val transaction =
+        Transaction(
+            userId = "123",
+            id = 1,
+            description = "Blue Bottle Coffee",
+            amount = 12.50,
+            type = TransactionType.EXPENSE,
+            category = "Alimentação",
+            date = Date()
+        )
     FinAITheme {
         TransactionItem(transaction = transaction, onDeleteClick = {})
     }

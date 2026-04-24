@@ -1,6 +1,5 @@
 package com.edudev.finai.presentation.components.dashboardScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,41 +10,36 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.edudev.finai.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun BalanceSection(
-    balance: Double,
-    currencyFormat: NumberFormat,
-    onTransferClick: () -> Unit = {},
-    onDepositClick: () -> Unit = {}
-) {
+fun BalanceSection(balance: Double, currencyFormat: NumberFormat, onTransferClick: () -> Unit = {}, onDepositClick: () -> Unit = {}) {
     Column(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
     ) {
         Text(
             text = stringResource(R.string.label_total_balance),
-            style = MaterialTheme.typography.labelSmall.copy(
+            style =
+            MaterialTheme.typography.labelSmall.copy(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             ),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom,
@@ -55,20 +49,22 @@ fun BalanceSection(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = currencyFormat.format(balance),
-                        style = MaterialTheme.typography.displayMedium.copy(
+                        style =
+                        MaterialTheme.typography.displaySmall.copy(
                             fontWeight = FontWeight.Bold,
                             letterSpacing = (-2).sp
                         ),
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(0.4f)
                     )
-                    
+
                     Spacer(modifier = Modifier.width(4.dp))
-                    
+
                     Surface(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.padding(horizontal = 10.dp)
+                        modifier =
+                        Modifier.padding(horizontal = 10.dp)
                             .weight(0.2f)
                     ) {
                         Row(

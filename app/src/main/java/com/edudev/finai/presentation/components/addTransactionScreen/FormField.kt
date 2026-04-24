@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -32,17 +31,12 @@ import com.edudev.finai.ui.theme.Onyx
 import com.edudev.finai.ui.theme.SurfaceContainerHighest
 
 @Composable
-fun FormField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    icon: ImageVector,
-    placeholder: String
-) {
+fun FormField(label: String, value: String, onValueChange: (String) -> Unit, icon: ImageVector, placeholder: String) {
     Column {
         Text(
             text = label.uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(
+            style =
+            MaterialTheme.typography.labelSmall.copy(
                 color = MintEmerald,
                 letterSpacing = 1.sp,
                 fontWeight = FontWeight.Bold
@@ -50,7 +44,8 @@ fun FormField(
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
         Row(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .background(SurfaceContainerHighest, RoundedCornerShape(24.dp))
                 .padding(horizontal = 16.dp, vertical = 20.dp),
@@ -62,12 +57,13 @@ fun FormField(
                 tint = OnSurfaceVariant,
                 modifier = Modifier.size(24.dp)
             )
-            
+
             Box(Modifier.padding(start = 12.dp)) {
                 if (value.isEmpty()) {
                     Text(
                         text = placeholder,
-                        style = MaterialTheme.typography.bodyMedium.copy(
+                        style =
+                        MaterialTheme.typography.bodyMedium.copy(
                             color = OnSurfaceVariant.copy(alpha = 0.5f)
                         )
                     )
@@ -76,7 +72,8 @@ fun FormField(
                     value = value,
                     onValueChange = onValueChange,
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    textStyle =
+                    MaterialTheme.typography.bodyMedium.copy(
                         color = OnSurfaceWhite,
                         fontWeight = FontWeight.Medium
                     ),

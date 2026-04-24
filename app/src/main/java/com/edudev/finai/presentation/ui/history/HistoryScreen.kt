@@ -8,7 +8,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,9 +40,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(
-    viewModel: HistoryViewModel = hiltViewModel()
-) {
+fun HistoryScreen(viewModel: HistoryViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
@@ -63,23 +60,24 @@ fun HistoryScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val fileSaverLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("text/csv"),
-        onResult = { uri: Uri? ->
-            uri?.let {
-                val csvData = (uiState.exportState as? ExportState.Success)?.csvData
-                if (csvData != null) {
-                    try {
-                        context.contentResolver.openOutputStream(it)?.use { outputStream ->
-                            outputStream.write(csvData.toByteArray())
+    val fileSaverLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CreateDocument("text/csv"),
+            onResult = { uri: Uri? ->
+                uri?.let {
+                    val csvData = (uiState.exportState as? ExportState.Success)?.csvData
+                    if (csvData != null) {
+                        try {
+                            context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                                outputStream.write(csvData.toByteArray())
+                            }
+                        } catch (e: IOException) {
                         }
-                    } catch (e: IOException) {
                     }
                 }
+                viewModel.onExportStateConsumed()
             }
-            viewModel.onExportStateConsumed()
-        }
-    )
+        )
 
     LaunchedEffect(uiState.exportState) {
         when (val state = uiState.exportState) {
@@ -118,7 +116,8 @@ fun HistoryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
@@ -141,9 +140,10 @@ fun HistoryScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            val groupedTransactions = remember(uiState.filteredTransactions, context) {
-                groupTransactionsByDate(context, uiState.filteredTransactions)
-            }
+            val groupedTransactions =
+                remember(uiState.filteredTransactions, context) {
+                    groupTransactionsByDate(context, uiState.filteredTransactions)
+                }
 
             AnimatedContent(
                 targetState = groupedTransactions.isEmpty(),
@@ -174,12 +174,10 @@ fun HistoryScreen(
 }
 
 @Composable
-private fun HeaderSection(
-    onExportClick: () -> Unit,
-    isExporting: Boolean
-) {
+private fun HeaderSection(onExportClick: () -> Unit, isExporting: Boolean) {
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 32.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -188,7 +186,8 @@ private fun HeaderSection(
         Column {
             Text(
                 text = stringResource(R.string.history_title),
-                style = MaterialTheme.typography.displayMedium.copy(
+                style =
+                MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-2).sp
                 ),
@@ -200,10 +199,11 @@ private fun HeaderSection(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        
+
         IconButton(
             onClick = onExportClick,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)
         ) {
@@ -222,14 +222,10 @@ private fun HeaderSection(
 }
 
 @Composable
-private fun SearchBarSection(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onFilterDateClick: () -> Unit,
-    isFilterActive: Boolean
-) {
+private fun SearchBarSection(query: String, onQueryChange: (String) -> Unit, onFilterDateClick: () -> Unit, isFilterActive: Boolean) {
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -238,18 +234,25 @@ private fun SearchBarSection(
         TextField(
             value = query,
             onValueChange = onQueryChange,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .weight(1f)
                 .height(56.dp)
                 .clip(CircleShape),
-            placeholder = { Text(stringResource(R.string.search_transactions_hint), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+            placeholder = {
+                Text(
+                    stringResource(R.string.search_transactions_hint),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
-            colors = TextFieldDefaults.colors(
+            colors =
+            TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
             singleLine = true,
             shape = CircleShape
@@ -257,10 +260,15 @@ private fun SearchBarSection(
 
         IconButton(
             onClick = onFilterDateClick,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(56.dp)
                 .background(
-                    color = if (isFilterActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+                    color = if (isFilterActive) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
+                    },
                     shape = CircleShape
                 )
         ) {
@@ -274,19 +282,17 @@ private fun SearchBarSection(
 }
 
 @Composable
-private fun TransactionGroup(
-    header: String,
-    transactions: List<Transaction>,
-    onDeleteTransaction: (Long) -> Unit
-) {
+private fun TransactionGroup(header: String, transactions: List<Transaction>, onDeleteTransaction: (Long) -> Unit) {
     Column(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
     ) {
         Text(
             text = header.uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(
+            style =
+            MaterialTheme.typography.labelSmall.copy(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             ),
@@ -295,7 +301,8 @@ private fun TransactionGroup(
         )
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .clip(RoundedCornerShape(24.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
         ) {
@@ -324,11 +331,12 @@ private fun EmptyHistoryPlaceholder() {
 }
 
 private fun groupTransactionsByDate(context: Context, transactions: List<Transaction>): List<Pair<String, List<Transaction>>> {
-    val groupedMap = transactions
-        .sortedByDescending { it.date }
-        .groupBy { transaction ->
-            getRelativeDate(context, transaction.date)
-        }
+    val groupedMap =
+        transactions
+            .sortedByDescending { it.date }
+            .groupBy { transaction ->
+                getRelativeDate(context, transaction.date)
+            }
     return groupedMap.toList()
 }
 
@@ -345,7 +353,7 @@ private fun getRelativeDate(context: Context, date: Date): String {
 
 private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+        cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 }
 
 private fun isYesterday(now: Calendar, target: Calendar): Boolean {

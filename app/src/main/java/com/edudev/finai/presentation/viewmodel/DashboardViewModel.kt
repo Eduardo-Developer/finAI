@@ -1,5 +1,6 @@
 package com.edudev.finai.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.edudev.finai.domain.model.AIInsight
@@ -11,24 +12,24 @@ import com.edudev.finai.domain.usecase.GetAllTransactionsUseCase
 import com.edudev.finai.domain.usecase.GetDashboardDataUseCase
 import com.edudev.finai.domain.usecase.GetFinancialInsightsUseCase
 import com.edudev.finai.domain.usecase.GetTransactionsByDateRangeUseCase
-import androidx.lifecycle.SavedStateHandle
 import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Date
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.Date
-import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
+class DashboardViewModel
+@Inject
+constructor(
     private val getDashboardDataUseCase: GetDashboardDataUseCase,
     private val getFinancialInsightsUseCase: GetFinancialInsightsUseCase,
     private val getAllTransactionsUseCase: GetAllTransactionsUseCase,
@@ -38,24 +39,24 @@ class DashboardViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(DashboardUiState())
     private val _showDateRangePicker = MutableStateFlow(false)
-    
-    val uiState: StateFlow<DashboardUiState> = combine(
-        _uiState,
-        preferencesRepository.isAIEnabled,
-        _showDateRangePicker
-    ) { state, aiEnabled, showDatePicker ->
-        state.copy(
-            isAIEnabled = aiEnabled,
-            showDateRangePicker = showDatePicker
+
+    val uiState: StateFlow<DashboardUiState> =
+        combine(
+            _uiState,
+            preferencesRepository.isAIEnabled,
+            _showDateRangePicker
+        ) { state, aiEnabled, showDatePicker ->
+            state.copy(
+                isAIEnabled = aiEnabled,
+                showDateRangePicker = showDatePicker
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = DashboardUiState()
         )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = DashboardUiState()
-    )
 
     val currentUserId = authRepository.currentUser ?: ""
 
@@ -67,19 +68,20 @@ class DashboardViewModel @Inject constructor(
         observeTransactions()
     }
 
-    private fun loadInitialData(){
+    private fun loadInitialData() {
         loadUserData()
         loadDashboardData()
     }
 
-    private fun loadUserData(){
+    private fun loadUserData() {
         viewModelScope.launch {
-            getUserDataUseCase(currentUserId).collect{
-                user ->
-                _uiState.value = _uiState.value.copy(
-                    userName = user?.fullName?.split(" ")?.firstOrNull() ?: "",
-                    userImage = user?.imageUrl
-                )
+            getUserDataUseCase(currentUserId).collect {
+                    user ->
+                _uiState.value =
+                    _uiState.value.copy(
+                        userName = user?.fullName?.split(" ")?.firstOrNull() ?: "",
+                        userImage = user?.imageUrl
+                    )
             }
         }
     }
@@ -91,20 +93,22 @@ class DashboardViewModel @Inject constructor(
                 val start = filterStartDateFlow.value?.let { Date(it) }
                 val end = filterEndDateFlow.value?.let { Date(it) }
                 val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
-                _uiState.value = _uiState.value.copy(
-                    dashboardData = dashboardData,
-                    filterStartDate = start,
-                    filterEndDate = end,
-                    isLoading = false,
-                    isLoadingAI = false
-                )
+                _uiState.value =
+                    _uiState.value.copy(
+                        dashboardData = dashboardData,
+                        filterStartDate = start,
+                        filterEndDate = end,
+                        isLoading = false,
+                        isLoadingAI = false
+                    )
                 loadAIInsights(dashboardData)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = e.message,
-                    isLoading = false,
-                    isLoadingAI = false
-                )
+                _uiState.value =
+                    _uiState.value.copy(
+                        error = e.message,
+                        isLoading = false,
+                        isLoadingAI = false
+                    )
             }
         }
     }
@@ -127,32 +131,34 @@ class DashboardViewModel @Inject constructor(
                 }.combine(preferencesRepository.isAIEnabled) { transactions, aiEnabled ->
                     Pair(transactions, aiEnabled)
                 }.collect { (transactions, aiEnabled) ->
-                try {
-                    val start = filterStartDateFlow.value?.let { Date(it) }
-                    val end = filterEndDateFlow.value?.let { Date(it) }
-                    val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
-                    _uiState.value = _uiState.value.copy(
-                        dashboardData = dashboardData,
-                        transactions = transactions,
-                        isLoading = false
-                    )
-                    if (aiEnabled) {
-                        _uiState.value = _uiState.value.copy(isLoadingAI = true)
-                        try {
-                            val insights = getFinancialInsightsUseCase(transactions)
-                            _uiState.value = _uiState.value.copy(
-                                aiInsights = insights,
-                                dashboardData = _uiState.value.dashboardData?.copy(aiInsights = insights),
-                                isLoadingAI = false
+                    try {
+                        val start = filterStartDateFlow.value?.let { Date(it) }
+                        val end = filterEndDateFlow.value?.let { Date(it) }
+                        val dashboardData = getDashboardDataUseCase(currentUserId, start, end)
+                        _uiState.value =
+                            _uiState.value.copy(
+                                dashboardData = dashboardData,
+                                transactions = transactions,
+                                isLoading = false
                             )
-                        } catch (e: Exception) {
-                            _uiState.value = _uiState.value.copy(isLoadingAI = false)
+                        if (aiEnabled) {
+                            _uiState.value = _uiState.value.copy(isLoadingAI = true)
+                            try {
+                                val insights = getFinancialInsightsUseCase(transactions)
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        aiInsights = insights,
+                                        dashboardData = _uiState.value.dashboardData?.copy(aiInsights = insights),
+                                        isLoadingAI = false
+                                    )
+                            } catch (e: Exception) {
+                                _uiState.value = _uiState.value.copy(isLoadingAI = false)
+                            }
                         }
+                    } catch (e: Exception) {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
                     }
-                } catch (e: Exception) {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
                 }
-            }
         }
     }
 
@@ -162,16 +168,18 @@ class DashboardViewModel @Inject constructor(
                 try {
                     val start = filterStartDateFlow.value?.let { Date(it) }
                     val end = filterEndDateFlow.value?.let { Date(it) }
-                    val transactions = if (start != null && end != null) {
-                        getTransactionsByDateRangeUseCase(currentUserId, start, end).first()
-                    } else {
-                        getAllTransactionsUseCase(currentUserId).first()
-                    }
+                    val transactions =
+                        if (start != null && end != null) {
+                            getTransactionsByDateRangeUseCase(currentUserId, start, end).first()
+                        } else {
+                            getAllTransactionsUseCase(currentUserId).first()
+                        }
                     val insights = getFinancialInsightsUseCase(transactions)
-                    _uiState.value = _uiState.value.copy(
-                        aiInsights = insights,
-                        dashboardData = dashboardData.copy(aiInsights = insights)
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            aiInsights = insights,
+                            dashboardData = dashboardData.copy(aiInsights = insights)
+                        )
                 } catch (e: Exception) {
                 }
             }

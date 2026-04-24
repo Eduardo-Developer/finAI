@@ -5,12 +5,11 @@ import com.edudev.finai.domain.repository.TransactionRepository
 import java.util.Date
 import javax.inject.Inject
 
-class GetDashboardDataUseCase @Inject constructor(
+class GetDashboardDataUseCase
+@Inject
+constructor(
     private val repository: TransactionRepository
 ) {
-    suspend operator fun invoke(
-        userId: String,
-        startDate: Date? = null,
-        endDate: Date? = null
-    ): DashboardData = repository.getDashboardData(userId, startDate, endDate)
+    suspend operator fun invoke(userId: String, startDate: Date? = null, endDate: Date? = null): DashboardData =
+        repository.getDashboardData(userId, startDate, endDate)
 }

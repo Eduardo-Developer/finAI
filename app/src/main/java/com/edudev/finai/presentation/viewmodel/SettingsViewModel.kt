@@ -7,6 +7,7 @@ import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
 import com.edudev.finai.domain.usecase.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class SettingsUiState(
     val userName: String = "",
@@ -26,32 +26,34 @@ data class SettingsUiState(
 )
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+class SettingsViewModel
+@Inject
+constructor(
     private val authRepository: AuthRepository,
     private val preferencesRepository: PreferencesRepository,
     private val getUserDataUseCase: GetUserDataUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(SettingsUiState())
     private val _showLogoffConfirmDialog = savedStateHandle.getStateFlow("show_logoff_dialog", false)
 
-    val uiState: StateFlow<SettingsUiState> = combine(
-        _uiState,
-        preferencesRepository.isAIEnabled,
-        preferencesRepository.isBiometricAuthEnabled,
-        _showLogoffConfirmDialog
-    ) { state, aiEnabled, biometricEnabled, showDialog ->
-        state.copy(
-            isAIEnabled = aiEnabled,
-            isBiometricAuthEnabled = biometricEnabled,
-            showLogoffConfirmDialog = showDialog
+    val uiState: StateFlow<SettingsUiState> =
+        combine(
+            _uiState,
+            preferencesRepository.isAIEnabled,
+            preferencesRepository.isBiometricAuthEnabled,
+            _showLogoffConfirmDialog
+        ) { state, aiEnabled, biometricEnabled, showDialog ->
+            state.copy(
+                isAIEnabled = aiEnabled,
+                isBiometricAuthEnabled = biometricEnabled,
+                showLogoffConfirmDialog = showDialog
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = SettingsUiState()
         )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SettingsUiState()
-    )
 
     init {
         loadUserData()
@@ -80,7 +82,6 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
 
     fun setAIEnabled(isEnabled: Boolean) {
         viewModelScope.launch {

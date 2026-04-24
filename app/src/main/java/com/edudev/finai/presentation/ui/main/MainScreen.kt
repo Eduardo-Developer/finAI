@@ -11,10 +11,7 @@ import com.edudev.finai.presentation.components.navigation.BottomNavigationBar
 import com.edudev.finai.presentation.navigation.Screen
 
 @Composable
-fun MainScreen(
-    rootNavController: NavHostController,
-    onLogout: () -> Unit
-) {
+fun MainScreen(rootNavController: NavHostController, onLogout: () -> Unit) {
     val bottomNavController = rememberNavController()
 
     Scaffold(

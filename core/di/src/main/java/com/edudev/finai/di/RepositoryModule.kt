@@ -17,28 +17,19 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindTransactionRepository(transactionRepositoryImpl: TransactionRepositoryImpl): TransactionRepository
 
     @Binds
     @Singleton
-    abstract fun bindTransactionRepository(
-        transactionRepositoryImpl: TransactionRepositoryImpl
-    ): TransactionRepository
+    abstract fun bindAIRepository(aiRepositoryImpl: AIRepositoryImpl): AIRepository
 
     @Binds
     @Singleton
-    abstract fun bindAIRepository(
-        aiRepositoryImpl: AIRepositoryImpl
-    ): AIRepository
+    abstract fun bindPreferencesRepository(preferencesRepositoryImpl: PreferencesRepositoryImpl): PreferencesRepository
 
     @Binds
     @Singleton
-    abstract fun bindPreferencesRepository(
-        preferencesRepositoryImpl: PreferencesRepositoryImpl
-    ): PreferencesRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindAuthRepository(
-        authRepositoryImpl: AuthRepositoryImpl
-    ): AuthRepository
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

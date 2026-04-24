@@ -37,3 +37,4 @@ local.properties
 .cxx
 local.properties
 .agents/
+.agent/

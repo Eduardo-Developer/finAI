@@ -23,13 +23,15 @@ fun ShimmerTitlePlaceholder() {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(60.dp)
                 .clip(CircleShape)
                 .shimmerEffect()
         )
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .height(20.dp)
                 .fillMaxWidth(0.5f)
                 .shimmerEffect()

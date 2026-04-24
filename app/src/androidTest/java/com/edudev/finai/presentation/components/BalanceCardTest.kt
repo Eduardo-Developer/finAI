@@ -5,13 +5,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.edudev.finai.presentation.components.dashboardScreen.BalanceCard
 import com.edudev.finai.ui.theme.FinAITheme
-import org.junit.Rule
-import org.junit.Test
 import java.text.NumberFormat
 import java.util.Locale
+import org.junit.Rule
+import org.junit.Test
 
 class BalanceCardTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

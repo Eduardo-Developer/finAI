@@ -24,13 +24,10 @@ import com.edudev.finai.R
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun ProfileImagePicker(
-    imageUri: Uri?,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun ProfileImagePicker(imageUri: Uri?, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .size(120.dp)
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
@@ -61,6 +58,8 @@ private fun ProfileImagePickerPreview() {
     FinAITheme {
         ProfileImagePicker(
             modifier = Modifier.padding(PaddingValues(16.dp)),
-            imageUri = null, onClick = {})
+            imageUri = null,
+            onClick = {}
+        )
     }
 }

@@ -11,18 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun SettingsSection(
-    modifier: Modifier = Modifier,
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
+fun SettingsSection(modifier: Modifier = Modifier, title: String, content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

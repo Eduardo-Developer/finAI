@@ -23,17 +23,18 @@ import androidx.compose.ui.unit.sp
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun AIInsightsBentoCard(
-    modifier: Modifier = Modifier
-) {
+fun AIInsightsBentoCard(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(32.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
+                brush =
+                Brush.linearGradient(
+                    colors =
+                    listOf(
                         MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
                         Color.Transparent
                     )
@@ -68,7 +69,7 @@ fun AIInsightsBentoCard(
                     title = "Optimization Found",
                     description = "Moving $5k to high-yield savings could earn an extra $240/yr."
                 )
-                
+
                 InsightSubCard(
                     icon = Icons.Default.Warning,
                     title = "Subscription Alert",
@@ -80,17 +81,15 @@ fun AIInsightsBentoCard(
 }
 
 @Composable
-private fun InsightSubCard(
-    icon: ImageVector,
-    title: String,
-    description: String
-) {
+private fun InsightSubCard(icon: ImageVector, title: String, description: String) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth(),
-        border = ButtonDefaults.outlinedButtonBorder.copy(
-            brush = Brush.linearGradient(
+        border =
+        ButtonDefaults.outlinedButtonBorder.copy(
+            brush =
+            Brush.linearGradient(
                 listOf(
                     MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
                     Color.Transparent
@@ -104,7 +103,8 @@ private fun InsightSubCard(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
@@ -117,7 +117,7 @@ private fun InsightSubCard(
                     modifier = Modifier.size(20.dp)
                 )
             }
-            
+
             Column {
                 Text(
                     text = title,

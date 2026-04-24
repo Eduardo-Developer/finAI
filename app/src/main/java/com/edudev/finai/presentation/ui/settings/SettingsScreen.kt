@@ -29,11 +29,7 @@ import com.edudev.finai.ui.theme.FinAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-    onLogout: () -> Unit,
-    onNavigateToProfile: () -> Unit,
-    settingsViewModel: SettingsViewModel = hiltViewModel()
-) {
+fun SettingsScreen(onLogout: () -> Unit, onNavigateToProfile: () -> Unit, settingsViewModel: SettingsViewModel = hiltViewModel()) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.showLogoffConfirmDialog) {
@@ -87,7 +83,8 @@ fun SettingsScreenContent(
     onToggleBiometric: (Boolean) -> Unit
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -106,7 +103,6 @@ fun SettingsScreenContent(
                 onCheckedChange = onToggleAI
             )
         }
-
 
         SettingsSection(title = stringResource(R.string.settings_section_security)) {
             SettingsItemSwitch(

@@ -1,6 +1,5 @@
 package com.edudev.finai.presentation.ui.signup
 
-import com.edudev.finai.presentation.components.loginScreen.ProfileImagePicker
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -19,8 +18,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import com.edudev.finai.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,43 +34,45 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
+import com.edudev.finai.R
+import com.edudev.finai.presentation.components.loginScreen.ProfileImagePicker
 import com.edudev.finai.presentation.viewmodel.SignUpViewModel
 
 @Composable
-fun SignUpScreen(
-    onSignUpSuccess: () -> Unit,
-    onNavigateToLogin: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
-) {
+fun SignUpScreen(onSignUpSuccess: () -> Unit, onNavigateToLogin: () -> Unit, viewModel: SignUpViewModel = hiltViewModel()) {
     val signUpUiState by viewModel.signUpState.collectAsState()
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    val imageCropper = rememberLauncherForActivityResult(CropImageContract()) {
-        if (it.isSuccessful) {
-            selectedImageUri = it.uriContent
-            viewModel.onPhotoUriChanged(it.uriContent)
-        }
-    }
-
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            uri?.let {
-                val cropOptions = CropImageOptions().apply {
-                    guidelines = CropImageView.Guidelines.ON
-                    cropShape = CropImageView.CropShape.RECTANGLE
-                    fixAspectRatio = true
-                    aspectRatioX = 1
-                    aspectRatioY = 1
-                }
-                val contractOptions = CropImageContractOptions(uri, cropOptions)
-                imageCropper.launch(contractOptions)
+    val imageCropper =
+        rememberLauncherForActivityResult(CropImageContract()) {
+            if (it.isSuccessful) {
+                selectedImageUri = it.uriContent
+                viewModel.onPhotoUriChanged(it.uriContent)
             }
         }
-    )
+
+    val singlePhotoPickerLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                uri?.let {
+                    val cropOptions =
+                        CropImageOptions().apply {
+                            guidelines = CropImageView.Guidelines.ON
+                            cropShape = CropImageView.CropShape.RECTANGLE
+                            fixAspectRatio = true
+                            aspectRatioX = 1
+                            aspectRatioY = 1
+                        }
+                    val contractOptions = CropImageContractOptions(uri, cropOptions)
+                    imageCropper.launch(contractOptions)
+                }
+            }
+        )
 
     Column(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
@@ -136,7 +136,15 @@ fun SignUpScreen(
             CircularProgressIndicator()
         } else {
             Button(
-                onClick = { viewModel.signUp(signUpUiState.fullName, signUpUiState.email, signUpUiState.password, signUpUiState.confirmPassword, imageUri = selectedImageUri) },
+                onClick = {
+                    viewModel.signUp(
+                        signUpUiState.fullName,
+                        signUpUiState.email,
+                        signUpUiState.password,
+                        signUpUiState.confirmPassword,
+                        imageUri = selectedImageUri
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.btn_create_account))

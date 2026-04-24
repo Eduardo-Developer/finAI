@@ -7,7 +7,5 @@ import retrofit2.http.POST
 
 interface AIApi {
     @POST("analyze")
-    suspend fun getFinancialInsights(
-        @Body request: AIInsightRequest
-    ): AIInsightResponse
+    suspend fun getFinancialInsights(@Body request: AIInsightRequest): AIInsightResponse
 }

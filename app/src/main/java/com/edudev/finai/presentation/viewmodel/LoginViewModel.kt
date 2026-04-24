@@ -5,19 +5,20 @@ import androidx.lifecycle.viewModelScope
 import com.edudev.finai.domain.repository.AuthRepository
 import com.edudev.finai.domain.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class LoginViewModel
+@Inject
+constructor(
     private val authRepository: AuthRepository,
-    private val preferencesRepository: PreferencesRepository,
+    private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -66,7 +67,6 @@ class LoginViewModel @Inject constructor(
                         )
                     }
                 }
-
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

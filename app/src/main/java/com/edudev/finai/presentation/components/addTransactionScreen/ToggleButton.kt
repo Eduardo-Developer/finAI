@@ -22,15 +22,10 @@ import com.edudev.finai.ui.theme.OnSurfaceVariant
 import com.edudev.finai.ui.theme.Onyx
 
 @Composable
-fun ToggleButton(
-    label: String,
-    isSelected: Boolean,
-    activeColor: Color,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
+fun ToggleButton(label: String, isSelected: Boolean, activeColor: Color, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .height(48.dp)
             .clip(RoundedCornerShape(100.dp))
             .background(if (isSelected) activeColor else Color.Transparent)
@@ -40,7 +35,8 @@ fun ToggleButton(
         Text(
             text = label,
             color = if (isSelected) Emerald else OnSurfaceVariant,
-            style = MaterialTheme.typography.labelMedium.copy(
+            style =
+            MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             )

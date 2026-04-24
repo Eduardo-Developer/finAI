@@ -25,7 +25,8 @@ fun FinAICard(
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .clip(shape)
             .background(containerColor)
             .padding(16.dp),
@@ -37,12 +38,10 @@ fun FinAICard(
  * A sectioning container that uses surface-container-low to group items visually.
  */
 @Composable
-fun FinAISection(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
-) {
+fun FinAISection(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(12.dp),
@@ -55,7 +54,8 @@ fun FinAISection(
 private fun FinAICardPreview() {
     com.edudev.finai.ui.theme.FinAITheme {
         androidx.compose.foundation.layout.Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)

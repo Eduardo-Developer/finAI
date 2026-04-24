@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,19 +42,16 @@ import com.edudev.finai.ui.theme.Emerald
 import com.edudev.finai.ui.theme.FinAITheme
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onSignUpClick: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
-) {
+fun LoginScreen(onLoginSuccess: () -> Unit, onSignUpClick: () -> Unit, viewModel: LoginViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val currentOnLoginSuccess by rememberUpdatedState(onLoginSuccess)
 
-    val biometricAuthenticator = remember(context) {
-        BiometricAuthenticator(context as AppCompatActivity)
-    }
+    val biometricAuthenticator =
+        remember(context) {
+            BiometricAuthenticator(context as AppCompatActivity)
+        }
 
     LaunchedEffect(uiState.navigateToHome) {
         if (uiState.navigateToHome) {
@@ -142,31 +138,36 @@ fun LoginScreenContent(
         modifier = Modifier.noiseBackground(0.05f)
     ) { paddingValues ->
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
             // Background Atmospheric Glow
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(400.dp)
                     .background(Emerald.copy(alpha = 0.02f), CircleShape)
                     .blur(100.dp)
             )
 
             Column(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
-                    modifier = Modifier.padding(bottom = 64.dp), // Level 3 spacing
+                    // Level 3 spacing
+                    modifier = Modifier.padding(bottom = 64.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = buildAnnotatedString {
+                        text =
+                        buildAnnotatedString {
                             append("Fin")
                             withStyle(style = SpanStyle(color = Emerald)) {
                                 append("AI")
@@ -186,17 +187,23 @@ fun LoginScreenContent(
                 }
 
                 FinAICard(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 48.dp), // Increased for airier feel
+                        .padding(bottom = 48.dp),
+                    // Increased for airier feel
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    shape = RoundedCornerShape(32.dp) // Larger corner radius for container
+                    // Larger corner radius for container
+                    shape = RoundedCornerShape(32.dp)
                 ) {
                     Column(
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .fillMaxWidth()
-                            .padding(12.dp), // More internal breathing room
-                        verticalArrangement = Arrangement.spacedBy(32.dp) // Level 3 internal spacing
+                            .padding(12.dp),
+                        // More internal breathing room
+                        // Level 3 internal spacing
+                        verticalArrangement = Arrangement.spacedBy(32.dp)
                     ) {
                         // Email Field
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -234,7 +241,11 @@ fun LoginScreenContent(
                                 value = uiState.pass,
                                 onValueChange = onPasswordChange,
                                 placeholder = "••••••••",
-                                visualTransformation = if (uiState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                                visualTransformation = if (uiState.isPasswordVisible) {
+                                    VisualTransformation.None
+                                } else {
+                                    PasswordVisualTransformation()
+                                },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 leadingIcon = {
                                     Icon(
@@ -245,11 +256,12 @@ fun LoginScreenContent(
                                     )
                                 },
                                 trailingIcon = {
-                                    val imageResId = if (uiState.isPasswordVisible) {
-                                        R.drawable.visibility_off
-                                    } else {
-                                        R.drawable.visibility_on
-                                    }
+                                    val imageResId =
+                                        if (uiState.isPasswordVisible) {
+                                            R.drawable.visibility_off
+                                        } else {
+                                            R.drawable.visibility_on
+                                        }
                                     IconButton(onClick = onTogglePasswordVisibility) {
                                         Icon(
                                             painter = painterResource(id = imageResId),
@@ -314,16 +326,17 @@ fun LoginScreenContent(
 @Composable
 private fun LoginScreenPreview() {
     FinAITheme {
-        val dummyUiState = LoginUiState(
-            email = "test@example.com",
-            pass = "password123",
-            isPasswordVisible = false,
-            isLoading = false,
-            error = null,
-            navigateToHome = false,
-            promptBiometric = false,
-            showBiometricOnboardingDialog = false
-        )
+        val dummyUiState =
+            LoginUiState(
+                email = "test@example.com",
+                pass = "password123",
+                isPasswordVisible = false,
+                isLoading = false,
+                error = null,
+                navigateToHome = false,
+                promptBiometric = false,
+                showBiometricOnboardingDialog = false
+            )
         LoginScreenContent(
             uiState = dummyUiState,
             snackbarHostState = remember { SnackbarHostState() },
