@@ -62,49 +62,49 @@ private fun DrawScope.drawNotchedBackground(color: Color, notchRadiusPx: Float) 
     val w = size.width
     val h = size.height
     val cx = w / 2f
+    val cornerRadius = 20.dp.toPx() // Smoothness of the "shoulders"
 
-    // Standard constant for approximating a quarter-circle with a cubic bezier
-    val k = 0.5522847498f
+    val path = Path().apply {
+        moveTo(0f, 0f)
+        // ── Left flat part ──────────────────────────────────────────────────
+        lineTo(cx - notchRadiusPx - cornerRadius, 0f)
 
-    val path =
-        Path().apply {
-            moveTo(0f, 0f)
+        // ── Left shoulder ───────────────────────────────────────────────────
+        quadraticBezierTo(
+            cx - notchRadiusPx,
+            0f,
+            cx - notchRadiusPx,
+            cornerRadius
+        )
 
-            // ── Left flat part ──────────────────────────────────────────────────
-            lineTo(cx - notchRadiusPx, 0f)
+        // ── Main Arc (The Cradle) ───────────────────────────────────────────
+        // We center the arc slightly below the top to give it depth
+        arcTo(
+            rect = androidx.compose.ui.geometry.Rect(
+                left = cx - notchRadiusPx,
+                top = cornerRadius - notchRadiusPx,
+                right = cx + notchRadiusPx,
+                bottom = cornerRadius + notchRadiusPx
+            ),
+            startAngleDegrees = 180f,
+            sweepAngleDegrees = -180f,
+            forceMoveTo = false
+        )
 
-            // ── Left quarter-circle: (cx-R, 0) → (cx, R) ──────────────────────
-            cubicTo(
-                cx - notchRadiusPx,
-                // CP1
-                k * notchRadiusPx,
-                cx - (k * notchRadiusPx),
-                // CP2
-                notchRadiusPx,
-                cx,
-                // end (bottom of arc)
-                notchRadiusPx
-            )
+        // ── Right shoulder ──────────────────────────────────────────────────
+        quadraticBezierTo(
+            cx + notchRadiusPx,
+            0f,
+            cx + notchRadiusPx + cornerRadius,
+            0f
+        )
 
-            // ── Right quarter-circle: (cx, R) → (cx+R, 0) ─────────────────────
-            cubicTo(
-                cx + (k * notchRadiusPx),
-                // CP1
-                notchRadiusPx,
-                cx + notchRadiusPx,
-                // CP2
-                k * notchRadiusPx,
-                cx + notchRadiusPx,
-                // end
-                0f
-            )
-
-            // ── Right flat part ─────────────────────────────────────────────────
-            lineTo(w, 0f)
-            lineTo(w, h)
-            lineTo(0f, h)
-            close()
-        }
+        // ── Right flat part and closing ─────────────────────────────────────
+        lineTo(w, 0f)
+        lineTo(w, h)
+        lineTo(0f, h)
+        close()
+    }
 
     drawPath(path = path, color = color)
 }
@@ -124,7 +124,7 @@ fun BottomNavigationBar(navController: NavHostController, onAddClick: () -> Unit
         Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .height(NavBarHeight + fabOverlapDp)
+            .height(NavBarHeight)
     ) {
         // ---- Canvas-drawn notched background ----
         Canvas(
@@ -148,7 +148,7 @@ fun BottomNavigationBar(navController: NavHostController, onAddClick: () -> Unit
                 .height(NavBarHeight),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left side items
+            // Left side slots (Always 2)
             leftItems.forEach { screen ->
                 NavigationBarItem(
                     modifier = Modifier.weight(1f),
@@ -173,11 +173,13 @@ fun BottomNavigationBar(navController: NavHostController, onAddClick: () -> Unit
                     }
                 )
             }
+            if (leftItems.size < 2) Spacer(modifier = Modifier.weight(1f))
 
-            // Spacer for FAB area - Adjusted for better clearance
-            Spacer(modifier = Modifier.weight(1.2f))
+            // Spacer for FAB area - Increased for better harmony
+            Spacer(modifier = Modifier.weight(1.5f))
 
-            // Right side items
+            // Right side slots (Always 2)
+            if (rightItems.size < 2) Spacer(modifier = Modifier.weight(1f))
             rightItems.forEach { screen ->
                 NavigationBarItem(
                     modifier = Modifier.weight(1f),
@@ -209,7 +211,7 @@ fun BottomNavigationBar(navController: NavHostController, onAddClick: () -> Unit
             modifier =
             Modifier
                 .size(FabSize)
-                .align(Alignment.TopCenter)
+                .align(Alignment.Center)
                 .shadow(
                     elevation = FabElevation,
                     shape = CircleShape,
